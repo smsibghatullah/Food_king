@@ -6,7 +6,7 @@ class food_king(models.Model):
     _name = 'food_king.food_king'
 
     username = fields.Char('Username')
-    password = fields.Char('Password')
+    password = fields.Char('Password', widget='password')
     url = fields.Char('URL')
 
 

@@ -17,7 +17,7 @@
                 <group>
                     <field name="url"/>
                     <field name="username"/>
-                    <field name="password"/>
+                    <field name="password" password="True"/>
                     <label for="sync_all_products" string="Sync Products"/>
                     <button name="sync_all_products" string="Sync Products" type="object" class="oe_highlight"/>
                     <label for="sync_all_category" string="Sync Categories"/>
