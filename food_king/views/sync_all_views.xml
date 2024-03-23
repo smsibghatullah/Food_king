@@ -45,9 +45,19 @@
             <field name="context">{'create': False}</field>
         </record>
 
-        <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
+         <record id="action_food_king34" model="ir.actions.act_window">
+            <field name="name">Food King</field>
+            <field name="res_model">food_king.food_king</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_food_king_box"/>
+        </record>
 
-        <!-- <menuitem id="menu_food_king" name="Food King" action="action_food_king" sequence="1000"/> -->
+        <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
+        <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/>
+
+
 
     </data>
 </odoo>
+
+       
