@@ -17,7 +17,7 @@ Long description of module's purpose
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'product','account_asset'],
+    'depends': ['base', 'product'],
 
     'data': [
         'views/sync_all_views.xml',
