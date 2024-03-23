@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_sync_products" model="ir.actions.server">
+            <field name="name">Sync Products</field>
+            <field name="model_id" ref="model_food_king_food_king"/>
+            <field name="state">code</field>
+            <field name="code">food_king.sync_all_products()</field>
+        </record>
+
+    <record id="view_food_king_box" model="ir.ui.view">
+    <field name="name">food.king.box</field>
+    <field name="model">food_king.food_king</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="url"/>
+                    <field name="username"/>
+                    <field name="password"/>
+                    <label for="sync_all_products" string="Sync Products"/>
+                    <button name="sync_all_products" string="Sync Products" type="object" class="oe_highlight"/>
+                    <label for="sync_all_category" string="Sync Categories"/>
+                    <button name="sync_all_category" string="Sync Categories" type="object" class="oe_highlight"/>
+                    <label for="sync_all_customers" string="Sync Customer"/>
+                    <button name="sync_all_customers" string="Sync Customers" type="object" class="oe_highlight"/>
+                    <label for="sync_all_tax" string="Sync Tax"/>
+                    <button name="sync_all_tax" string="Sync Taxes" type="object" class="oe_highlight"/>
+                    <label for="sync_all_pos_orders" string="Sync POS Orders"/>
+                    <button name="sync_all_pos_orders" string="Sync POS Orders" type="object" class="oe_highlight"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+
+        <record id="action_food_king" model="ir.actions.act_window">
+            <field name="name">Food King</field>
+            <field name="res_model">food_king.food_king</field>
+            <field name="view_mode">form</field>
+            <field name="res_model">food_king.food_king</field>
+            <field name="target">current</field>
+            <field name="res_id">1</field>
+            <field name="context">{'create': False}</field>
+        </record>
+
+        <menuitem id="menu_food_king" name="Food King" action="action_food_king" sequence="500"/>
+
+    </data>
+</odoo>

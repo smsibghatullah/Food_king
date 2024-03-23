@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_food_king_user,food.king.user,model_food_king_food_king,group_food_king_user,1,1,1,1

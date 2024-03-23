@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+        <record id="group_food_king_user" model="res.groups">
+            <field name="name">Food King User</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+         <record id="access_food_king_user" model="ir.model.access">
+            <field name="name">Food King User Access</field>
+            <field name="model_id" ref="model_food_king_food_king"/>
+            <field name="group_id" ref="group_food_king_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+
+from . import sync_all
+from . import product_category
+from . import account_tax
+from . import res_partner
+from . import product
+from . import pos_order
