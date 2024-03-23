@@ -53,7 +53,7 @@
         </record>
 
         <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
-        <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/>
+        <!-- <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/> -->
 
 
 
