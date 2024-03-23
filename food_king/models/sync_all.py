@@ -15,7 +15,7 @@ class food_king(models.Model):
         headers = {
             'Content-Type': 'application/json',
              'Authorization': '',
-             'X-Api-Key':''
+             'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720'
         }
         login_payload = {
             "email": self.username,
@@ -43,7 +43,7 @@ class food_king(models.Model):
         url = self.url + "/api/admin/item"
         headers = {
             'Authorization': f'Bearer {token}',
-            'X-Api-Key':'',
+            'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720'
             'Content-Type': 'application/json',
         }
 
@@ -87,7 +87,7 @@ class food_king(models.Model):
         url = self.url + "/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
         headers = {
             'Authorization': f'Bearer {token}',
-            'X-Api-Key':'',
+            'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720'
             'Content-Type': 'application/json',
         }
 
@@ -121,7 +121,7 @@ class food_king(models.Model):
         url = self.url + "/api/admin/setting/tax"
         headers = {
             'Authorization': f'Bearer {token}',
-            'X-Api-Key':'',
+            'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720'
             'Content-Type': 'application/json',
         }
 
@@ -160,7 +160,7 @@ class food_king(models.Model):
 
             headers = {
                'Authorization': f'Bearer {token}',
-               'X-Api-Key':'',
+               'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720'
                'Content-Type': 'application/json',
             }
 
@@ -202,7 +202,7 @@ class food_king(models.Model):
         url = self.url + "/api/admin/pos"
         headers = {
             'Authorization': f'Bearer {token}',
-            'X-Api-Key':'',
+            'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720'
             'Content-Type': 'application/json',
         }
 
