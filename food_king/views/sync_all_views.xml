@@ -45,7 +45,9 @@
             <field name="context">{'create': False}</field>
         </record>
 
-        <menuitem id="menu_food_king" name="Food King" action="action_food_king" sequence="500"/>
+        <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
+
+        <!-- <menuitem id="menu_food_king" name="Food King" action="action_food_king" sequence="1000"/> -->
 
     </data>
 </odoo>
