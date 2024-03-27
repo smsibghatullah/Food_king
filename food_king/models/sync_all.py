@@ -455,14 +455,32 @@ class food_king(models.Model):
                     if product_ids or products_name:
                         product_id = product_ids[0]
                         product_name = products_name[0]
-                        cleaned_subtotal = re.sub(r'[^\d.]+', '', posid['total_convert_price'])
-                        cleaned_discount = re.sub(r'[^\d.]+', '',posid['discount'])
-                        cleaned_subtotal_incl= re.sub(r'[^\d.]+', '',posid['total_convert_price'])
-                        cleaned_price= re.sub(r'[^\d.]+', '',posid['price'])
-                        price_subtotal_incl = float(cleaned_subtotal_incl)
-                        price_unit = float(cleaned_price)
-                        price_subtotal = float(cleaned_subtotal)
-                        discount = float(cleaned_discount)
+                        if isinstance(posid['total_convert_price'], str):
+                            cleaned_subtotal = re.sub(r'[^\d.]+', '', posid['total_convert_price'])
+                        else:
+                            cleaned_subtotal = ''
+
+                        if isinstance(posid['discount'], str):
+                            cleaned_discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                        else:
+                            cleaned_discount = ''
+
+                        if isinstance(posid['total_convert_price'], str):
+                            cleaned_subtotal_incl = re.sub(r'[^\d.]+', '', posid['total_convert_price'])
+                        else:
+                            cleaned_subtotal_incl = ''
+
+                        if isinstance(posid['price'], str):
+                            cleaned_price = re.sub(r'[^\d.]+', '', posid['price'])
+                        else:
+                            cleaned_price = ''
+
+                        # Convert the cleaned values to float
+                        price_subtotal_incl = float(cleaned_subtotal_incl) if cleaned_subtotal_incl else 0.0
+                        price_unit = float(cleaned_price) if cleaned_price else 0.0
+                        price_subtotal = float(cleaned_subtotal) if cleaned_subtotal else 0.0
+                        discount = float(cleaned_discount) if cleaned_discount else 0.0
+
                         line_vals.append((0, 0, {
                             'product_id': product_id,
                             'full_product_name': product_name,
