@@ -117,7 +117,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/item"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key': '',
+                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_product_ids = [product.food_king_id for product in self.env['product.template'].search([])]
 
@@ -192,7 +192,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key': '',
+                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_category_ids = [categ.food_king_id for categ in self.env['pos.category'].search([])]
 
@@ -260,7 +260,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/setting/tax"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key': '',
+                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_tax_ids = [tax.food_king_id for tax in self.env['account.tax'].search([])]
 
@@ -336,7 +336,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/customer"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key': '',
+                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_customer_ids = [customer.food_king_id_res for customer in self.env['res.partner'].search([])]
 
@@ -429,7 +429,7 @@ class food_king(models.Model):
         url = f"{self.url}/api/admin/pos-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&order_type=15"
         headers = {
             'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key': '',
+            'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
         }
 
         existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
