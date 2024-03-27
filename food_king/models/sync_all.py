@@ -463,28 +463,31 @@ class food_king(models.Model):
                             'price_subtotal': posid.get('total_convert_price'),
                             'price_subtotal_incl': posid.get('total_convert_price')
                         }))
-                print(line_vals,"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-                if customer_ids:
-                    customer_id = customer_ids[0]
+                    print(line_vals,"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+                    if customer_ids:
+                        customer_id = customer_ids[0]
+                        print(customer_id,"sssssssssdddddddddddddddddddffffffffffffff")
 
-                    vals = {
-                        'name': pos_data.get('order_serial_no'),
-                        'partner_id': customer_id,
-                        'amount_total': pos_data.get('subtotal_currency_price'),
-                        'session_id': pos_data.get('branch', {}).get('id'),
-                        'company_id': pos_data.get('branch', {}).get('id'),
-                        'amount_tax': pos_data.get('total_tax_currency_price'),
-                        'amount_paid': pos_data.get('subtotal_currency_price'),
-                        'amount_return': 0,
-                        'lines': line_vals
-                    }
+                        vals = {
+                            'name': pos_data.get('order_serial_no'),
+                            'partner_id': customer_id,
+                            'amount_total': pos_data.get('subtotal_currency_price'),
+                            'session_id': pos_data.get('branch', {}).get('id'),
+                            'company_id': pos_data.get('branch', {}).get('id'),
+                            'amount_tax': pos_data.get('total_tax_currency_price'),
+                            'amount_paid': pos_data.get('subtotal_currency_price'),
+                            'amount_return': 0,
+                            'lines': line_vals
+                        }
 
-                    if pos_data.get('id') in existing_pos_order_ids:
-                        print('gggggggggggggggggggggggggggggggggggggSSSSS')
-                        pass
-                    else:
-                        print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                        self.env['pos.order'].create(vals)
+                        print(vals,"qqqqwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+
+                        if pos_data.get('id') in existing_pos_order_ids:
+                            print('gggggggggggggggggggggggggggggggggggggSSSSS')
+                            pass
+                        else:
+                            print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                            self.env['pos.order'].create(vals)
 
             return {'message': 'Pos order retrieved successfully.'}
 
