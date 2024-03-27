@@ -483,7 +483,7 @@ class food_king(models.Model):
                         'company_id': pos_data['branch']['id'],
                         'amount_tax': amount_tax,
                         'amount_paid': amount_total,
-                        'amount_return': 0,
+                        'amount_return': 0.0,
                         'lines': line_vals
                     }
 
