@@ -472,6 +472,8 @@ class food_king(models.Model):
                     customer_id = customer_ids[0]
                     print('ppppppppppppppppppppppp')
                     cleaned_number = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
+                    cleaned_tax_number = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
+                    amount_tax = float(cleaned_tax_number)
                     amount_total = float(cleaned_number)
                     vals = {
                         'name': pos_data['order_serial_no'],
@@ -479,7 +481,7 @@ class food_king(models.Model):
                         'amount_total': amount_total,
                         'session_id': pos_data['branch']['id'],
                         'company_id': pos_data['branch']['id'],
-                        'amount_tax': pos_data['total_tax_currency_price'],
+                        'amount_tax': amount_tax,
                         'amount_paid': amount_total,
                         'amount_return': 0,
                         'lines': line_vals
