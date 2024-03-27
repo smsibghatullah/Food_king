@@ -461,8 +461,8 @@ class food_king(models.Model):
                             'qty': posid['quantity'],
                             'price_unit': posid['price'],
                             'discount': posid['discount'],
-                            'price_subtotal': posid['total_convert_price'],
-                            'price_subtotal_incl': posid['total_convert_price']
+                            'price_subtotal':float(posid['total_convert_price']),
+                            'price_subtotal_incl': float(posid['total_convert_price'])
                         }))
 
                 print(line_vals,'line_valsgggggggggggggggggggggggggggggg')
