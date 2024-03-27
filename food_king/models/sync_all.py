@@ -117,7 +117,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/item"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
+                 'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_product_ids = [product.food_king_id for product in self.env['product.template'].search([])]
 
@@ -192,7 +192,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
+                 'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_category_ids = [categ.food_king_id for categ in self.env['pos.category'].search([])]
 
@@ -260,7 +260,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/setting/tax"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
+                 'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_tax_ids = [tax.food_king_id for tax in self.env['account.tax'].search([])]
 
@@ -336,7 +336,7 @@ class food_king(models.Model):
             url = self.url + "/api/admin/customer"
             headers = {
                 'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
+                 'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
             }
             existing_customer_ids = [customer.food_king_id_res for customer in self.env['res.partner'].search([])]
 
@@ -429,7 +429,7 @@ class food_king(models.Model):
         url = f"{self.url}/api/admin/pos-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&order_type=15"
         headers = {
             'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
+             'X-Api-Key':'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
         }
 
         existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
@@ -443,9 +443,9 @@ class food_king(models.Model):
                 url_get_id = f"{self.url}/api/admin/pos-order/show/{pos_data['id']}"
                 response_get_id = requests.get(url_get_id, headers=headers)
                 pos_data = response_get_id.json().get('data', {})
-                print(pos_data,"mubeenawannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-                customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data.get('user', {}).get('id'))]).mapped('id')
 
+                customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data.get('user', {}).get('id'))]).mapped('id')
+                print(customer_ids,'dddddddddddddddddddddddddddddddddddddd')
                 line_vals = []
                 for posid in pos_data.get('order_items', []):
                     product_ids = self.env['product.template'].search([('food_king_id', '=', posid.get('item_id'))]).mapped('id')
@@ -463,31 +463,27 @@ class food_king(models.Model):
                             'price_subtotal': posid.get('total_convert_price'),
                             'price_subtotal_incl': posid.get('total_convert_price')
                         }))
-                    print(line_vals,"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-                    if customer_ids:
-                        customer_id = customer_ids[0]
-                        print(customer_id,"sssssssssdddddddddddddddddddffffffffffffff")
 
-                        vals = {
-                            'name': pos_data.get('order_serial_no'),
-                            'partner_id': customer_id,
-                            'amount_total': pos_data.get('subtotal_currency_price'),
-                            'session_id': pos_data.get('branch', {}).get('id'),
-                            'company_id': pos_data.get('branch', {}).get('id'),
-                            'amount_tax': pos_data.get('total_tax_currency_price'),
-                            'amount_paid': pos_data.get('subtotal_currency_price'),
-                            'amount_return': 0,
-                            'lines': line_vals
-                        }
+                if customer_ids:
+                    customer_id = customer_ids[0]
 
-                        print(vals,"qqqqwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+                    vals = {
+                        'name': pos_data.get('order_serial_no'),
+                        'partner_id': customer_id,
+                        'amount_total': pos_data.get('subtotal_currency_price'),
+                        'session_id': pos_data.get('branch', {}).get('id'),
+                        'company_id': pos_data.get('branch', {}).get('id'),
+                        'amount_tax': pos_data.get('total_tax_currency_price'),
+                        'amount_paid': pos_data.get('subtotal_currency_price'),
+                        'amount_return': 0,
+                        'lines': line_vals
+                    }
 
-                        if pos_data.get('id') in existing_pos_order_ids:
-                            print('gggggggggggggggggggggggggggggggggggggSSSSS')
-                            pass
-                        else:
-                            print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                            self.env['pos.order'].create(vals)
+                    if pos_data.get('id') in existing_pos_order_ids:
+                        pass
+                    else:
+                        print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                        self.env['pos.order'].create(vals)
 
             return {'message': 'Pos order retrieved successfully.'}
 
