@@ -445,9 +445,10 @@ class food_king(models.Model):
                 pos_data = response_get_id.json().get('data', {})
 
                 customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
-                print(customer_ids,"ggggggggggggggggggg")
+                print(pos_data['user'],"ggggggggggggggggggg")
+                print(pos_data['user']['id'],"gggggggggggggjjjjjgggggg")
                 line_vals = []
-                for posid in pos_data.get('order_items', []):
+                for posid in pos_data['order_items']:
                     product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                     products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                     if product_ids or products_name:
