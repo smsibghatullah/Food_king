@@ -473,11 +473,11 @@ class food_king(models.Model):
                     vals = {
                         'name': pos_data['order_serial_no'],
                         'partner_id': customer_id,
-                        'amount_total': pos_data['subtotal_currency_price'],
+                        'amount_total':float(pos_data['subtotal_currency_price']),
                         'session_id': pos_data['branch']['id'],
                         'company_id': pos_data['branch']['id'],
                         'amount_tax': pos_data['total_tax_currency_price'],
-                        'amount_paid': pos_data['subtotal_currency_price'],
+                        'amount_paid': float(pos_data['subtotal_currency_price']),
                         'amount_return': 0,
                         'lines': line_vals
                     }
