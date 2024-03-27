@@ -443,7 +443,7 @@ class food_king(models.Model):
                 url_get_id = f"{self.url}/api/admin/pos-order/show/{pos_data['id']}"
                 response_get_id = requests.get(url_get_id, headers=headers)
                 pos_data = response_get_id.json().get('data', {})
-
+                print(pos_data,"mubeenawannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
                 customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data.get('user', {}).get('id'))]).mapped('id')
 
                 line_vals = []
@@ -463,7 +463,7 @@ class food_king(models.Model):
                             'price_subtotal': posid.get('total_convert_price'),
                             'price_subtotal_incl': posid.get('total_convert_price')
                         }))
-
+                print(line_vals,"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
                 if customer_ids:
                     customer_id = customer_ids[0]
 
