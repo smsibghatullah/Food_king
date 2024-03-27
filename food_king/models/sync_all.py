@@ -480,6 +480,7 @@ class food_king(models.Model):
                     }
 
                     if pos_data.get('id') in existing_pos_order_ids:
+                        print('gggggggggggggggggggggggggggggggggggggSSSSS')
                         pass
                     else:
                         print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
