@@ -445,6 +445,7 @@ class food_king(models.Model):
                 pos_data = response_get_id.json().get('data', {})
 
                 customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
+                print(customer_ids,"ggggggggggggggggggg")
                 line_vals = []
                 for posid in pos_data.get('order_items', []):
                     product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
@@ -463,9 +464,11 @@ class food_king(models.Model):
                             'price_subtotal_incl': posid['total_convert_price']
                         }))
 
+                print(line_vals,'line_valsgggggggggggggggggggggggggggggg')
+
                 if customer_ids:
                     customer_id = customer_ids[0]
-
+                    print('ppppppppppppppppppppppp')
                     vals = {
                         'name': pos_data['order_serial_no'],
                         'partner_id': customer_id,
