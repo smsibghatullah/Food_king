@@ -13,5 +13,14 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
+        <record id="access_food_king_token_wizard_user" model="ir.model.access">
+            <field name="name">Food King Token Wizard User Access</field>
+            <field name="model_id" ref="model_food_king_token_wizard"/>
+            <field name="group_id" ref="group_food_king_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+    </record>
     </data>
 </odoo>

@@ -13,21 +13,24 @@
     <field name="model">food_king.food_king</field>
     <field name="arch" type="xml">
         <form>
+            <header>
+                <button name="get_token" string="Generate Token" type="object" class="btn-primary"/>
+            </header>
             <sheet>
                 <group>
                     <field name="url"/>
                     <field name="username"/>
                     <field name="password" password="True"/>
-                    <label for="sync_all_products" string="Sync Products"/>
-                    <button name="sync_all_products" string="Sync Products" type="object" class="oe_highlight"/>
-                    <label for="sync_all_category" string="Sync Categories"/>
-                    <button name="sync_all_category" string="Sync Categories" type="object" class="oe_highlight"/>
-                    <label for="sync_all_customers" string="Sync Customer"/>
-                    <button name="sync_all_customers" string="Sync Customers" type="object" class="oe_highlight"/>
-                    <label for="sync_all_tax" string="Sync Tax"/>
-                    <button name="sync_all_tax" string="Sync Taxes" type="object" class="oe_highlight"/>
-                    <label for="sync_all_pos_orders" string="Sync POS Orders"/>
-                    <button name="sync_all_pos_orders" string="Sync POS Orders" type="object" class="oe_highlight"/>
+                    <label for="get_product_from_api" string="Sync Products"/>
+                    <button name="get_product_from_api" string="Sync Products" type="object" class="oe_highlight"/>
+                    <label for="get_categories_from_api" string="Sync Categories"/>
+                    <button name="get_categories_from_api" string="Sync Categories" type="object" class="oe_highlight"/>
+                    <label for="get_customer_from_api" string="Sync Customer"/>
+                    <button name="get_customer_from_api" string="Sync Customers" type="object" class="oe_highlight"/>
+                    <label for="get_tax_from_api" string="Sync Tax"/>
+                    <button name="get_tax_from_api" string="Sync Taxes" type="object" class="oe_highlight"/>
+                    <label for="get_pos_order_from_api" string="Sync POS Orders"/>
+                    <button name="get_pos_order_from_api" string="Sync POS Orders" type="object" class="oe_highlight"/>
                 </group>
             </sheet>
         </form>
@@ -53,10 +56,22 @@
         </record>
 
         <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
-        <!-- <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/> -->
+        <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/>
 
-
-
+     <record id="view_food_king_token_wizard_form" model="ir.ui.view">
+        <field name="name">food_king.token.wizard.form</field>
+        <field name="model">food_king.token.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Your Wizard Title" create="false">
+                <group>
+                    <field name="message"/>
+                </group>
+                <footer>
+                    <button name="action_close_wizard" string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+     </record>
     </data>
 </odoo>
 

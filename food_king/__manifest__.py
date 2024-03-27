@@ -22,11 +22,19 @@ Long description of module's purpose
     'data': [
         'views/sync_all_views.xml',
         'views/templates.xml',
-         'data/data.xml',
+        'views/product_view.xml',
+        'data/data.xml',
     ],
     'demo': [
         'demo/demo.xml',
     ],
+    'qweb': [
+    'static/src/xml/*.xml',
+     ],
+    'web.assets_backend': [
+        'food_king/static/src/**/*.js',
+    ],
+
     'installable': True,
     'auto_install': False,
     'application': False,

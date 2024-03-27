@@ -6,3 +6,4 @@ from . import account_tax
 from . import res_partner
 from . import product
 from . import pos_order
+from . import food_king_success_wizard
