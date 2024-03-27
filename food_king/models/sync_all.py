@@ -444,13 +444,11 @@ class food_king(models.Model):
                 response_get_id = requests.get(url_get_id, headers=headers)
                 pos_data = response_get_id.json().get('data', {})
 
-                customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data.get('user', {}).get('id'))]).mapped('id')
-                print(pos_data['user'],"kllllllllllllllllllllllll")
-                print(customer_ids,pos_data,'dddddddddddddddddddddddddddddddddddddd')
+                customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
                 line_vals = []
                 for posid in pos_data.get('order_items', []):
-                    product_ids = self.env['product.template'].search([('food_king_id', '=', posid.get('item_id'))]).mapped('id')
-                    products_name = self.env['product.template'].search([('food_king_id', '=', posid.get('item_id'))]).mapped('name')
+                    product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
+                    products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                     if product_ids or products_name:
                         product_id = product_ids[0]
                         product_name = products_name[0]
@@ -458,24 +456,24 @@ class food_king(models.Model):
                         line_vals.append((0, 0, {
                             'product_id': product_id,
                             'full_product_name': product_name,
-                            'qty': posid.get('quantity'),
-                            'price_unit': posid.get('price'),
-                            'discount': posid.get('discount'),
-                            'price_subtotal': posid.get('total_convert_price'),
-                            'price_subtotal_incl': posid.get('total_convert_price')
+                            'qty': posid['quantity'],
+                            'price_unit': posid['price'],
+                            'discount': posid['discount'],
+                            'price_subtotal': posid['total_convert_price'],
+                            'price_subtotal_incl': posid['total_convert_price']
                         }))
 
                 if customer_ids:
                     customer_id = customer_ids[0]
 
                     vals = {
-                        'name': pos_data.get('order_serial_no'),
+                        'name': pos_data['order_serial_no'],
                         'partner_id': customer_id,
-                        'amount_total': pos_data.get('subtotal_currency_price'),
-                        'session_id': pos_data.get('branch', {}).get('id'),
-                        'company_id': pos_data.get('branch', {}).get('id'),
-                        'amount_tax': pos_data.get('total_tax_currency_price'),
-                        'amount_paid': pos_data.get('subtotal_currency_price'),
+                        'amount_total': pos_data['subtotal_currency_price'],
+                        'session_id': pos_data['branch']['id'],
+                        'company_id': pos_data['branch']['id'],
+                        'amount_tax': pos_data['total_tax_currency_price'],
+                        'amount_paid': pos_data['subtotal_currency_price'],
                         'amount_return': 0,
                         'lines': line_vals
                     }
