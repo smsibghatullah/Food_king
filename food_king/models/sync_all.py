@@ -455,15 +455,22 @@ class food_king(models.Model):
                     if product_ids or products_name:
                         product_id = product_ids[0]
                         product_name = products_name[0]
-
+                        cleaned_subtotal = re.sub(r'[^\d.]+', '', posid['total_convert_price'])
+                        cleaned_discount = re.sub(r'[^\d.]+', '',posid['discount'])
+                        cleaned_subtotal_incl= re.sub(r'[^\d.]+', '',posid['total_convert_price'])
+                        cleaned_price= re.sub(r'[^\d.]+', '',posid['price'])
+                        price_subtotal_incl = float(cleaned_subtotal_incl)
+                        price_unit = float(cleaned_price)
+                        price_subtotal = float(cleaned_subtotal)
+                        discount = float(cleaned_discount)
                         line_vals.append((0, 0, {
                             'product_id': product_id,
                             'full_product_name': product_name,
                             'qty': posid['quantity'],
-                            'price_unit': posid['price'],
-                            'discount': posid['discount'],
-                            'price_subtotal': posid['total_convert_price'],
-                            'price_subtotal_incl': posid['total_convert_price']
+                            'price_unit': price_unit,
+                            'discount': discount,
+                            'price_subtotal': price_subtotal,
+                            'price_subtotal_incl': price_subtotal_incl
                         }))
 
                 print(line_vals,'line_valsgggggggggggggggggggggggggggggg')
