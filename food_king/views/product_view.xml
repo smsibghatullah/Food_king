@@ -8,8 +8,20 @@
                 <xpath expr="//field[@name='detailed_type']" position="after">
                     <field name="item_type"/>
                     <field name="is_featured"/>
+                    <field name="food_king_active"/>
                     <field name="caution"/>
                     <field name="description"/>
+                </xpath>
+            </field>
+        </record>
+
+          <record id="pos_order_tree_inherit" model="ir.ui.view">
+            <field name="name">pos.order.tree.inherit</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                  <field  name="status" widget="badge"/>
                 </xpath>
             </field>
         </record>

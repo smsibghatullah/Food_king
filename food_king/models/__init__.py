@@ -7,3 +7,5 @@ from . import res_partner
 from . import product
 from . import pos_order
 from . import food_king_success_wizard
+from . import restaurant_floor
+from . import restuarnt_table

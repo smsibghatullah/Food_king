@@ -1,5 +1,5 @@
 <odoo>
-    <data>
+    <data noupdate="1">
         <record id="group_food_king_user" model="res.groups">
             <field name="name">Food King User</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
@@ -13,14 +13,13 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        <record id="access_food_king_token_wizard_user" model="ir.model.access">
-            <field name="name">Food King Token Wizard User Access</field>
-            <field name="model_id" ref="model_food_king_token_wizard"/>
-            <field name="group_id" ref="group_food_king_user"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-    </record>
+
+        <record model="pos.config" id="pos_config_new_data" forcecreate="0">
+            <field name="name">Food King Pos</field>
+        </record>
+
+        <record model="restaurant.floor" id="pos_table_new_data" forcecreate="0">
+            <field name="name">Food King Floor</field>
+        </record>
     </data>
 </odoo>

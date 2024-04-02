@@ -17,12 +17,13 @@ Long description of module's purpose
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'product','om_account_asset','pos_restaurant'],
+    'depends': ['base', 'product','om_account_asset','pos_restaurant','point_of_sale'],
 
     'data': [
         'views/sync_all_views.xml',
         'views/templates.xml',
         'views/product_view.xml',
+        'views/pos_order_view.xml',
         'data/data.xml',
     ],
     'demo': [
