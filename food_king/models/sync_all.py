@@ -423,18 +423,17 @@ class food_king(models.Model):
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
                                 
-                                price = re.sub(r'[^\d.]+', '', pos_data['price'])
-                                discount = re.sub(r'[^\d.]+', '', pos_data['discount'])
-                                total_convert_price = re.sub(r'[^\d.]+', '', pos_data['total_convert_price'])
-                                total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
+                                price = re.sub(r'[^\d.]+', '', posid['price'])
+                                discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                # total_convert_price = re.sub(r'[^\d.]+', '', posid['total_convert_price'])
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
                                     'full_product_name': product_name,
                                     'qty': posid['quantity'],
                                     'price_unit': float(price),
                                     'discount': float(discount),
-                                    'price_subtotal': float(total_convert_price),
-                                    'price_subtotal_incl': float(total_convert_price)
+                                    'price_subtotal': posid['total_convert_price'],
+                                    'price_subtotal_incl': posid['total_convert_price']
                                 }))
 
                         if customer_ids:
@@ -448,6 +447,7 @@ class food_king(models.Model):
                                     table_id = search_table[0]
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
+                                print(subtotal_currency_price,"sssssssssssssssssssssssssssssss")
                                 vals = {
                                     'food_king_id':pos_data['id'],
                                     'name': pos_data['order_serial_no'],
