@@ -60,6 +60,7 @@ class KitchenScreen(models.Model):
 
     @api.model
     def create(self, vals):
+        print('dddddddddddddd')
         """Used to create sequence"""
         if vals.get('sequence', 'New') == 'New':
             vals['sequence'] = self.env['ir.sequence'].next_by_code(

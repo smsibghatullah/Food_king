@@ -7,6 +7,7 @@ class ShMessageWizard(models.TransientModel):
     _description = "Message wizard to display warnings, alert ,success messages"
 
     def get_default(self):
+        print("lllllll")
         if self.env.context.get("message", False):
             return self.env.context.get("message")
         return False
