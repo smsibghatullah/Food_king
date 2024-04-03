@@ -419,7 +419,7 @@ class food_king(models.Model):
                         for posid in pos_data['order_items']:
                             product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                             products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            print(product_ids,products_name,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasss")
+                            print(product_ids,products_name,posid['item_id'],pos_data['order_items'],"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasss")
                             if product_ids or products_name:
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
@@ -515,7 +515,7 @@ class food_king(models.Model):
                         for posid in pos_data['order_items']:
                             product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                             products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            print(product_ids,products_name,"aaaaaaaaaaonlineaaaaaaaaaaaaaaaaaaaaaasss")
+                            print(product_ids,products_name,posid['item_id'],"aaaaaaaaaaonlineaaaaaaaaaaaaaaaaaaaaaasss")
                             if product_ids or products_name:
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
