@@ -519,12 +519,16 @@ class food_king(models.Model):
                                 product_name = products_name[0]
                                 
 
+                                price = re.sub(r'[^\d.]+', '', posid['price'])
+                                discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                print("Price:", price)
+                                print("Discount:", discount)
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
                                     'full_product_name': product_name,
                                     'qty': posid['quantity'],
-                                    'price_unit': posid['price'],
-                                    'discount': posid['discount'],
+                                    'price_unit': float(price),
+                                    'discount': float(discount),
                                     'price_subtotal': posid['total_convert_price'],
                                     'price_subtotal_incl': posid['total_convert_price']
                                 }))
@@ -538,17 +542,18 @@ class food_king(models.Model):
                                 config_id = search_pos[0]
                                 if search_table:
                                     table_id = search_table[0]
-                                
+                                total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
+                                subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
                                 vals = {
                                     'food_king_id':pos_data['id'],
                                     'name': pos_data['order_serial_no'],
                                     'config_id' : config_id,
                                     'partner_id': customer_id,
-                                    'amount_total': pos_data['subtotal_currency_price'],
+                                    'amount_total': float(subtotal_currency_price),
                                     'session_id': pos_data['branch']['id'],
                                     'company_id': pos_data['branch']['id'],
-                                    'amount_tax': pos_data['total_tax_currency_price'],
-                                    'amount_paid': pos_data['subtotal_currency_price'],
+                                    'amount_tax':  float(total_tax_currency_price),
+                                    'amount_paid': float(subtotal_currency_price),
                                     'amount_return': 0.0,
                                     'table_id':table_id,
                                     'status':'Online Order',
