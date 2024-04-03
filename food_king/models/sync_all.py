@@ -425,7 +425,6 @@ class food_king(models.Model):
                                 
                                 price = re.sub(r'[^\d.]+', '', posid['price'])
                                 discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                # total_convert_price = re.sub(r'[^\d.]+', '', posid['total_convert_price'])
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
                                     'full_product_name': product_name,
