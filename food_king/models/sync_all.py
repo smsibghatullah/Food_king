@@ -425,6 +425,8 @@ class food_king(models.Model):
                                 
                                 price = re.sub(r'[^\d.]+', '', posid['price'])
                                 discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                print("Price:", price)
+                                print("Discount:", discount)
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
                                     'full_product_name': product_name,
@@ -447,6 +449,8 @@ class food_king(models.Model):
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
                                 print(subtotal_currency_price,"sssssssssssssssssssssssssssssss")
+                                print("Price.................ssssssssssssssssssssss:", total_tax_currency_price)
+                                print("Discountllllllllllllllllllllllllllllllllllll:", subtotal_currency_price)
                                 vals = {
                                     'food_king_id':pos_data['id'],
                                     'name': pos_data['order_serial_no'],
