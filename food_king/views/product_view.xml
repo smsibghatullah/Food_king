@@ -12,6 +12,9 @@
                     <field name="caution"/>
                     <field name="description"/>
                 </xpath>
+                <xpath expr="//field[@name='pos_config_ids']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
             </field>
         </record>
 

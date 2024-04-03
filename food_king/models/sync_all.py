@@ -451,7 +451,7 @@ class food_king(models.Model):
                                 subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
                                 print(subtotal_currency_price,"sssssssssssssssssssssssssssssss")
                                 print("Price.................ssssssssssssssssssssss:", total_tax_currency_price)
-                                print("Discountllllllllllllllllllllllllllllllllllll:", subtotal_currency_price)
+                                print("Discountllllllllllllllllllllllllllllllllllll:", pos_data['payment_status'])
                                 vals = {
                                     'food_king_id':pos_data['id'],
                                     'name': pos_data['order_serial_no'],
@@ -466,14 +466,14 @@ class food_king(models.Model):
                                     'table_id':table_id,
                                     'status':'Table Order',
                                     'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
-                                    'state': 'done' if pos_data['status_name'] == 'Delivered' else 'draft' if pos_data['status_name'] == 'Accept' or pos_data['status_name'] == "Pending" else 'paid' ,
+                                    'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
                                     'lines': line_vals
                                 }
                                 self.env['pos.order'].create(vals)
 
                 view = self.env.ref('sh_message.sh_message_wizard')
                 context = dict(self._context or {})
-                dic_msg =  "Pos Order Synced Successfully"
+                dic_msg =  "Order Synced Successfully"
                 context['message'] = dic_msg
                 return{
                         'name': 'Success',
@@ -516,6 +516,7 @@ class food_king(models.Model):
                             product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                             products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                             print(product_ids,products_name,posid['item_id'],"aaaaaaaaaaonlineaaaaaaaaaaaaaaaaaaaaaasss")
+                            print("Discountllllllllllllllllllllllllllllllllllll:", pos_data['payment_status'])
                             if product_ids or products_name:
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
@@ -560,7 +561,7 @@ class food_king(models.Model):
                                     'table_id':table_id,
                                     'status':'Online Order',
                                     'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
-                                    'state': 'done' if pos_data['status_name'] == 'Delivered' else 'draft' if pos_data['status_name'] == 'Accept' else 'paid' ,
+                                    'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
                                     'lines': line_vals
                                 }
                                 print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
