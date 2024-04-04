@@ -21,5 +21,9 @@
         <record model="restaurant.floor" id="pos_table_new_data" forcecreate="0">
             <field name="name">Food King Floor</field>
         </record>
+
+        <record model="product.template" id="product_new_data" forcecreate="0">
+            <field name="name">Delivery Charge</field>
+        </record>
     </data>
 </odoo>

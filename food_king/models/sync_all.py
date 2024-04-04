@@ -419,7 +419,6 @@ class food_king(models.Model):
                         for posid in pos_data['order_items']:
                             product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                             products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            print(product_ids,products_name,posid['item_id'],pos_data['order_items'],"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasss")
                             if product_ids or products_name:
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
@@ -449,9 +448,6 @@ class food_king(models.Model):
                                     table_id = search_table[0]
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
-                                print(subtotal_currency_price,"sssssssssssssssssssssssssssssss")
-                                print("Price.................ssssssssssssssssssssss:", total_tax_currency_price)
-                                print("Discountllllllllllllllllllllllllllllllllllll:", pos_data['payment_status'])
                                 vals = {
                                     'food_king_id':pos_data['id'],
                                     'name': pos_data['order_serial_no'],
@@ -498,34 +494,28 @@ class food_king(models.Model):
                 'X-Api-Key':self.license_key or '',
             }
             existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
-            print(existing_pos_order_ids,"dsaaaaaaaaaaaaa")
             try:
                 response = requests.get(url, headers=headers)
                 pos_orders = response.json().get('data', [])
-                for pos_data in pos_orders:
-                    print(pos_data['id'],pos_data['order_serial_no'],"kkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                    print(pos_data['id'] not in  existing_pos_order_ids,'aaaaaaaaaaaaaaaa')
-                    if pos_data['id'] not in  existing_pos_order_ids:
-                        url_get_id = f"{self.url}/api/admin/online-order/show/{pos_data['id']}"
+                for pos_data1 in pos_orders:
+                    if pos_data1['id'] not in  existing_pos_order_ids:
+                        
+                        url_get_id = f"{self.url}/api/admin/online-order/show/{pos_data1['id']}"
                         response_get_id = requests.get(url_get_id, headers=headers)
                         pos_data = response_get_id.json().get('data', {})
-                        print(pos_data,"eeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                        customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
+                        customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                         line_vals = []
                         for posid in pos_data['order_items']:
                             product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                             products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            print(product_ids,products_name,posid['item_id'],"aaaaaaaaaaonlineaaaaaaaaaaaaaaaaaaaaaasss")
-                            print("Discountllllllllllllllllllllllllllllllllllll:", pos_data['payment_status'])
                             if product_ids or products_name:
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
-                                
-
                                 price = re.sub(r'[^\d.]+', '', posid['price'])
                                 discount = re.sub(r'[^\d.]+', '', posid['discount'])
                                 print("Price:", price)
                                 print("Discount:", discount)
+                                
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
                                     'full_product_name': product_name,
@@ -546,17 +536,26 @@ class food_king(models.Model):
                                 if search_table:
                                     table_id = search_table[0]
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
-                                subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
+                                total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
+                                delivery_charges =  self.env['product.template'].search([('name', '=', 'Delivery Charge')])
+                                line_vals.append((0, 0, {
+                                    'product_id': delivery_charges.id,
+                                    'full_product_name': delivery_charges.name,
+                                    'qty': 1,
+                                    'price_unit': pos_data['delivery_charge_currency_price'],
+                                    'price_subtotal': pos_data['delivery_charge_currency_price'],
+                                    'price_subtotal_incl': pos_data['delivery_charge_currency_price']
+                                }))
                                 vals = {
                                     'food_king_id':pos_data['id'],
                                     'name': pos_data['order_serial_no'],
                                     'config_id' : config_id,
                                     'partner_id': customer_id,
-                                    'amount_total': float(subtotal_currency_price),
+                                    'amount_total': float(total_currency_price),
                                     'session_id': pos_data['branch']['id'],
                                     'company_id': pos_data['branch']['id'],
                                     'amount_tax':  float(total_tax_currency_price),
-                                    'amount_paid': float(subtotal_currency_price),
+                                    'amount_paid': float(total_currency_price),
                                     'amount_return': 0.0,
                                     'table_id':table_id,
                                     'status':'Online Order',
