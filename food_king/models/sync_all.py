@@ -538,13 +538,14 @@ class food_king(models.Model):
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
                                 delivery_charges =  self.env['product.template'].search([('name', '=', 'Delivery Charge')])
+                                delivery_charge_currency_price = re.sub(r'[^\d.]+', '', pos_data['delivery_charge_currency_price'])
                                 line_vals.append((0, 0, {
                                     'product_id': delivery_charges.id,
                                     'full_product_name': delivery_charges.name,
                                     'qty': 1,
-                                    'price_unit': pos_data['delivery_charge_currency_price'],
-                                    'price_subtotal': pos_data['delivery_charge_currency_price'],
-                                    'price_subtotal_incl': pos_data['delivery_charge_currency_price']
+                                    'price_unit': float(delivery_charge_currency_price),
+                                    'price_subtotal': float(delivery_charge_currency_price),
+                                    'price_subtotal_incl': float(delivery_charge_currency_price)
                                 }))
                                 vals = {
                                     'food_king_id':pos_data['id'],
