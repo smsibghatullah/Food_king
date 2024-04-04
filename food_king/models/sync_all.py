@@ -366,7 +366,7 @@ class food_king(models.Model):
                         response = requests.post(url, headers=headers, data=payload)
                         response_data = response.json()
                         print(response_data,'llllllllllllllllllllll')
-
+                        print(response_data,'llllllllllllllllllllll')
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
                             tax.write({'food_king_id': food_king_id})
