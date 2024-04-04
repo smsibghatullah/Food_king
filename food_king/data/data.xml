@@ -25,5 +25,11 @@
         <record model="product.template" id="product_new_data" forcecreate="0">
             <field name="name">Delivery Charge</field>
         </record>
+
+        <record model="pos.session" id="session_new_data" forcecreate="0">
+            <field name="name">Food King Pos/0001</field>
+        </record>
+
+        
     </data>
 </odoo>
