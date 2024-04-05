@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <record id="view_branch_tree" model="ir.ui.view">
+            <field name="name">food.king.branch.tree</field>
+            <field name="model">food.king.branch</field>
+            <field name="arch" type="xml">
+                <tree string="Branches">
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="phone"/>
+                    <field name="latitude"/>
+                    <field name="longitude"/>
+                    <field name="city"/>
+                    <field name="state"/>
+                    <field name="zip_code"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_branch_tree_view" model="ir.actions.act_window">
+            <field name="name">Branches</field>
+            <field name="res_model">food.king.branch</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_branch_tree"/>
+        </record>
+
+        <menuitem id="menu_branches" name="Branches" parent="food_king.menu_food_king12" action="action_branch_tree_view"/>
+    </data>
+</odoo>

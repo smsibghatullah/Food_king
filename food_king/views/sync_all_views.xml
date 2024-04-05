@@ -22,6 +22,7 @@
                     <field name="username" required='1'/>
                     <field name="password" password="True" required='1'/>
                     <field name="license_key" password="True" />
+                    <field name="company_branch_name" readonly="1" required='1'/>
                     <label for="sync_all_category" string="Sync Categories"/>
                     <button name="sync_all_category" string="Sync Categories" type="object" class="oe_highlight"/>
                     <label for="sync_all_tax" string="Sync Tax"/>
@@ -34,6 +35,8 @@
                     <button name="get_pos_order_from_api" string="Sync Orders" type="object" class="oe_highlight"/>
                      <label for="get_floors_from_api" string="Sync Tables"/>
                     <button name="get_floors_from_api" string="Sync Tables" type="object" class="oe_highlight"/>
+                    <label for="get_branch_from_api" string="Sync Branches"/>
+                    <button name="get_branch_from_api" string="Sync Branches" type="object" class="oe_highlight"/>
                 </group>
             </sheet>
         </form>
@@ -59,6 +62,7 @@
         </record>
 
         <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
+        <menuitem id="menu_food_king123" name="Food King" parent="food_king.menu_food_king12" action="action_food_king" />
         <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/>
 
     </data>

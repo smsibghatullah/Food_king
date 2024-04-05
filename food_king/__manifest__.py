@@ -24,6 +24,8 @@ Long description of module's purpose
         'views/templates.xml',
         'views/product_view.xml',
         'views/pos_order_view.xml',
+        'views/res_company_view.xml',
+        'views/food_king_branch_view.xml',
         'data/data.xml',
     ],
     'demo': [

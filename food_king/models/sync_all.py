@@ -15,6 +15,9 @@ class food_king(models.Model):
     url = fields.Char('URL')
     auth_token = fields.Char('Token')
     license_key = fields.Char('License Key')
+    company_id = fields.Many2one('res.company', required=True, readonly=True, default=lambda self: self.env.company)
+    company_branch_name = fields.Char(related="company_id.branch_id.name",string="Branch Name")
+
 
 
 
@@ -415,64 +418,67 @@ class food_king(models.Model):
             try:
                 response = requests.get(url, headers=headers)
                 pos_orders = response.json().get('data', [])
-                for pos_data in pos_orders:
-                    if pos_data['id'] not in  existing_pos_order_ids:
-                        url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/table-order/show/{pos_data['id']}"
-                        response_get_id = requests.get(url_get_id, headers=headers)
-                        pos_data = response_get_id.json().get('data', {})
+                for pos_data1 in pos_orders:
+                    if pos_data1['id'] not in  existing_pos_order_ids:
+                        data_filter_by_branch = self.company_id.branch_id.id
+                        print(data_filter_by_branch,"dddddddddddddddddddddddddddd")
+                        if data_filter_by_branch == pos_data1['branch_id']:
+                                url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/table-order/show/{pos_data1['id']}"
+                                response_get_id = requests.get(url_get_id, headers=headers)
+                                pos_data = response_get_id.json().get('data', {})
 
-                        customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
-                        line_vals = []
-                        for posid in pos_data['order_items']:
-                            product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
-                            products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            if product_ids or products_name:
-                                product_id = product_ids[0]
-                                product_name = products_name[0]
-                                
-                                price = re.sub(r'[^\d.]+', '', posid['price'])
-                                discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                print("Price:", price)
-                                print("Discount:", discount)
-                                line_vals.append((0, 0, {
-                                    'product_id': product_id,
-                                    'full_product_name': product_name,
-                                    'qty': posid['quantity'],
-                                    'price_unit': float(price),
-                                    'discount': float(discount),
-                                    'price_subtotal': posid['total_convert_price'],
-                                    'price_subtotal_incl': posid['total_convert_price']
-                                }))
+                                customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
+                                line_vals = []
+                                for posid in pos_data['order_items']:
+                                    product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
+                                    products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
+                                    if product_ids or products_name:
+                                        product_id = product_ids[0]
+                                        product_name = products_name[0]
+                                        
+                                        price = re.sub(r'[^\d.]+', '', posid['price'])
+                                        discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                        print("Price:", price)
+                                        print("Discount:", discount)
+                                        line_vals.append((0, 0, {
+                                            'product_id': product_id,
+                                            'full_product_name': product_name,
+                                            'qty': posid['quantity'],
+                                            'price_unit': float(price),
+                                            'discount': float(discount),
+                                            'price_subtotal': posid['total_convert_price'],
+                                            'price_subtotal_incl': posid['total_convert_price']
+                                        }))
 
-                        if customer_ids:
-                            search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
-                            search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
-                            customer_id = customer_ids[0]
-                            if search_pos:
-                                table_id = 0
-                                config_id = search_pos[0]
-                                if search_table:
-                                    table_id = search_table[0]
-                                total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
-                                subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
-                                vals = {
-                                    'food_king_id':pos_data['id'],
-                                    'name': pos_data['order_serial_no'],
-                                    'config_id' : config_id,
-                                    'partner_id': customer_id,
-                                    'amount_total': float(subtotal_currency_price),
-                                    'session_id': pos_data['branch']['id'],
-                                    'company_id': pos_data['branch']['id'],
-                                    'amount_tax':  float(total_tax_currency_price),
-                                    'amount_paid': float(subtotal_currency_price),
-                                    'amount_return': 0.0,
-                                    'table_id':table_id,
-                                    'status':'Table Order',
-                                    'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
-                                    'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
-                                    'lines': line_vals
-                                }
-                                self.env['pos.order'].create(vals)
+                                if customer_ids:
+                                    search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
+                                    search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
+                                    customer_id = customer_ids[0]
+                                    if search_pos:
+                                        table_id = 0
+                                        config_id = search_pos[0]
+                                        if search_table:
+                                            table_id = search_table[0]
+                                        total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
+                                        subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
+                                        vals = {
+                                            'food_king_id':pos_data['id'],
+                                            'name': pos_data['order_serial_no'],
+                                            'config_id' : config_id,
+                                            'partner_id': customer_id,
+                                            'amount_total': float(subtotal_currency_price),
+                                            'session_id': pos_data['branch']['id'],
+                                            'company_id': pos_data['branch']['id'],
+                                            'amount_tax':  float(total_tax_currency_price),
+                                            'amount_paid': float(subtotal_currency_price),
+                                            'amount_return': 0.0,
+                                            'table_id':table_id,
+                                            'status':'Table Order',
+                                            'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
+                                            'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                            'lines': line_vals
+                                        }
+                                        self.env['pos.order'].create(vals)
 
                 view = self.env.ref('sh_message.sh_message_wizard')
                 context = dict(self._context or {})
@@ -502,86 +508,87 @@ class food_king(models.Model):
                 'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
             }
             existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
-            # try:
-            if 1:
+            try:
                 response = requests.get(url, headers=headers)
                 pos_orders = response.json().get('data', [])
                 print(pos_orders,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
                 for pos_data1 in pos_orders:
                     if pos_data1['id'] not in  existing_pos_order_ids:
-                        
-                        url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
-                        response_get_id = requests.get(url_get_id, headers=headers)
-                        pos_data = response_get_id.json().get('data', {})
-                        customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
-                        line_vals = []
-                        for posid in pos_data['order_items']:
-                            product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
-                            products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
-                            if product_ids or products_name or products_tax:
-                                product_id = product_ids[0]
-                                product_name = products_name[0]
-                                product_tax = products_tax[0]
-                                price = re.sub(r'[^\d.]+', '', posid['price'])
-                                discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                print("Price:", price)
-                                print("Discount:", product_tax.id)
-                                
-                                line_vals.append((0, 0, {
-                                    'product_id': product_id,
-                                    'full_product_name': product_name,
-                                    'qty': posid['quantity'],
-                                    'price_unit': float(price),
-                                    'discount': float(discount),
-                                    'tax_ids' : [(4, product_tax.id)],
-                                    'price_subtotal': posid['total_convert_price'],
-                                    'price_subtotal_incl': posid['total_convert_price']
-                                }))
-                        print(line_vals,"sssssssssssssssssssssss")
-                        if customer_ids:
-                            search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
-                            search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
-                            customer_id = customer_ids[0]
-                            if search_pos:
-                                table_id = 0
-                                config_id = search_pos[0]
-                                if search_table:
-                                    table_id = search_table[0]
-                                total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
-                                total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
-                                delivery_charges =  self.env['product.template'].search([('name', '=', 'Delivery Charge')])
-                                delivery_charge_currency_price = re.sub(r'[^\d.]+', '', pos_data['delivery_charge_currency_price'])
-                                line_vals.append((0, 0, {
-                                    'product_id': delivery_charges.id,
-                                    'full_product_name': delivery_charges.name,
-                                    'qty': 1,
-                                    'price_unit': float(delivery_charge_currency_price),
-                                    'price_subtotal': float(delivery_charge_currency_price),
-                                    'price_subtotal_incl': float(delivery_charge_currency_price)
-                                }))
-                                vals = {
-                                    'food_king_id':pos_data['id'],
-                                    'name': pos_data['order_serial_no'],
-                                    'config_id' : config_id,
-                                    'partner_id': customer_id,
-                                    'amount_total': float(total_currency_price),
-                                    'session_id': pos_data['branch']['id'],
-                                    'company_id': pos_data['branch']['id'],
-                                    'amount_tax':  float(total_tax_currency_price),
-                                    'amount_paid': float(total_currency_price),
-                                    'amount_return': 0.0,
-                                    'table_id':table_id,
-                                    'status':'Online Order',
-                                    'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
-                                    'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
-                                    'lines': line_vals
-                                }
-                                print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                                self.env['pos.order'].create(vals)
+                        data_filter_by_branch = self.company_id.branch_id.id
+                        print(pos_data1['branch_id'],"dddddddddddddddddddddddddddd")
+                        if data_filter_by_branch == pos_data1['branch_id']:
+                            url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
+                            response_get_id = requests.get(url_get_id, headers=headers)
+                            pos_data = response_get_id.json().get('data', {})
+                            customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
+                            line_vals = []
+                            for posid in pos_data['order_items']:
+                                product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
+                                products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
+                                products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
+                                if product_ids or products_name or products_tax:
+                                    product_id = product_ids[0]
+                                    product_name = products_name[0]
+                                    product_tax = products_tax[0]
+                                    price = re.sub(r'[^\d.]+', '', posid['price'])
+                                    discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                    print("Price:", price)
+                                    print("Discount:", product_tax.id)
+                                    
+                                    line_vals.append((0, 0, {
+                                        'product_id': product_id,
+                                        'full_product_name': product_name,
+                                        'qty': posid['quantity'],
+                                        'price_unit': float(price),
+                                        'discount': float(discount),
+                                        'tax_ids' : [(4, product_tax.id)],
+                                        'price_subtotal': posid['total_convert_price'],
+                                        'price_subtotal_incl': posid['total_convert_price']
+                                    }))
+                            print(line_vals,"sssssssssssssssssssssss")
+                            if customer_ids:
+                                search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
+                                search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
+                                customer_id = customer_ids[0]
+                                if search_pos:
+                                    table_id = 0
+                                    config_id = search_pos[0]
+                                    if search_table:
+                                        table_id = search_table[0]
+                                    total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
+                                    total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
+                                    delivery_charges =  self.env['product.template'].search([('name', '=', 'Delivery Charge')])
+                                    delivery_charge_currency_price = re.sub(r'[^\d.]+', '', pos_data['delivery_charge_currency_price'])
+                                    line_vals.append((0, 0, {
+                                        'product_id': delivery_charges.id,
+                                        'full_product_name': delivery_charges.name,
+                                        'qty': 1,
+                                        'price_unit': float(delivery_charge_currency_price),
+                                        'price_subtotal': float(delivery_charge_currency_price),
+                                        'price_subtotal_incl': float(delivery_charge_currency_price)
+                                    }))
+                                    vals = {
+                                        'food_king_id':pos_data['id'],
+                                        'name': pos_data['order_serial_no'],
+                                        'config_id' : config_id,
+                                        'partner_id': customer_id,
+                                        'amount_total': float(total_currency_price),
+                                        'session_id': pos_data['branch']['id'],
+                                        'company_id': pos_data['branch']['id'],
+                                        'amount_tax':  float(total_tax_currency_price),
+                                        'amount_paid': float(total_currency_price),
+                                        'amount_return': 0.0,
+                                        'table_id':table_id,
+                                        'status':'Online Order',
+                                        'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
+                                        'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                        'lines': line_vals
+                                    }
+                                    print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                    self.env['pos.order'].create(vals)
 
-            # except requests.exceptions.RequestException as e:
-            #     return {'error': str(e)}
+            except requests.exceptions.RequestException as e:
+                return {'error': str(e)}
 
 
     
@@ -652,3 +659,54 @@ class food_king(models.Model):
             self.env['ir.logging'].create({'name': 'Floor Sync', 'type': 'error', 'message': f'Request timed out: {e}'})
         except ConnectionError as e:
             self.env['ir.logging'].create({'name': 'Floor Sync', 'type': 'error', 'message': f'Connection error: {e}'})
+
+
+    def get_branch_from_api(self, cron_mode=True):
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
+        url = (self.url or Foodking_Ids.url) + "/api/admin/setting/branch?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+        headers = {
+            'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
+        }
+        existing_branch_ids = [branch.food_king_id for branch in self.env['food.king.branch'].search([])]
+
+        try:
+            response = requests.request("GET", url, headers=headers)
+            response.raise_for_status()
+            branches = response.json().get('data', [])
+            for branch_data in branches:
+                vals = {
+                    'name': branch_data.get('name'),
+                    'email': branch_data.get('email'),
+                    'phone': branch_data.get('phone'),
+                    'latitude': float(branch_data.get('latitude')),
+                    'longitude': float(branch_data.get('longitude')),
+                    'city': branch_data.get('city'),
+                    'state': branch_data.get('state'),
+                    'zip_code': branch_data.get('zip_code'),
+                    'status': int(branch_data.get('status')),
+                    'food_king_id': branch_data.get('id') 
+                }
+
+                if branch_data.get('id') in existing_branch_ids:
+                    print('Branch already exists')
+                else:
+                    self.env['food.king.branch'].create(vals)
+            view = self.env.ref('sh_message.sh_message_wizard')
+            context = dict(self._context or {})
+            dic_msg =  "Branches synced successfully."
+            context['message'] = dic_msg
+            return{
+                    'name': 'Success',
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_model': 'sh.message.wizard',
+                    'views':[(view.id,'form')],
+                    'view_id':view.id,
+                    'target': 'new',
+                    'context': context,
+            }
+
+        except requests.exceptions.RequestException as e:
+            return {'error': str(e)}
