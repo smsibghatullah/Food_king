@@ -38,8 +38,8 @@ class pos_order_food_king(models.Model):
         print(url_get_id,"kkkkkkkkkkkkkkkkkkkkkkkk")
         response_get_id = requests.post(url_get_id, headers=headers, data=payload)
         pos_data = response_get_id.json()
-        if pos_data:
-            self.state = 'draft'
+        # if pos_data:
+        #     self.state = 'draft'
         print(pos_data,"ggggggggggggggg")
 
         

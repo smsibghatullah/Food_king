@@ -17,6 +17,7 @@ class food_king(models.Model):
     license_key = fields.Char('License Key')
 
 
+
     def get_base64_from_url(self, url):
         try:
             response = requests.get(url)
@@ -27,11 +28,12 @@ class food_king(models.Model):
             return None
         
     def get_token(self):
-        login_url = self.url + "/api/auth/login"
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
+        login_url = (self.url or Foodking_Ids.url) + "/api/auth/login"
         headers = {
             'Content-Type': 'application/json',
-             'Authorization': '',
-             'X-Api-Key':self.license_key or '',
+            'Authorization': '',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         print(self.username)
         login_payload = {
@@ -82,14 +84,14 @@ class food_king(models.Model):
         
 
     def sync_all_products(self, cron_mode=True):
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         synced_products = self.env['product.template'].search([('food_king_id', '=', 0)])
-        url = self.url + "/api/admin/item"
+        url = (self.url or Foodking_Ids.url) + "/api/admin/item"
         headers = {
-            'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key':self.license_key or '',
+            'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
             'Content-Type': 'application/json',
         }
-        print(synced_products,"fffffffffffffffff")
         if not synced_products :
                     view = self.env.ref('sh_message.sh_message_wizard')
                     context = dict(self._context or {})
@@ -132,7 +134,7 @@ class food_king(models.Model):
                         "description": product.description or '',
                         "caution": product.caution or '',
                         "order": product.sequence,
-                        "status": 5,
+                        "status": 5 if product.food_king_active else 10 ,
                         "preview": image_base64
                     })
 
@@ -171,11 +173,12 @@ class food_king(models.Model):
     
     
     def get_customer_from_api(self, cron_mode=True):
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         self.get_admin_customer_from_api()
-        url = self.url + "/api/admin/customer"
+        url = (self.url or Foodking_Ids.url) + "/api/admin/customer"
         headers = {
-            'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key': self.license_key or '',
+            'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         existing_customer_ids = [customer.food_king_id_res for customer in self.env['res.partner'].search([])]
 
@@ -232,10 +235,11 @@ class food_king(models.Model):
             return {'error': str(e)}
             
     def get_admin_customer_from_api(self, cron_mode=True):
-        url = self.url + "/api/admin/administrator?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
+        url = (self.url or Foodking_Ids.url) + "/api/admin/administrator?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
         headers = {
-            'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key': self.license_key or '',
+            'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         existing_customer_ids = [customer.food_king_id_res for customer in self.env['res.partner'].search([])]
 
@@ -263,11 +267,12 @@ class food_king(models.Model):
 # sync category
 
     def sync_all_category(self, cron_mode=True):
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         synced_categories = self.env['pos.category'].search([('food_king_id', '=', 0)])
-        url = self.url + "/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+        url = (self.url or Foodking_Ids.url) + "/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
         headers = {
-            'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key':self.license_key or '',
+            'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
             'Content-Type': 'application/json',
         }
         if not synced_categories :
@@ -327,12 +332,13 @@ class food_king(models.Model):
    #   sync all taxes          # 
      
     def sync_all_tax(self, cron_mode=True):
+            Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
             taxes = self.env['account.tax'].search([])
             synced_taxes = self.env['account.tax'].search([('food_king_id', '=', 0)])
-            url = self.url + "/api/admin/setting/tax"
+            url = (self.url or Foodking_Ids.url) + "/api/admin/setting/tax"
             headers = {
-                'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':self.license_key or '',
+                'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+                'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
                 'Content-Type': 'application/json',
             }
             print(synced_taxes,"fffffffffffffffff")
@@ -398,11 +404,12 @@ class food_king(models.Model):
 
     def get_pos_order_from_api(self, cron_mode=True):
             self.get_online_order_from_api()
-            url = f"{self.url}/api/admin/table-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&order_type=20"
+            Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
+            url = f"{self.url or Foodking_Ids.url}/api/admin/table-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&order_type=20"
             headers = {
-                'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':self.license_key or '',
-            }
+                    'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+                    'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
+                }
             existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
 
             try:
@@ -410,7 +417,7 @@ class food_king(models.Model):
                 pos_orders = response.json().get('data', [])
                 for pos_data in pos_orders:
                     if pos_data['id'] not in  existing_pos_order_ids:
-                        url_get_id = f"{self.url}/api/admin/table-order/show/{pos_data['id']}"
+                        url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/table-order/show/{pos_data['id']}"
                         response_get_id = requests.get(url_get_id, headers=headers)
                         pos_data = response_get_id.json().get('data', {})
 
@@ -488,19 +495,22 @@ class food_king(models.Model):
 
 
     def get_online_order_from_api(self, cron_mode=True):
-            url = f"{self.url}/api/admin/online-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&excepts=15|20"
+            Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
+            url = f"{self.url or Foodking_Ids.url}/api/admin/online-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&excepts=15|20"
             headers = {
-                'Authorization': f'Bearer {self.auth_token}',
-                'X-Api-Key':self.license_key or '',
+                'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+                'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
             }
             existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
-            try:
+            # try:
+            if 1:
                 response = requests.get(url, headers=headers)
                 pos_orders = response.json().get('data', [])
+                print(pos_orders,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
                 for pos_data1 in pos_orders:
                     if pos_data1['id'] not in  existing_pos_order_ids:
                         
-                        url_get_id = f"{self.url}/api/admin/online-order/show/{pos_data1['id']}"
+                        url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
                         response_get_id = requests.get(url_get_id, headers=headers)
                         pos_data = response_get_id.json().get('data', {})
                         customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
@@ -508,13 +518,15 @@ class food_king(models.Model):
                         for posid in pos_data['order_items']:
                             product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                             products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
-                            if product_ids or products_name:
+                            products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
+                            if product_ids or products_name or products_tax:
                                 product_id = product_ids[0]
                                 product_name = products_name[0]
+                                product_tax = products_tax[0]
                                 price = re.sub(r'[^\d.]+', '', posid['price'])
                                 discount = re.sub(r'[^\d.]+', '', posid['discount'])
                                 print("Price:", price)
-                                print("Discount:", discount)
+                                print("Discount:", product_tax.id)
                                 
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
@@ -522,10 +534,11 @@ class food_king(models.Model):
                                     'qty': posid['quantity'],
                                     'price_unit': float(price),
                                     'discount': float(discount),
+                                    'tax_ids' : [(4, product_tax.id)],
                                     'price_subtotal': posid['total_convert_price'],
                                     'price_subtotal_incl': posid['total_convert_price']
                                 }))
-
+                        print(line_vals,"sssssssssssssssssssssss")
                         if customer_ids:
                             search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
                             search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
@@ -567,17 +580,18 @@ class food_king(models.Model):
                                 print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                 self.env['pos.order'].create(vals)
 
-            except requests.exceptions.RequestException as e:
-                return {'error': str(e)}
+            # except requests.exceptions.RequestException as e:
+            #     return {'error': str(e)}
 
 
     
 
     def get_floors_from_api(self, cron_mode=True):
-        url = self.url + "/api/admin/dining-table?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+        Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
+        url = (self.url or Foodking_Ids.url) + "/api/admin/dining-table?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
         headers = {
-            'Authorization': f'Bearer {self.auth_token}',
-            'X-Api-Key': self.license_key or '',
+            'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+            'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         existing_floor_ids = [floor.food_king_id for floor in self.env['restaurant.table'].search([])]
         food_king_floor = self.env['restaurant.floor'].search([('name', '=', 'Food King Floor')], limit=1)
