@@ -515,7 +515,7 @@ class food_king(models.Model):
                 for pos_data1 in pos_orders:
                     if pos_data1['id'] not in  existing_pos_order_ids:
                         data_filter_by_branch = self.company_id.branch_id.id
-                        print(pos_data1['branch_id'],"dddddddddddddddddddddddddddd")
+                        print(pos_data1['branch_id'],data_filter_by_branch ,"dddddddddddddddddddddddddddd")
                         if data_filter_by_branch == pos_data1['branch_id']:
                             print('mubeen 1')
                             url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
