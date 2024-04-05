@@ -517,12 +517,14 @@ class food_king(models.Model):
                         data_filter_by_branch = self.company_id.branch_id.id
                         print(pos_data1['branch_id'],"dddddddddddddddddddddddddddd")
                         if data_filter_by_branch == pos_data1['branch_id']:
+                            print('mubeen 1')
                             url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
                             response_get_id = requests.get(url_get_id, headers=headers)
                             pos_data = response_get_id.json().get('data', {})
                             customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                             line_vals = []
                             for posid in pos_data['order_items']:
+                                print('mubeen 2')
                                 product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                 products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                                 products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
@@ -545,8 +547,9 @@ class food_king(models.Model):
                                         'price_subtotal': posid['total_convert_price'],
                                         'price_subtotal_incl': posid['total_convert_price']
                                     }))
-                            print(line_vals,"sssssssssssssssssssssss")
+                            print(customer_ids,"sssssssssssssssssssssss")
                             if customer_ids:
+                                print('mubeen 3')
                                 search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
                                 search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
                                 customer_id = customer_ids[0]
