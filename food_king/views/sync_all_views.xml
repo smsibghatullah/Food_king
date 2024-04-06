@@ -22,7 +22,9 @@
                     <field name="username" required='1'/>
                     <field name="password" password="True" required='1'/>
                     <field name="license_key" password="True" />
-                    <field name="company_branch_name" readonly="1" required='1'/>
+                    <field name="company_id" required='1' readonly="1"/>
+                    <field name="company_branch_name" readonly="1"/>
+                    <field name="point_of_sale" />
                     <label for="sync_all_category" string="Sync Categories"/>
                     <button name="sync_all_category" string="Sync Categories" type="object" class="oe_highlight"/>
                     <label for="sync_all_tax" string="Sync Tax"/>
@@ -43,27 +45,30 @@
     </field>
 </record>
 
+<record id="view_food_king_tree" model="ir.ui.view">
+    <field name="name">food.king.tree</field>
+    <field name="model">food_king.food_king</field>
+    <field name="arch" type="xml">
+        <tree>
+                    <field name="url" />
+                    <field name="username" />
+                    <field name="license_key" password="True" />
+                    <field name="company_id" />
+                    <field name="company_branch_name" readonly="1"/>
+        </tree>
+    </field>
+</record>
 
-        <record id="action_food_king" model="ir.actions.act_window">
-            <field name="name">Food King</field>
-            <field name="res_model">food_king.food_king</field>
-            <field name="view_mode">form</field>
-            <field name="res_model">food_king.food_king</field>
-            <field name="target">current</field>
-            <field name="res_id">1</field>
-            <field name="context">{'create': False}</field>
-        </record>
+<record id="action_food_king" model="ir.actions.act_window">
+        <field name="name">Food King</field>
+        <field name="res_model">food_king.food_king</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_food_king_tree"/>
+        <field name="context">{'create': False}</field>
+</record>
 
-         <record id="action_food_king34" model="ir.actions.act_window">
-            <field name="name">Food King</field>
-            <field name="res_model">food_king.food_king</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_food_king_box"/>
-        </record>
-
-        <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
-        <menuitem id="menu_food_king123" name="Food King" parent="food_king.menu_food_king12" action="action_food_king" />
-        <menuitem id="menu_food_king_settings" name="Food King Settings"  action="action_food_king34" sequence="30"/>
+<menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
+<menuitem id="menu_food_king123" name="Food King" parent="food_king.menu_food_king12" action="action_food_king" />
 
     </data>
 </odoo>

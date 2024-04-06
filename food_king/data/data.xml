@@ -23,16 +23,24 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <record model="pos.config" id="pos_config_new_data" forcecreate="0">
+        <!-- <record model="pos.config" id="pos_config_new_data" forcecreate="0">
             <field name="name">Food King Pos</field>
-        </record>
+        </record> -->
 
-        <record model="restaurant.floor" id="pos_table_new_data" forcecreate="0">
+        <!-- <record model="restaurant.floor" id="pos_table_new_data" forcecreate="0">
             <field name="name">Food King Floor</field>
-        </record>
+        </record> -->
 
         <record model="product.template" id="product_new_data" forcecreate="0">
             <field name="name">Delivery Charge</field>
+        </record>
+
+        <record model="food_king.food_king" id="foodking_new_data" forcecreate="0">
+            <field name="username">admin@example.com</field>
+            <field name="password">123456</field>
+            <field name="url">http://localhost:8001</field>
+            <field name="license_key">b6d68vy2-m7g5-20r0-5275-h103w73453q120</field>
+            <field name="company_id">1</field>
         </record>
 
         <record id="ir_order_cron_action" model="ir.actions.server">
