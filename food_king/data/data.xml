@@ -38,8 +38,8 @@
         <record model="food_king.food_king" id="foodking_new_data" forcecreate="0">
             <field name="username">admin@example.com</field>
             <field name="password">123456</field>
-            <field name="url">http://localhost:8001</field>
-            <field name="license_key">b6d68vy2-m7g5-20r0-5275-h103w73453q120</field>
+            <field name="url">https://wrdrestu.com</field>
+            <field name="license_key">z6m74ch3-c9o8-61x8-8437-p625q35566f139720</field>
             <field name="company_id">1</field>
         </record>
 
