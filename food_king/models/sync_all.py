@@ -114,6 +114,7 @@ class food_king(models.Model):
                             'context': context,
                     }
         synced_product_ids = []
+        print(synced_products,"=======================================>>>>>>>>>>>>>>>>")
         for product in synced_products:
                 food_king_id_categ = 0
                 food_king_id_tax = 0
@@ -160,24 +161,23 @@ class food_king(models.Model):
                         # print( str(e))
                         # pass
         
-        if synced_product_ids:
-                        view = self.env.ref('sh_message.sh_message_wizard')
-                        context = dict(self._context or {})
-                        dic_msg = response_data.get('message', "Product Synced Successfully")
-                        context['message'] = dic_msg
-                        return{
-                                'name': 'Success',
-                                'type': 'ir.actions.act_window',
-                                'view_mode': 'form',
-                                'view_type': 'form',
-                                'res_model': 'sh.message.wizard',
-                                'views':[(view.id,'form')],
-                                'view_id':view.id,
-                                'target': 'new',
-                                'context': context,
-                        }
-        else:
-            return {'message': 'No new Product to sync.'}
+      
+                    view = self.env.ref('sh_message.sh_message_wizard')
+                    context = dict(self._context or {})
+                    dic_msg = response_data.get('message', "Product Synced Successfully")
+                    context['message'] = dic_msg
+                    return{
+                            'name': 'Success',
+                            'type': 'ir.actions.act_window',
+                            'view_mode': 'form',
+                            'view_type': 'form',
+                            'res_model': 'sh.message.wizard',
+                            'views':[(view.id,'form')],
+                            'view_id':view.id,
+                            'target': 'new',
+                            'context': context,
+                    }
+       
     
     
     def get_customer_from_api(self, cron_mode=True):
