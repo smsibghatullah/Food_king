@@ -89,7 +89,8 @@ class food_king(models.Model):
 
     def sync_all_products(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
-        synced_products = self.env['product.template'].search([('food_king_id', '=', 0)])
+        # synced_products = self.env['product.template'].search([('food_king_id', '=', 0)])
+        synced_products = self.env['product.template'].search([('id', '=', 72)])
         url = (self.url or Foodking_Ids.url) + "/api/admin/item"
         headers = {
             'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
@@ -142,7 +143,8 @@ class food_king(models.Model):
                         "preview": image_base64
                     })
                     # print(payload,"ppppppppppppppppppppppppppppp")
-                    try:
+                    # try:
+                    if 1:
                         response = requests.post(url, headers=headers, data=payload)
                         response_data = response.json()
                         print(response_data,product.name,"ppppppppppppppppppppppppppppp")
@@ -153,10 +155,10 @@ class food_king(models.Model):
                             synced_product_ids.append(product.id)
 
                             
-                    except requests.exceptions.RequestException as e:
+                    # except requests.exceptions.RequestException as e:
                         # return {'error': str(e)}
-                        print( str(e))
-                        pass
+                        # print( str(e))
+                        # pass
         
         if synced_product_ids:
                         view = self.env.ref('sh_message.sh_message_wizard')
