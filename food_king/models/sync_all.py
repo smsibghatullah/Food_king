@@ -582,7 +582,12 @@ class food_king(models.Model):
                                     'price_subtotal': float(delivery_charge_currency_price),
                                     'price_subtotal_incl': float(delivery_charge_currency_price)
                                 }))
-                                search_pos_session = self.env['pos.session'].sudo().search([('state', '=', 'opened'), ('company_id', '=', self.company_id.id)])
+                                search_pos_session = self.env['pos.session'].sudo().search([
+                                    ('state', '=', 'opened'), 
+                                    ('company_id', '=', self.company_id.id),
+                                    ('config_id', '=', self.point_of_sale.id)
+                                ])
+
                                 print(search_pos_session,"sdffffffffffgggggggggggggggggg")
                                 if config_id:
                                     print("llllhhhhllll")
