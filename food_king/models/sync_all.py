@@ -120,8 +120,8 @@ class food_king(models.Model):
                 food_king_id_tax = 0
                 if product.pos_categ_ids:
                     food_king_id_categ = product.pos_categ_ids[0].food_king_id
-                if product.taxes_id:
-                    food_king_id_tax = product.taxes_id[0].food_king_id
+                # if product.taxes_id:
+                #     food_king_id_tax = product.taxes_id[0].food_king_id
 
                     image_base64 = ""
                     if product.image_1920:
@@ -134,7 +134,7 @@ class food_king(models.Model):
                         "name": product.name,
                         "price": product.list_price,
                         "item_category_id": food_king_id_categ,
-                        "tax_id": food_king_id_tax,
+                        # "tax_id": food_king_id_tax,
                         "item_type":  5 if product.item_type == 'veg' else 10,
                         "is_featured": 10  if product.is_featured == 'no' else 5,
                         "description": product.description or '',
