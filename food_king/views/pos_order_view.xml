@@ -6,7 +6,8 @@
             <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//form//header" position="inside">
-                    <button name="accept_order" string="Accept" type="object" class="oe_highlight btn-success" invisible="state == 'done'" />
+                <field name="is_accepted" invisible="1"/>
+                <button name="accept_order" string="Accept" type="object" class="oe_highlight btn-success" invisible="is_accepted == True" />
                 </xpath>
             </field>
         </record>

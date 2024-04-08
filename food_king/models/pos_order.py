@@ -6,6 +6,7 @@ class pos_order_food_king(models.Model):
 
     food_king_id = fields.Integer(string="Food king id")
     status = fields.Char('Order Status')
+    is_accepted = fields.Boolean("Is Accepted",default=False)
 
     def accept_order(self):
         search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
@@ -28,5 +29,5 @@ class pos_order_food_king(models.Model):
         response_get_id = requests.post(url_get_id, headers=headers, data=payload)
         pos_data = response_get_id.json()
         print(pos_data,"ggggggggggggggg")
-
+        self.is_accepted = True
         
