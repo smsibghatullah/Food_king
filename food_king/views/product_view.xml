@@ -11,6 +11,7 @@
                     <field name="food_king_active"/>
                     <field name="caution"/>
                     <field name="description"/>
+                    <field name="food_king_id"/>
                 </xpath>
                 <!-- <xpath expr="//field[@name='pos_config_ids']" position="attributes">
                     <attribute name="required">1</attribute>
