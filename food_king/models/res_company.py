@@ -14,8 +14,8 @@ class ResCompany(models.Model):
         food_king_values = {
             'username': 'admin@example.com',
             'password': '123456',
-            'url': 'https://wrdrestu.com',
-            'license_key': 'z6m74ch3-c9o8-61x8-8437-p625q35566f139720',
+            'url': 'http://localhost:8001',
+            'license_key': 'b6d68vy2-m7g5-20r0-5275-h103w73453q120',
             'company_id': company.id,
         }
 

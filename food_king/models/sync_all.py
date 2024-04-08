@@ -141,7 +141,7 @@ class food_king(models.Model):
                         "status": 5 if product.food_king_active else 10 ,
                         "preview": image_base64
                     })
-                    print(payload,"ppppppppppppppppppppppppppppp")
+                    # print(payload,"ppppppppppppppppppppppppppppp")
                     try:
                         response = requests.post(url, headers=headers, data=payload)
                         response_data = response.json()
@@ -154,7 +154,9 @@ class food_king(models.Model):
 
                             
                     except requests.exceptions.RequestException as e:
-                        return {'error': str(e)}
+                        # return {'error': str(e)}
+                        print( str(e))
+                        pass
         
         if synced_product_ids:
                         view = self.env.ref('sh_message.sh_message_wizard')
