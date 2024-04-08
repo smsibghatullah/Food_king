@@ -145,7 +145,7 @@ class food_king(models.Model):
                     try:
                         response = requests.post(url, headers=headers, data=payload)
                         response_data = response.json()
-                        print(response_data,"ppppppppppppppppppppppppppppp")
+                        print(response_data,product.name,"ppppppppppppppppppppppppppppp")
 
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
