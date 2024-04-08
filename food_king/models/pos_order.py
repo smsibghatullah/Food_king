@@ -30,4 +30,8 @@ class pos_order_food_king(models.Model):
         pos_data = response_get_id.json()
         print(pos_data,"ggggggggggggggg")
         self.is_accepted = True
+
+
+
+
         
