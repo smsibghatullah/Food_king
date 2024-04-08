@@ -89,8 +89,8 @@ class food_king(models.Model):
 
     def sync_all_products(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
-        # synced_products = self.env['product.template'].search([('food_king_id', '=', 0)])
-        synced_products = self.env['product.template'].search([('id', '=', 72)])
+        synced_products = self.env['product.template'].search([('food_king_id', '=', 0)])
+        # synced_products = self.env['product.template'].search([('id', '=', 72)])
         url = (self.url or Foodking_Ids.url) + "/api/admin/item"
         headers = {
             'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
@@ -118,10 +118,11 @@ class food_king(models.Model):
         for product in synced_products:
                 food_king_id_categ = 0
                 food_king_id_tax = 0
+                if product.taxes_id:
+                    food_king_id_tax = product.taxes_id[0].food_king_id
                 if product.pos_categ_ids:
                     food_king_id_categ = product.pos_categ_ids[0].food_king_id
-                # if product.taxes_id:
-                #     food_king_id_tax = product.taxes_id[0].food_king_id
+               
 
                     image_base64 = ""
                     if product.image_1920:
@@ -130,11 +131,12 @@ class food_king(models.Model):
                             temp_file_path = temp_file.name
                         with open(temp_file_path, "rb") as image_file:
                             image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+
                     payload = json.dumps({
                         "name": product.name,
                         "price": product.list_price,
                         "item_category_id": food_king_id_categ,
-                        # "tax_id": food_king_id_tax,
+                        "tax_id": food_king_id_tax if food_king_id_tax != 0 else None,
                         "item_type":  5 if product.item_type == 'veg' else 10,
                         "is_featured": 10  if product.is_featured == 'no' else 5,
                         "description": product.description or '',
@@ -144,8 +146,7 @@ class food_king(models.Model):
                         "preview": image_base64
                     })
                     # print(payload,"ppppppppppppppppppppppppppppp")
-                    # try:
-                    if 1:
+                    try:
                         response = requests.post(url, headers=headers, data=payload)
                         response_data = response.json()
                         print(response_data,product.name,"ppppppppppppppppppppppppppppp")
@@ -156,27 +157,27 @@ class food_king(models.Model):
                             synced_product_ids.append(product.id)
 
                             
-                    # except requests.exceptions.RequestException as e:
+                    except requests.exceptions.RequestException as e:
                         # return {'error': str(e)}
-                        # print( str(e))
-                        # pass
+                        print( str(e))
+                        pass
         
       
-                    view = self.env.ref('sh_message.sh_message_wizard')
-                    context = dict(self._context or {})
-                    dic_msg = response_data.get('message', "Product Synced Successfully")
-                    context['message'] = dic_msg
-                    return{
-                            'name': 'Success',
-                            'type': 'ir.actions.act_window',
-                            'view_mode': 'form',
-                            'view_type': 'form',
-                            'res_model': 'sh.message.wizard',
-                            'views':[(view.id,'form')],
-                            'view_id':view.id,
-                            'target': 'new',
-                            'context': context,
-                    }
+        view = self.env.ref('sh_message.sh_message_wizard')
+        context = dict(self._context or {})
+        dic_msg = response_data.get('message', "Product Synced Successfully")
+        context['message'] = dic_msg
+        return{
+                'name': 'Success',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'sh.message.wizard',
+                'views':[(view.id,'form')],
+                'view_id':view.id,
+                'target': 'new',
+                'context': context,
+        }
        
     
     
