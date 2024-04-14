@@ -14,3 +14,5 @@ class YourBranchModel(models.Model):
     zip_code = fields.Char(string='Zip Code')
     status = fields.Integer(string='Status')
     food_king_id = fields.Integer(string='Food King ID')
+
+

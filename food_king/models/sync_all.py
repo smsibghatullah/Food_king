@@ -90,12 +90,10 @@ class food_king(models.Model):
     def sync_all_products(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         synced_products = self.env['product.template'].search([('food_king_id', '=', 0)])
-        # synced_products = self.env['product.template'].search([('id', '=', 72)])
         url = (self.url or Foodking_Ids.url) + "/api/admin/item"
         headers = {
             'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
             'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
-            'Content-Type': 'application/json',
         }
         if not synced_products :
                     view = self.env.ref('sh_message.sh_message_wizard')
@@ -114,7 +112,6 @@ class food_king(models.Model):
                             'context': context,
                     }
         synced_product_ids = []
-        print(synced_products,"=======================================>>>>>>>>>>>>>>>>")
         for product in synced_products:
                 food_king_id_categ = 0
                 food_king_id_tax = 0
@@ -123,16 +120,15 @@ class food_king(models.Model):
                 if product.pos_categ_ids:
                     food_king_id_categ = product.pos_categ_ids[0].food_king_id
                
+                    image_data = base64.b64decode(product.image_1920)
 
-                    image_base64 = ""
-                    if product.image_1920:
-                        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                            temp_file.write(product.image_1920)
-                            temp_file_path = temp_file.name
-                        with open(temp_file_path, "rb") as image_file:
-                            image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                        temp_file.write(image_data)
+                        temp_file_path = temp_file.name
 
-                    payload = json.dumps({
+                    files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+
+                    payload = {
                         "name": product.name,
                         "price": product.list_price,
                         "item_category_id": food_king_id_categ,
@@ -143,13 +139,11 @@ class food_king(models.Model):
                         "caution": product.caution or '',
                         "order": product.sequence,
                         "status": 5 if product.food_king_active else 10 ,
-                        "preview": image_base64
-                    })
-                    # print(payload,"ppppppppppppppppppppppppppppp")
+                    }
+                    print(payload,"sssssssssssss")
                     try:
-                        response = requests.post(url, headers=headers, data=payload)
+                        response = requests.request("POST", url, headers=headers, data=payload, files=files)
                         response_data = response.json()
-                        print(response_data,product.name,"ppppppppppppppppppppppppppppp")
 
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
@@ -158,14 +152,13 @@ class food_king(models.Model):
 
                             
                     except requests.exceptions.RequestException as e:
-                        # return {'error': str(e)}
                         print( str(e))
                         pass
         
       
         view = self.env.ref('sh_message.sh_message_wizard')
         context = dict(self._context or {})
-        dic_msg = response_data.get('message', "Product Synced Successfully")
+        dic_msg = "Product Synced Successfully"
         context['message'] = dic_msg
         return{
                 'name': 'Success',
@@ -282,7 +275,7 @@ class food_king(models.Model):
         headers = {
             'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
             'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
-            'Content-Type': 'application/json',
+            # 'Content-Type': 'application/json',
         }
         if not synced_categories :
                     view = self.env.ref('sh_message.sh_message_wizard')
@@ -302,13 +295,21 @@ class food_king(models.Model):
                     }
         synced_categories_ids = []
         for category in synced_categories:
-            payload = json.dumps({
+            image_data = base64.b64decode(category.image_128)
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                temp_file.write(image_data)
+                temp_file_path = temp_file.name
+
+            files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+           
+            payload = {
                 "name": category.name,
                 "status": 5,
                 "description": category.name
-            })
+            }
             try:
-                response = requests.post(url, headers=headers, data=payload)
+                response = requests.request("POST", url, headers=headers, data=payload,files=files)
                 response_data = response.json()
                 print(response_data), "sssssssssssssssssssssss"
                 if 'data' in response_data:
@@ -531,6 +532,7 @@ class food_king(models.Model):
                 pos_orders = response.json().get('data', [])
                 print(pos_orders,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
                 for pos_data1 in pos_orders:
+                    print(pos_data1['id'],existing_pos_order_ids,"aaaaaaaaaaaasssssssssssssssssssssdddddddfffffffff")
                     if pos_data1['id'] not in  existing_pos_order_ids:
                         data_filter_by_branch = self.company_id.branch_id.food_king_id
                         print(pos_data1['branch_id'],data_filter_by_branch ,"dddddddddddddddddddddddddddd")
@@ -560,8 +562,8 @@ class food_king(models.Model):
                                         'price_unit': float(price),
                                         'discount': float(discount),
                                         'tax_ids' : [(4, product_tax.id)] if product_tax != '' else None,
-                                        'price_subtotal': posid['total_convert_price'],
-                                        'price_subtotal_incl': posid['total_convert_price']
+                                        'price_subtotal': posid['total_convert_price'] ,
+                                        'price_subtotal_incl':posid['total_convert_price'] + (posid['total_convert_price'] * product_tax.amount) / 100
                                     }))
                             if customer_ids:
                                 search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
@@ -579,35 +581,37 @@ class food_king(models.Model):
                                     'full_product_name': delivery_charges.name,
                                     'qty': 1,
                                     'price_unit': float(delivery_charge_currency_price),
+                                    'tax_ids' : [(4, delivery_charges.taxes_id.id)] if delivery_charges != '' else None,
                                     'price_subtotal': float(delivery_charge_currency_price),
-                                    'price_subtotal_incl': float(delivery_charge_currency_price)
+                                    'price_subtotal_incl':float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100
                                 }))
+                                print(float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100)
                                 search_pos_session = self.env['pos.session'].sudo().search([
                                     ('state', '=', 'opened'), 
                                     ('company_id', '=', self.company_id.id),
                                     ('config_id', '=', self.point_of_sale.id)
                                 ])
-
-                                print(search_pos_session,"sdffffffffffgggggggggggggggggg")
+                                session_name = search_pos_session[0].name
+                                result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
+                                print(result, "ddddddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaa")
                                 if config_id:
-                                    print("llllhhhhllll")
                                     if search_pos_session:
-                                            print("llllhhhh3llll")
                                             vals = {
                                                 'food_king_id':pos_data['id'],
                                                 'name': pos_data['order_serial_no'],
                                                 'config_id' : config_id,
                                                 'partner_id': customer_id,
-                                                'amount_total': float(total_currency_price),
+                                                'amount_total': sum([line[2]['price_subtotal_incl'] for line in line_vals]),
                                                 'session_id': search_pos_session[0].id,
                                                 'company_id': self.company_id.id,
                                                 'amount_tax':  float(total_tax_currency_price),
-                                                'amount_paid': float(total_currency_price),
+                                                'amount_paid': sum([line[2]['price_subtotal_incl'] for line in line_vals]) if pos_data['payment_status'] == 5 else 0,
                                                 'amount_return': 0.0,
                                                 'table_id':table_id,
                                                 'status':'Online Order',
-                                                'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
+                                                'pos_reference' : result,
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                                # 'pos_reference':"Kiosk 00010-009-0001",
                                                 'lines': line_vals
                                             }
                                             print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
@@ -743,3 +747,5 @@ class food_king(models.Model):
 
         except requests.exceptions.RequestException as e:
             return {'error': str(e)}
+        
+    
