@@ -562,17 +562,17 @@ class food_king(models.Model):
                                     product_tax = products_tax[0] if products_tax else ''
                                     price = re.sub(r'[^\d.]+', '', posid['price'])
                                     discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                    print(posid['total_convert_price'],product_tax.amount,product_tax,"kkkkkkaaaaaaaaaaassssssssdddddddddddd")
-                                    line_vals.append((0, 0, {
-                                        'product_id': product_id,
-                                        'full_product_name': product_name,
-                                        'qty': posid['quantity'],
-                                        'price_unit': float(price),
-                                        'discount': float(discount),
-                                        'tax_ids' : [(4, product_tax.id)] if product_tax != '' else None,
-                                        'price_subtotal': posid['total_convert_price'] ,
-                                        'price_subtotal_incl':float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax != '' else 0) / 100
-                                    }))
+                                print(posid['total_convert_price'], product_tax, "kkkkkkaaaaaaaaaaassssssssdddddddddddd")
+                                line_vals.append((0, 0, {
+                                    'product_id': product_id,
+                                    'full_product_name': product_name,
+                                    'qty': posid['quantity'],
+                                    'price_unit': float(price),
+                                    'discount': float(discount),
+                                    'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else False,
+                                    'price_subtotal': float(posid['total_convert_price']),
+                                    'price_subtotal_incl': float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax) if product_tax else 0) / 100
+                                }))
                             if customer_ids:
                                 search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
                                 customer_id = customer_ids[0]
