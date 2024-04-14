@@ -119,14 +119,18 @@ class food_king(models.Model):
                     food_king_id_tax = product.taxes_id[0].food_king_id
                 if product.pos_categ_ids:
                     food_king_id_categ = product.pos_categ_ids[0].food_king_id
-               
-                    image_data = base64.b64decode(product.image_1920)
+                    image_data= None
+                    if product.image_1920:
+                       image_data = base64.b64decode(product.image_1920)
 
-                    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
-                        temp_file.write(image_data)
-                        temp_file_path = temp_file.name
+                    if image_data:
+                        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                            temp_file.write(image_data)
+                            temp_file_path = temp_file.name
 
-                    files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+                        files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+                    else : 
+                         files = []
 
                     payload = {
                         "name": product.name,
