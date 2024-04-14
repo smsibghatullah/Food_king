@@ -298,12 +298,14 @@ class food_king(models.Model):
             image_data = None
             if category.image_128:
                image_data = base64.b64decode(category.image_128)
+            if image_data:
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                    temp_file.write(image_data)
+                    temp_file_path = temp_file.name
 
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
-                temp_file.write(image_data)
-                temp_file_path = temp_file.name
-
-            files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+                    files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+            else : 
+                 files = []
            
             payload = {
                 "name": category.name,
