@@ -295,7 +295,9 @@ class food_king(models.Model):
                     }
         synced_categories_ids = []
         for category in synced_categories:
-            image_data = base64.b64decode(category.image_128)
+            image_data = None
+            if category.image_128:
+               image_data = base64.b64decode(category.image_128)
 
             with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
                 temp_file.write(image_data)
@@ -627,8 +629,6 @@ class food_king(models.Model):
             except requests.exceptions.RequestException as e:
                 return {'error': str(e)}
 
-
-    
 
     def get_floors_from_api(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
