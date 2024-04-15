@@ -6,7 +6,6 @@ from requests.exceptions import RequestException, HTTPError, Timeout, Connection
 import re
 import base64
 import tempfile
-import pygame
 
 class food_king(models.Model):
     _name = 'food_king.food_king'
