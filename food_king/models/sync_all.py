@@ -462,7 +462,7 @@ class food_king(models.Model):
                                             'discount': float(discount),
                                             'tax_ids' : [(4, product_tax.id)] if product_tax != '' else None,
                                             'price_subtotal': posid['total_convert_price'],
-                                            'price_subtotal_incl': posid['total_convert_price']
+                                            'price_subtotal_incl': float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100
                                         }))
 
                                 if customer_ids:
@@ -477,8 +477,9 @@ class food_king(models.Model):
                                     total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                     subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
                                     search_pos_session = self.env['pos.session'].sudo().search([('state', '=', 'opened')])
-                                    print(search_pos_session,"sdffffffffffgggggggggggggggggg")
                                     if config_id:
+                                        session_name = search_pos_session[0].name
+                                        result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
                                         if search_pos_session:
                                             vals = {
                                                 'food_king_id':pos_data['id'],
@@ -493,7 +494,7 @@ class food_king(models.Model):
                                                 'amount_return': 0.0,
                                                 'table_id':table_id,
                                                 'status':'Table Order',
-                                                'pos_reference' : 'Order' + ' ' +pos_data['order_serial_no'],
+                                                'pos_reference' : result,
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
                                                 'lines': line_vals
                                             }
@@ -601,7 +602,6 @@ class food_king(models.Model):
                                 ])
                                 session_name = search_pos_session[0].name
                                 result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
-                                print(result, "ddddddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaa")
                                 if config_id:
                                     if search_pos_session:
                                             vals = {
@@ -619,7 +619,6 @@ class food_king(models.Model):
                                                 'status':'Online Order',
                                                 'pos_reference' : result,
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
-                                                # 'pos_reference':"Kiosk 00010-009-0001",
                                                 'lines': line_vals
                                             }
                                             print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
