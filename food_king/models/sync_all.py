@@ -464,8 +464,8 @@ class food_king(models.Model):
                                             'price_unit': float(price),
                                             'discount': float(discount),
                                             'tax_ids' : [(4, product_tax.id)] if product_tax != '' else None,
-                                            'price_subtotal': posid['total_convert_price'],
-                                            'price_subtotal_incl': float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100
+                                            'price_subtotal': posid['total_convert_price'] - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100,
+                                            'price_subtotal_incl': float(posid['total_convert_price']) 
                                         }))
 
                                 if customer_ids:
@@ -575,8 +575,8 @@ class food_king(models.Model):
                                     'price_unit': float(price),
                                     'discount': float(discount),
                                     'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else False,
-                                    'price_subtotal': float(posid['total_convert_price']),
-                                    'price_subtotal_incl': float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100
+                                    'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100,
+                                    'price_subtotal_incl': float(posid['total_convert_price'])
                                 }))
                             if customer_ids:
                                 search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
@@ -595,8 +595,8 @@ class food_king(models.Model):
                                     'qty': 1,
                                     'price_unit': float(delivery_charge_currency_price),
                                     'tax_ids' : [(4, delivery_charges.taxes_id.id)] if delivery_charges != '' else None,
-                                    'price_subtotal': float(delivery_charge_currency_price),
-                                    'price_subtotal_incl':float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100
+                                    'price_subtotal': float(delivery_charge_currency_price) - (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100,
+                                    'price_subtotal_incl':float(delivery_charge_currency_price) 
                                 }))
                                 print(float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100)
                                 search_pos_session = self.env['pos.session'].sudo().search([
