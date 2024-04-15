@@ -481,9 +481,9 @@ class food_king(models.Model):
                                     subtotal_currency_price = re.sub(r'[^\d.]+', '', pos_data['subtotal_currency_price'])
                                     search_pos_session = self.env['pos.session'].sudo().search([('state', '=', 'opened')])
                                     if config_id:
-                                        session_name = search_pos_session[0].name
-                                        result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
                                         if search_pos_session:
+                                            session_name = search_pos_session[0].name
+                                            result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
                                             vals = {
                                                 'food_king_id':pos_data['id'],
                                                 'name': pos_data['order_serial_no'],
