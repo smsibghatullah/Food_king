@@ -83,22 +83,6 @@ class ProductFoodKing(models.Model):
                 'Authorization': f'Bearer {food_king.auth_token}',
                 'X-Api-Key':food_king.license_key or '' ,
             }
-            if not synced_artibutes :
-                        view = self.env.ref('sh_message.sh_message_wizard')
-                        context = dict(self._context or {})
-                        dic_msg = "Artibutes Already Synced"
-                        context['message'] = dic_msg
-                        return{
-                                'name': 'Success',
-                                'type': 'ir.actions.act_window',
-                                'view_mode': 'form',
-                                'view_type': 'form',
-                                'res_model': 'sh.message.wizard',
-                                'views':[(view.id,'form')],
-                                'view_id':view.id,
-                                'target': 'new',
-                                'context': context,
-                        }
             synced_artibutes_ids = []
             for artibutes in synced_artibutes:
                     payload = {
