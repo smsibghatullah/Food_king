@@ -6,6 +6,7 @@ from requests.exceptions import RequestException, HTTPError, Timeout, Connection
 import re
 import base64
 import tempfile
+import pygame
 
 class food_king(models.Model):
     _name = 'food_king.food_king'
@@ -502,6 +503,7 @@ class food_king(models.Model):
                                                 'lines': line_vals
                                             }
                                             self.env['pos.order'].sudo().create(vals)
+                                            self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                             success_true = True
                                         else :
                                             raise UserError(('Please open the session'))
@@ -604,10 +606,11 @@ class food_king(models.Model):
                                     ('company_id', '=', self.company_id.id),
                                     ('config_id', '=', self.point_of_sale.id)
                                 ])
-                                session_name = search_pos_session[0].name
-                                result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
+                               
                                 if config_id:
                                     if search_pos_session:
+                                            session_name = search_pos_session[0].name
+                                            result = f"Kiosk {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
                                             vals = {
                                                 'food_king_id':pos_data['id'],
                                                 'name': pos_data['order_serial_no'],
@@ -627,6 +630,7 @@ class food_king(models.Model):
                                             }
                                             print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
+                                            self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                         
                                     else :
                                         raise UserError(('Please open the session'))
@@ -759,5 +763,24 @@ class food_king(models.Model):
         except requests.exceptions.RequestException as e:
             return {'error': str(e)}
    
+   # Sync Message
+    def send_message_to_food_king_users(self, message_body):
+        group = self.env.ref('food_king.group_food_king_user')
+        users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
 
+        administrator = self.env.user.partner_id
+
+        for user in users:
+           
+            mess_id = self.env['mail.message'].create({
+                'author_id': administrator.id,
+                'model': 'discuss.channel',
+                'res_id': 5,
+                'message_type': 'comment',
+                'body': message_body,
+                'subtype_id': self.env.ref('mail.mt_comment').id,
+                'record_name': "Food King Message", 
+            })
           
+            
+            
