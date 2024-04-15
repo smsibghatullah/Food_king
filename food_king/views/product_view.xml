@@ -14,7 +14,8 @@
                     <field name="food_king_id"/>
                 </xpath>
                <xpath expr="//form//header" position="inside">
-                <button name="update_product" string="Update Food King Product" type="object" class="oe_highlight btn-success"  />
+                <button name="update_product" string="Update Food King Product" type="object" class="oe_highlight btn-primary"  />
+                <button name="Add_product_Artibute" string="Add Product Artibute on Food King " type="object" class="oe_highlight btn-info"  />
                 </xpath>
             </field>
         </record>

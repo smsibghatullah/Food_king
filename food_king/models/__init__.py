@@ -13,3 +13,4 @@ from . import res_company
 from . import food_king_branch
 from . import pos_session
 from . import product_artibute
+from . import product_artibute_value

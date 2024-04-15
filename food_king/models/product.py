@@ -75,102 +75,94 @@ class ProductFoodKing(models.Model):
         
 
     def Add_product_Artibute(self):
-        food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
-        artibutes = self.env['product.attribute'].search([])
-        synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
-        url = self.url  + "/api/admin/setting/item-attribute"
-        headers = {
-            'Authorization': f'Bearer self.auth_token ',
-            'X-Api-Key':self.license_key or '',
-            'Content-Type': 'application/json',
-        }
-        if not synced_artibutes :
-                    view = self.env.ref('sh_message.sh_message_wizard')
-                    context = dict(self._context or {})
-                    dic_msg = "Artibutes Already Synced"
-                    context['message'] = dic_msg
-                    return{
-                            'name': 'Success',
-                            'type': 'ir.actions.act_window',
-                            'view_mode': 'form',
-                            'view_type': 'form',
-                            'res_model': 'sh.message.wizard',
-                            'views':[(view.id,'form')],
-                            'view_id':view.id,
-                            'target': 'new',
-                            'context': context,
+            food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
+            artibutes = self.env['product.attribute'].search([])
+            synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
+            url = food_king.url   + "/api/admin/setting/item-attribute"
+            headers = {
+                'Authorization': f'Bearer {food_king.auth_token}',
+                'X-Api-Key':food_king.license_key or '' ,
+            }
+            if not synced_artibutes :
+                        view = self.env.ref('sh_message.sh_message_wizard')
+                        context = dict(self._context or {})
+                        dic_msg = "Artibutes Already Synced"
+                        context['message'] = dic_msg
+                        return{
+                                'name': 'Success',
+                                'type': 'ir.actions.act_window',
+                                'view_mode': 'form',
+                                'view_type': 'form',
+                                'res_model': 'sh.message.wizard',
+                                'views':[(view.id,'form')],
+                                'view_id':view.id,
+                                'target': 'new',
+                                'context': context,
+                        }
+            synced_artibutes_ids = []
+            for artibutes in synced_artibutes:
+                    payload = {
+                        "name": artibutes.name,
+                        "status": 5 if artibutes.food_king_active else 10
                     }
-        synced_tax_ids = []
-        for artibutes in synced_artibutes:
-            if  synced_artibutes != []:
-                payload = {
-                    "name": artibutes.name,
-                    "status": 5 if artibutes.food_king_active else 10
-                }
-                try:
-                    response = requests.post(url, headers=headers, data=payload)
-                    response_data = response.json()
-                    if 'data' in response_data:
-                        food_king_id = response_data['data']['id']
-                        artibutes.write({'food_king_id': food_king_id})
-                        synced_tax_ids.append(artibutes.id)
+                    try:
+                        response = requests.post(url, headers=headers, data=payload)
+                        response_data = response.json()
+                        print(response_data,"dddddddddddddkkkkkkkkkkkkklllllllllllllnnnnnnmmmmmmmmmmmmmm")
+                        if 'data' in response_data:
+                            food_king_id = response_data['data']['id']
+                            artibutes.write({'food_king_id': food_king_id})
+                            synced_artibutes_ids.append(artibutes.id)
 
-                except requests.exceptions.RequestException as e:
-                    return {'error': str(e)}
-    
-        if synced_tax_ids:
-                    view = self.env.ref('sh_message.sh_message_wizard')
-                    context = dict(self._context or {})
-                    dic_msg = response_data.get('message', "Artibutes Synced Successfully")
-                    context['message'] = dic_msg
-                    return{
-                            'name': 'Success',
-                            'type': 'ir.actions.act_window',
-                            'view_mode': 'form',
-                            'view_type': 'form',
-                            'res_model': 'sh.message.wizard',
-                            'views':[(view.id,'form')],
-                            'view_id':view.id,
-                            'target': 'new',
-                            'context': context,
-                    }
+                    except requests.exceptions.RequestException as e:
+                        return {'error': str(e)}
+                    
 
-        if not food_king:
-            print('Food King settings not configured. Please configure Food King settings first.')
+            if not food_king:
+                print('Food King settings not configured. Please configure Food King settings first.')
+                return
 
-        headers = {
-            'Authorization': f'Bearer {food_king.auth_token}',
-            'X-Api-Key': food_king.license_key or '',
-        }
+            headers = {
+                'Authorization': f'Bearer {food_king.auth_token}',
+                'X-Api-Key': food_king.license_key or '',
+            }
 
-        payload = {
-           "name":"pepsi",
-           "price":"664",
-           "item_attribute_id":None,
-           "caution":"123",
-           "status":5
-        }
-        print(payload)
-        url_get_id = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
-        response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload)
-        pos_data = response_get_id.json()
-        print(response_get_id.text,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-        view = self.env.ref('sh_message.sh_message_wizard')
-        context = dict(self._context or {})
-        dic_msg = "Atribute Update Successfully"
-        context['message'] = dic_msg
-        return{
+            for attribute_line in self.attribute_line_ids:
+                for value_id in attribute_line.value_ids:
+                    if value_id.food_king_id == 0 :
+                        payload = {
+                            "name": value_id.name,
+                            "price": value_id.default_extra_price,
+                            "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                            "caution": attribute_line.attribute_id.caution,
+                            "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                        }
+                        print(payload, "hhhhhhhhhhhhhhhhhhhh")
+                        url_get_id = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
+                        response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload)
+                        response_data = response_get_id.json()
+                        if 'data' in response_data:
+                            food_king_id = response_data['data']['id']
+                            value_id.write({'food_king_id': food_king_id})
+                    else :
+                        pass
+
+
+            view = self.env.ref('sh_message.sh_message_wizard')
+            context = dict(self._context or {})
+            dic_msg = "Attribute Update Successfully"
+            context['message'] = dic_msg
+            return {
                 'name': 'Success',
                 'type': 'ir.actions.act_window',
                 'view_mode': 'form',
                 'view_type': 'form',
                 'res_model': 'sh.message.wizard',
-                'views':[(view.id,'form')],
-                'view_id':view.id,
+                'views': [(view.id, 'form')],
+                'view_id': view.id,
                 'target': 'new',
                 'context': context,
-        }
-
+            }
 
 
 

@@ -39,9 +39,6 @@
                     <button name="get_floors_from_api" string="Sync Tables" type="object" class="oe_highlight"/>
                     <label for="get_branch_from_api" string="Sync Branches"/>
                     <button name="get_branch_from_api" string="Sync Branches" type="object" class="oe_highlight"/>
-                    <!-- <label for="Sync_product_Artibutes" string="Sync Artibutes"/>
-                    <button name="Sync_product_Artibutes" string="Sync Artibutes" type="object" class="oe_highlight"/> -->
-                    
                 </group>
             </sheet>
         </form>

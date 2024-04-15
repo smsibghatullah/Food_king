@@ -19,8 +19,7 @@ class food_king(models.Model):
     point_of_sale = fields.Many2one('pos.config', string='Point Of Sale')
     company_branch_name = fields.Char(related="company_id.branch_id.name",string="Branch Name")
 
-
-
+   #  get base64 
 
     def get_base64_from_url(self, url):
         try:
@@ -30,7 +29,9 @@ class food_king(models.Model):
             return base64_image
         except requests.exceptions.RequestException as e:
             return None
-        
+  
+   #  get token  
+
     def get_token(self):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         login_url = (self.url or Foodking_Ids.url) + "/api/auth/login"
@@ -85,7 +86,8 @@ class food_king(models.Model):
             return token
         except requests.exceptions.RequestException as e:
             return {'error': str(e)}
-        
+  
+   #  sync product
 
     def sync_all_products(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
@@ -175,9 +177,9 @@ class food_king(models.Model):
                 'target': 'new',
                 'context': context,
         }
-       
-    
-    
+ 
+   #  sync customer  
+
     def get_customer_from_api(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         self.get_admin_customer_from_api()
@@ -239,7 +241,9 @@ class food_king(models.Model):
 
         except requests.exceptions.RequestException as e:
             return {'error': str(e)}
-            
+  
+   #  sync customer   
+
     def get_admin_customer_from_api(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
         url = (self.url or Foodking_Ids.url) + "/api/admin/administrator?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
@@ -270,7 +274,8 @@ class food_king(models.Model):
 
         except requests.exceptions.RequestException as e:
             return {'error': str(e)}
-# sync category
+  
+   #  sync category
 
     def sync_all_category(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
@@ -344,10 +349,8 @@ class food_king(models.Model):
             }
         else:
             return {'message': 'No new categories to sync.'}
-       
-    
 
-   #   sync all taxes          # 
+   #  sync all taxes          # 
      
     def sync_all_tax(self, cron_mode=True):
             Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
@@ -418,7 +421,7 @@ class food_king(models.Model):
             else:
                 return {'message': 'No new Taxes to sync.'}
     
-    # sync pos order
+   #  sync pos order
 
     def get_pos_order_from_api(self, cron_mode=True):
             success_true = False
@@ -525,7 +528,8 @@ class food_king(models.Model):
 
             except requests.exceptions.RequestException as e:
                 return {'error': str(e)}
-
+  
+   #  sync online order
 
     def get_online_order_from_api(self, cron_mode=True):
             
@@ -633,7 +637,8 @@ class food_king(models.Model):
 
             except requests.exceptions.RequestException as e:
                 return {'error': str(e)}
-
+  
+   #  sync floor
 
     def get_floors_from_api(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
@@ -701,7 +706,8 @@ class food_king(models.Model):
             self.env['ir.logging'].create({'name': 'Floor Sync', 'type': 'error', 'message': f'Request timed out: {e}'})
         except ConnectionError as e:
             self.env['ir.logging'].create({'name': 'Floor Sync', 'type': 'error', 'message': f'Connection error: {e}'})
-
+  
+   #  sync branch
 
     def get_branch_from_api(self, cron_mode=True):
         Foodking_Ids = self.env['food_king.food_king'].search([('id', '=', 1)])
@@ -752,5 +758,6 @@ class food_king(models.Model):
 
         except requests.exceptions.RequestException as e:
             return {'error': str(e)}
-        
-    
+   
+
+          
