@@ -113,7 +113,6 @@ class ProductFoodKing(models.Model):
 
             for attribute_line in self.attribute_line_ids:
                 for value_id in attribute_line.value_ids:
-                    if value_id.food_king_id == 0 :
                         payload = {
                             "name": value_id.name,
                             "price": value_id.default_extra_price,
@@ -128,8 +127,6 @@ class ProductFoodKing(models.Model):
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
                             value_id.write({'food_king_id': food_king_id})
-                    else :
-                        pass
 
 
             view = self.env.ref('sh_message.sh_message_wizard')
