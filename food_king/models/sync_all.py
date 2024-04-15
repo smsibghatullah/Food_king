@@ -571,7 +571,7 @@ class food_king(models.Model):
                                     'discount': float(discount),
                                     'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else False,
                                     'price_subtotal': float(posid['total_convert_price']),
-                                    'price_subtotal_incl': float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax) if product_tax else 0) / 100
+                                    'price_subtotal_incl': float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100
                                 }))
                             if customer_ids:
                                 search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
