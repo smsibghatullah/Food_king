@@ -577,7 +577,9 @@ class food_king(models.Model):
                                     full_product_name = product_name+' (' +','.join(variation_names)+')' if variation_names else product_name
                                     instruction.append(full_product_name + ' : ' + posid['instruction'])
                                     print(product_id,product_name,"kkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjssssssssssssssssssssssssssssssss")
+                                    uid_counter = 1
                                     line_vals.append((0, 0, {
+                                        'uid': uid_counter,
                                         'product_id': product_id,
                                         'full_product_name': full_product_name,
                                         'qty': posid['quantity'],
@@ -587,6 +589,7 @@ class food_king(models.Model):
                                         'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100 if product_tax.price_include else float(posid['total_convert_price']),
                                         'price_subtotal_incl': float(posid['total_convert_price'])  if product_tax.price_include else float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100
                                     }))
+                                    uid_counter += 1
                             if customer_ids:
                                 search_table = self.env['restaurant.table'].search([('name', '=',pos_data['table_name'] )]).mapped('id')
                                 customer_id = customer_ids[0]
