@@ -633,7 +633,8 @@ class food_king(models.Model):
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
                                                 'lines': line_vals,
                                                 'note':'\n'.join(instruction),
-                                                'tracking_number':503
+                                                'tracking_number':803,
+                                                'session_move_id':7
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
