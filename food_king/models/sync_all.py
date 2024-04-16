@@ -573,9 +573,8 @@ class food_king(models.Model):
                                     product_tax = products_tax[0] if products_tax else ''
                                     price = re.sub(r'[^\d.]+', '', posid['price'])
                                     discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                print(product_name,"kkkkaaaaaaassssssssddddddddddddddddddddddd")
                                 variation_names = [variation['name'] for variation in posid['item_variations']]
-                                full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                full_product_name = product_name+' (' +','.join(variation_names)+')' if variation_names else product_name
                                 instruction.append(full_product_name + ' : ' + posid['instruction'])
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
@@ -636,7 +635,7 @@ class food_king(models.Model):
                                                 'note':'\n'.join(instruction)
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                                            self.env['pos.order'].sudo().create(vals)
+                                            # self.env['pos.order'].sudo().create(vals)
                                             self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                         
                                     else :
@@ -780,7 +779,7 @@ class food_king(models.Model):
             message = self.env['mail.message'].create({
                 'author_id': administrator.id,
                 'model': 'discuss.channel',
-                'res_id': 5,
+                'res_id': 41,
                 'message_type': 'comment',
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
