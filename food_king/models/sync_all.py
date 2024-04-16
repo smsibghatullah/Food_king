@@ -635,7 +635,7 @@ class food_king(models.Model):
                                                 'note':'\n'.join(instruction)
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                                            # self.env['pos.order'].sudo().create(vals)
+                                            self.env['pos.order'].sudo().create(vals)
                                             self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                         
                                     else :
