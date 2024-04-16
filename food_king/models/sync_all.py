@@ -576,6 +576,7 @@ class food_king(models.Model):
                                     variation_names = [variation['name'] for variation in posid['item_variations']]
                                     full_product_name = product_name+' (' +','.join(variation_names)+')' if variation_names else product_name
                                     instruction.append(full_product_name + ' : ' + posid['instruction'])
+                                    print(product_id,product_name,"kkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjssssssssssssssssssssssssssssssss")
                                     line_vals.append((0, 0, {
                                         'product_id': product_id,
                                         'full_product_name': full_product_name,
