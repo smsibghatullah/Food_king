@@ -618,7 +618,7 @@ class food_king(models.Model):
                                             result = f"Order {session_name.split('/')[1]}-00{str(config_id)}-{pos_data['order_serial_no']}"
                                             vals = {
                                                 'food_king_id':pos_data['id'],
-                                                'name': pos_data['order_serial_no'],
+                                                'name': f"{self.point_of_sale.name}/000{str(config_id)}",
                                                 'config_id' : config_id,
                                                 'partner_id': customer_id,
                                                 'amount_total': sum([line[2]['price_subtotal_incl'] for line in line_vals]),
