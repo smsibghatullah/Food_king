@@ -563,7 +563,7 @@ class food_king(models.Model):
                             line_vals = []
                             instruction= []
                             for posid in pos_data['order_items']:
-                                print('mubeen 2')
+                                print(posid['item_id'],'mubeen 2')
                                 product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                 products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                                 products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
@@ -573,6 +573,7 @@ class food_king(models.Model):
                                     product_tax = products_tax[0] if products_tax else ''
                                     price = re.sub(r'[^\d.]+', '', posid['price'])
                                     discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                print(product_name,"kkkkaaaaaaassssssssddddddddddddddddddddddd")
                                 variation_names = [variation['name'] for variation in posid['item_variations']]
                                 full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
                                 instruction.append(full_product_name + ' : ' + posid['instruction'])
@@ -779,7 +780,7 @@ class food_king(models.Model):
             message = self.env['mail.message'].create({
                 'author_id': administrator.id,
                 'model': 'discuss.channel',
-                'res_id': 41,
+                'res_id': 5,
                 'message_type': 'comment',
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
