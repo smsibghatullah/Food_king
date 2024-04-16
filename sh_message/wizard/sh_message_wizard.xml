@@ -8,7 +8,7 @@
                 <field name="name" />
 
                 <footer>
-                    <button string="OK" class="btn-primary" special="cancel" />
+                    <button name="reload" string="OK" class="btn-primary" type="object"  />
                 </footer>
             </form>
         </field>

@@ -447,6 +447,7 @@ class food_king(models.Model):
 
                                 customer_ids = self.env['res.partner'].search([('food_king_id_res', '=', pos_data['user']['id'])]).mapped('id')
                                 line_vals = []
+                                instruction= []
                                 for posid in pos_data['order_items']:
                                     product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                     products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
@@ -457,9 +458,12 @@ class food_king(models.Model):
                                         product_tax = products_tax[0] if products_tax else ''
                                         price = re.sub(r'[^\d.]+', '', posid['price'])
                                         discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                        variation_names = [variation['name'] for variation in posid['item_variations']]
+                                        full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                        instruction.append(full_product_name + ' : ' + posid['instruction'])
                                         line_vals.append((0, 0, {
                                             'product_id': product_id,
-                                            'full_product_name': product_name,
+                                            'full_product_name': full_product_name,
                                             'qty': posid['quantity'],
                                             'price_unit': float(price),
                                             'discount': float(discount),
@@ -499,17 +503,19 @@ class food_king(models.Model):
                                                 'status':'Table Order',
                                                 'pos_reference' : result,
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
-                                                'lines': line_vals
+                                                'lines': line_vals,
+                                                'note':'\n'.join(instruction)
                                             }
                                             self.env['pos.order'].sudo().create(vals)
                                             self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                             success_true = True
+                       
                                         else :
                                             raise UserError(('Please open the session'))
                                         
                                     else :
                                         raise UserError(('Please select point of sale'))
-                
+                   
                     view = self.env.ref('sh_message.sh_message_wizard')
                     context = dict(self._context or {})
                     dic_msg =  "Order Synced Successfully"
@@ -525,6 +531,7 @@ class food_king(models.Model):
                             'target': 'new',
                             'context': context,
                     }
+               
             
 
             except requests.exceptions.RequestException as e:
@@ -544,12 +551,9 @@ class food_king(models.Model):
             try:
                 response = requests.get(url, headers=headers)
                 pos_orders = response.json().get('data', [])
-                print(pos_orders,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
                 for pos_data1 in pos_orders:
-                    print(pos_data1['id'],existing_pos_order_ids,"aaaaaaaaaaaasssssssssssssssssssssdddddddfffffffff")
                     if pos_data1['id'] not in  existing_pos_order_ids:
                         data_filter_by_branch = self.company_id.branch_id.food_king_id
-                        print(pos_data1['branch_id'],data_filter_by_branch ,"dddddddddddddddddddddddddddd")
                         if data_filter_by_branch == pos_data1['branch_id']:
                             print('mubeen 1')
                             url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
@@ -557,6 +561,7 @@ class food_king(models.Model):
                             pos_data = response_get_id.json().get('data', {})
                             customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                             line_vals = []
+                            instruction= []
                             for posid in pos_data['order_items']:
                                 print('mubeen 2')
                                 product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
@@ -568,10 +573,12 @@ class food_king(models.Model):
                                     product_tax = products_tax[0] if products_tax else ''
                                     price = re.sub(r'[^\d.]+', '', posid['price'])
                                     discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                print( product_tax.price_include, "kkkkkkaaaaaaaaaaassssssssdddddddddddd")
+                                variation_names = [variation['name'] for variation in posid['item_variations']]
+                                full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                instruction.append(full_product_name + ' : ' + posid['instruction'])
                                 line_vals.append((0, 0, {
                                     'product_id': product_id,
-                                    'full_product_name': product_name,
+                                    'full_product_name': full_product_name,
                                     'qty': posid['quantity'],
                                     'price_unit': float(price),
                                     'discount': float(discount),
@@ -599,7 +606,6 @@ class food_king(models.Model):
                                     'price_subtotal': float(delivery_charge_currency_price) - (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100 if delivery_charges.taxes_id.price_include else float(delivery_charge_currency_price) ,
                                     'price_subtotal_incl':float(delivery_charge_currency_price) if delivery_charges.taxes_id.price_include else float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100
                                 }))
-                                print(float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100)
                                 search_pos_session = self.env['pos.session'].sudo().search([
                                     ('state', '=', 'opened'), 
                                     ('company_id', '=', self.company_id.id),
@@ -625,9 +631,10 @@ class food_king(models.Model):
                                                 'status':'Online Order',
                                                 'pos_reference' : result,
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
-                                                'lines': line_vals
+                                                'lines': line_vals,
+                                                'note':'\n'.join(instruction)
                                             }
-                                            print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                            print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
                                             self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                         
@@ -635,7 +642,6 @@ class food_king(models.Model):
                                         raise UserError(('Please open the session'))
                                         
                                 else :
-                                      print('aaaaaaaa78') 
                                       raise UserError(('Please select point of sale'))
 
             except requests.exceptions.RequestException as e:
@@ -770,16 +776,16 @@ class food_king(models.Model):
         administrator = self.env.user.partner_id
 
         for user in users:
-           
-            mess_id = self.env['mail.message'].create({
+            message = self.env['mail.message'].create({
                 'author_id': administrator.id,
                 'model': 'discuss.channel',
-                'res_id': 5,
+                'res_id': 41,
                 'message_type': 'comment',
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
-                'record_name': "Food King Message", 
+                'record_name': "Food King Message",
             })
-          
-            
+
+        
+
             
