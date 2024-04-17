@@ -150,7 +150,22 @@ class food_king(models.Model):
                     try:
                         response = requests.request("POST", url, headers=headers, data=payload, files=files)
                         response_data = response.json()
-
+                        if 'message' in response_data:
+                            view = self.env.ref('sh_message.sh_message_wizard')
+                            context = dict(self._context or {})
+                            dic_msg = (product.name + ' ' + response_data['message'])
+                            context['message'] = dic_msg
+                            return{
+                                    'name': 'Success',
+                                    'type': 'ir.actions.act_window',
+                                    'view_mode': 'form',
+                                    'view_type': 'form',
+                                    'res_model': 'sh.message.wizard',
+                                    'views':[(view.id,'form')],
+                                    'view_id':view.id,
+                                    'target': 'new',
+                                    'context': context,
+                            }
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
                             product.write({'food_king_id': food_king_id})
@@ -325,6 +340,22 @@ class food_king(models.Model):
                 response = requests.request("POST", url, headers=headers, data=payload,files=files)
                 response_data = response.json()
                 print(response_data), "sssssssssssssssssssssss"
+                if 'message' in response_data:
+                            view = self.env.ref('sh_message.sh_message_wizard')
+                            context = dict(self._context or {})
+                            dic_msg = (category.name + ' ' + response_data['message'])
+                            context['message'] = dic_msg
+                            return{
+                                    'name': 'Success',
+                                    'type': 'ir.actions.act_window',
+                                    'view_mode': 'form',
+                                    'view_type': 'form',
+                                    'res_model': 'sh.message.wizard',
+                                    'views':[(view.id,'form')],
+                                    'view_id':view.id,
+                                    'target': 'new',
+                                    'context': context,
+                            }
                 if 'data' in response_data:
                     food_king_id = response_data['data']['id']
                     category.write({'food_king_id': food_king_id})
@@ -395,25 +426,27 @@ class food_king(models.Model):
                         response_data = response.json()
                         print(response_data,'llllllllllllllllllllll')
                         print(response_data,'llllllllllllllllllllll')
+                        if 'message' in response_data:
+                            view = self.env.ref('sh_message.sh_message_wizard')
+                            context = dict(self._context or {})
+                            dic_msg = (tax.name + ' ' + response_data['message'])
+                            context['message'] = dic_msg
+                            return{
+                                    'name': 'Success',
+                                    'type': 'ir.actions.act_window',
+                                    'view_mode': 'form',
+                                    'view_type': 'form',
+                                    'res_model': 'sh.message.wizard',
+                                    'views':[(view.id,'form')],
+                                    'view_id':view.id,
+                                    'target': 'new',
+                                    'context': context,
+                            }
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
                             tax.write({'food_king_id': food_king_id})
                             synced_tax_ids.append(tax.id)
-                        view = self.env.ref('sh_message.sh_message_wizard')
-                        context = dict(self._context or {})
-                        dic_msg = (tax.name + ' ' + response_data['message']  or  "Taxes Synced Successfully")
-                        context['message'] = dic_msg
-                        return{
-                                'name': 'Success',
-                                'type': 'ir.actions.act_window',
-                                'view_mode': 'form',
-                                'view_type': 'form',
-                                'res_model': 'sh.message.wizard',
-                                'views':[(view.id,'form')],
-                                'view_id':view.id,
-                                'target': 'new',
-                                'context': context,
-                        }
+                     
                         
 
                     except requests.exceptions.RequestException as e:
