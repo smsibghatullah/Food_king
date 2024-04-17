@@ -129,7 +129,9 @@ class ProductFoodKing(models.Model):
                                 response_data = response_get_id.json()
                                 if 'data' in response_data:
                                     food_king_id = response_data['data']['id']
+                                    print(food_king_id,"kkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddd")
                                     value_id.write({'food_king_id': food_king_id})
+                                    line_ids_price.write({'food_king_id': food_king_id})
 
 
             view = self.env.ref('sh_message.sh_message_wizard')
@@ -149,7 +151,3 @@ class ProductFoodKing(models.Model):
             }
 
 
-
-
-
-       

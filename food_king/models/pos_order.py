@@ -28,7 +28,6 @@ class pos_order_food_king(models.Model):
         url_get_id = f"{food_king.url}/api/admin/table-order/change-status/{self.food_king_id}"
         response_get_id = requests.post(url_get_id, headers=headers, data=payload)
         pos_data = response_get_id.json()
-        print(pos_data,"ggggggggggggggg")
         self.is_accepted = True
 
 
