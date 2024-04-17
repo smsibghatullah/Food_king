@@ -330,7 +330,8 @@ class food_king(models.Model):
                     category.write({'food_king_id': food_king_id})
                     synced_categories_ids.append(category.id)
             except requests.exceptions.RequestException as e:
-                return {'error': str(e)}
+                        print( str(e))
+                        pass
 
         if synced_categories_ids:
             view = self.env.ref('sh_message.sh_message_wizard')
@@ -400,7 +401,8 @@ class food_king(models.Model):
                             synced_tax_ids.append(tax.id)
 
                     except requests.exceptions.RequestException as e:
-                        return {'error': str(e)}
+                         print( str(e))
+                         pass
         
             if synced_tax_ids:
                         view = self.env.ref('sh_message.sh_message_wizard')
