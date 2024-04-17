@@ -399,6 +399,22 @@ class food_king(models.Model):
                             food_king_id = response_data['data']['id']
                             tax.write({'food_king_id': food_king_id})
                             synced_tax_ids.append(tax.id)
+                        view = self.env.ref('sh_message.sh_message_wizard')
+                        context = dict(self._context or {})
+                        dic_msg = (tax.name + ' ' + response_data['message']  or  "Taxes Synced Successfully")
+                        context['message'] = dic_msg
+                        return{
+                                'name': 'Success',
+                                'type': 'ir.actions.act_window',
+                                'view_mode': 'form',
+                                'view_type': 'form',
+                                'res_model': 'sh.message.wizard',
+                                'views':[(view.id,'form')],
+                                'view_id':view.id,
+                                'target': 'new',
+                                'context': context,
+                        }
+                        
 
                     except requests.exceptions.RequestException as e:
                          print( str(e))
