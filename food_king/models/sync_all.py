@@ -662,8 +662,9 @@ class food_king(models.Model):
                                     if product_Variants_ids:
                                         print('ddddddddddddddddddddddddddddddddddddddddddddddd')
                                         for item_id in product_Variants_ids:
+                                                print(item_id['product_template_variant_value_ids'],"cccccccccccccccccccccccccccccccccccccccccccccccccccccc")
                                                 for itemdata in item_id['product_template_variant_value_ids']:
-                                                    print(variation_ids,"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
+                                                    print("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
                                                     print(itemdata.food_king_id,"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
                                                     if itemdata.food_king_id in variation_ids:
                                                         print(item_id.id,item_id.name,"oooooooooooooooooooooooooooooooooooooooooo")
