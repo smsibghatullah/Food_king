@@ -659,6 +659,7 @@ class food_king(models.Model):
                                     variation_ids = [variation['id'] for variation in posid['item_variations']]
                                     print(product_Variants_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                     if product_Variants_ids:
+                                        print('ddddddddddddddddddddddddddddddddddddddddddddddd')
                                         for item_id in product_Variants_ids:
                                                 for itemdata in item_id['product_template_variant_value_ids']:
                                                     print(variation_ids,"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
@@ -740,7 +741,7 @@ class food_king(models.Model):
                                                 'session_move_id':7
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                                            self.env['pos.order'].sudo().create(vals)
+                                            # self.env['pos.order'].sudo().create(vals)
                                             self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                         
                                     else :
