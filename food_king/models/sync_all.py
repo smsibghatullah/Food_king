@@ -637,6 +637,7 @@ class food_king(models.Model):
                             url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
                             response_get_id = requests.get(url_get_id, headers=headers)
                             pos_data = response_get_id.json().get('data', {})
+                            print(pos_data,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
                             customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                             line_vals = []
                             instruction= []
@@ -657,7 +658,7 @@ class food_king(models.Model):
                                     instruction.append(full_product_name + ' : ' + posid['instruction'])
                                     uid_counter = 1
                                     variation_ids = [variation['id'] for variation in posid['item_variations']]
-                                    print(product_Variants_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                    print(product_Variants_ids,variation_names,variation_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                     if product_Variants_ids:
                                         print('ddddddddddddddddddddddddddddddddddddddddddddddd')
                                         for item_id in product_Variants_ids:
