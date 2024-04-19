@@ -633,7 +633,7 @@ class food_king(models.Model):
                                                             'price_unit': float(price),
                                                             'discount': float(discount),
                                                             'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else None,
-                                                            'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100 if product_tax.price_include else float(posid['total_convert_price']),
+                                                            'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount)) / 100 if product_tax.price_include else float(posid['total_convert_price']),
                                                             'price_subtotal_incl': float(posid['total_convert_price'])  if product_tax.price_include else float(posid['total_convert_price']) + (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 0) / 100
                                                         }))
                                                         uid_counter += 1
@@ -652,7 +652,8 @@ class food_king(models.Model):
                                                 
                             if customer_ids:
                                 customer_id = customer_ids[0]
-                                search_table = self.env['restaurant.table'].search([('name', '=','Delivery Table')]).mapped('id')
+                                food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name)], limit=1)
+                                search_table = self.env['restaurant.table'].search([('name', '=', 'Delivery Table'), ('floor_id', '=', food_king_floor.id)]).mapped('id')
                                 config_id = self.point_of_sale.id
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
@@ -696,7 +697,7 @@ class food_king(models.Model):
                                                 'note':'\n'.join(instruction),
                                                 'tracking_number':803,
                                                 'session_move_id':7,
-                                                'table_id':search_table[0],
+                                                'table_id': search_table[0],
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
@@ -721,6 +722,8 @@ class food_king(models.Model):
             'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         existing_floor_ids = [floor.food_king_id for floor in self.env['restaurant.table'].search([])]
+        
+      
         if self.point_of_sale:
             food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name)], limit=1)
             if not food_king_floor:
@@ -735,6 +738,14 @@ class food_king(models.Model):
             food_king_pos = self.env['pos.config'].search([('name', '=', self.point_of_sale.name)], limit=1)
         else :
             raise UserError(('Please select point of sale'))
+        delivery_table = self.env['restaurant.table'].search([('name', '=', 'Delivery Table'), ('floor_id', '=', food_king_floor.id)], limit=1)
+        if not delivery_table:
+             vals = {
+                    'name': 'Delivery Table',
+                    'seats': 4,
+                    'floor_id': food_king_floor.id if food_king_floor else False,
+                }
+             self.env['restaurant.table'].create(vals)
 
         try:
             response = requests.get(url, headers=headers)
@@ -841,7 +852,7 @@ class food_king(models.Model):
             message = self.env['mail.message'].create({
                 'author_id': administrator.id,
                 'model': 'discuss.channel',
-                'res_id': 5,
+                'res_id': 1,
                 'message_type': 'comment',
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
