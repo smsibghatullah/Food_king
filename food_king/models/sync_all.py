@@ -721,8 +721,17 @@ class food_king(models.Model):
             'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         existing_floor_ids = [floor.food_king_id for floor in self.env['restaurant.table'].search([])]
-        food_king_floor = self.env['restaurant.floor'].search([('name', '=', 'Food King Floor')], limit=1)
-        food_king_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')], limit=1)
+        food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name)], limit=1)
+        if not food_king_floor:
+            food_king_floor = self.env['restaurant.floor'].create({
+                'name': self.point_of_sale.name,
+                'pos_config_ids': [(4, self.point_of_sale.id)]  
+            })
+        else:
+            food_king_floor.write({
+                'pos_config_ids': [(4, self.point_of_sale.id)]  
+            })
+        food_king_pos = self.env['pos.config'].search([('name', '=', self.point_of_sale.name)], limit=1)
 
         try:
             response = requests.get(url, headers=headers)
@@ -737,21 +746,7 @@ class food_king(models.Model):
                     'floor_id': food_king_floor.id if food_king_floor else False,
                 }
                 if floor.get('id') in existing_floor_ids:
-                        view = self.env.ref('sh_message.sh_message_wizard')
-                        context = dict(self._context or {})
-                        dic_msg =  "Table Already synced ."
-                        context['message'] = dic_msg
-                        return{
-                                'name': 'Success',
-                                'type': 'ir.actions.act_window',
-                                'view_mode': 'form',
-                                'view_type': 'form',
-                                'res_model': 'sh.message.wizard',
-                                'views':[(view.id,'form')],
-                                'view_id':view.id,
-                                'target': 'new',
-                                'context': context,
-                        }
+                      print('')
                 else :
                     self.env['restaurant.table'].create(vals)
              
@@ -843,12 +838,12 @@ class food_king(models.Model):
             message = self.env['mail.message'].create({
                 'author_id': administrator.id,
                 'model': 'discuss.channel',
-                'res_id': 1,
+                'res_id': 5,
                 'message_type': 'comment',
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
                 'record_name': "Food King Message",
-            })
+            })''
 
         
 
