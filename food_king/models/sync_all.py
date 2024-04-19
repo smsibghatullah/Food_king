@@ -153,6 +153,7 @@ class food_king(models.Model):
                         response = requests.request("POST", url, headers=headers, data=payload, files=files)
                         response_data = response.json()
                         if 'message' in response_data:
+                            Error_Message.append("The Following Products is not sync there are some issues")
                             Error_Message.append('('+product.name+')' + ' ' + response_data['message'])
                             
                         if 'data' in response_data:
@@ -168,7 +169,7 @@ class food_king(models.Model):
       
         view = self.env.ref('sh_message.sh_message_wizard')
         context = dict(self._context or {})
-        dic_msg = "Product Synced Successfully. \n The Following product is not sync there are some issues" + os.linesep + '\n'.join(Error_Message)
+        dic_msg = "Product Synced Successfully." + os.linesep + '\n'.join(Error_Message)
         context['message'] = dic_msg
         return{
                 'name': 'Success',
@@ -330,6 +331,7 @@ class food_king(models.Model):
                 response_data = response.json()
                 print(response_data), "sssssssssssssssssssssss"
                 if 'message' in response_data:
+                        Error_Message.append("The Following Categories is not sync there are some issues")
                         Error_Message.append('('+category.name+')' + ' ' + response_data['message'])
                             
                 if 'data' in response_data:
@@ -341,7 +343,7 @@ class food_king(models.Model):
 
         view = self.env.ref('sh_message.sh_message_wizard')
         context = dict(self._context or {})
-        context['message'] = "Categories Synced Successfully. \n The Following Categories is not sync there are some issues" + os.linesep + '\n'.join(Error_Message)
+        context['message'] = "Categories Synced Successfully." + os.linesep + '\n'.join(Error_Message)
         return {
             'name': 'Success',
             'type': 'ir.actions.act_window',
@@ -398,6 +400,7 @@ class food_king(models.Model):
                         response_data = response.json()
                         print(response_data,'llllllllllllllllllllll')
                         if 'message' in response_data:
+                            Error_Message.append("The Following Taxes is not sync there are some issues")
                             Error_Message.append('('+tax.name+')' + ' ' + response_data['message'])
                             
                         if 'data' in response_data:
@@ -412,7 +415,7 @@ class food_king(models.Model):
         
             view = self.env.ref('sh_message.sh_message_wizard')
             context = dict(self._context or {})
-            dic_msg = "Taxes Synced Successfully. \n The Following Taxes is not sync there are some issues" + os.linesep + '\n'.join(Error_Message)
+            dic_msg = "Taxes Synced Successfully." + os.linesep + '\n'.join(Error_Message)
             context['message'] = dic_msg
             return{
                     'name': 'Success',
@@ -852,7 +855,7 @@ class food_king(models.Model):
             message = self.env['mail.message'].create({
                 'author_id': administrator.id,
                 'model': 'discuss.channel',
-                'res_id': 1,
+                'res_id': 5,
                 'message_type': 'comment',
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
