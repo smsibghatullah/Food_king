@@ -306,7 +306,7 @@ class food_king(models.Model):
                             'target': 'new',
                             'context': context,
                     }
-        synced_categories_ids = []
+        Error_Message = []
         for category in synced_categories:
             image_data = None
             if category.image_128:
@@ -330,46 +330,30 @@ class food_king(models.Model):
                 response_data = response.json()
                 print(response_data), "sssssssssssssssssssssss"
                 if 'message' in response_data:
-                            view = self.env.ref('sh_message.sh_message_wizard')
-                            context = dict(self._context or {})
-                            dic_msg = (category.name + ' ' + response_data['message'])
-                            context['message'] = dic_msg
-                            return{
-                                    'name': 'Success',
-                                    'type': 'ir.actions.act_window',
-                                    'view_mode': 'form',
-                                    'view_type': 'form',
-                                    'res_model': 'sh.message.wizard',
-                                    'views':[(view.id,'form')],
-                                    'view_id':view.id,
-                                    'target': 'new',
-                                    'context': context,
-                            }
+                        Error_Message.append('('+category.name+')' + ' ' + response_data['message'])
+                            
                 if 'data' in response_data:
                     food_king_id = response_data['data']['id']
                     category.write({'food_king_id': food_king_id})
-                    synced_categories_ids.append(category.id)
             except requests.exceptions.RequestException as e:
                         print( str(e))
                         pass
 
-        if synced_categories_ids:
-            view = self.env.ref('sh_message.sh_message_wizard')
-            context = dict(self._context or {})
-            context['message'] = "Categories Synced Successfully"
-            return {
-                'name': 'Success',
-                'type': 'ir.actions.act_window',
-                'view_mode': 'form',
-                'view_type': 'form',
-                'res_model': 'sh.message.wizard',
-                'views': [(view.id, 'form')],
-                'view_id': view.id,
-                'target': 'new',
-                'context': context,
+        view = self.env.ref('sh_message.sh_message_wizard')
+        context = dict(self._context or {})
+        context['message'] = "Categories Synced Successfully. \n The Following Categories is not sync there are some issues" + os.linesep + '\n'.join(Error_Message)
+        return {
+            'name': 'Success',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_model': 'sh.message.wizard',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'context': context,
             }
-        else:
-            return {'message': 'No new categories to sync.'}
+        
 
    #  sync all taxes          # 
      
@@ -399,7 +383,7 @@ class food_king(models.Model):
                                 'target': 'new',
                                 'context': context,
                         }
-            synced_tax_ids = []
+            Error_Message = []
             for tax in synced_taxes:
                 if  synced_taxes != []:
                     payload = json.dumps({
@@ -414,25 +398,11 @@ class food_king(models.Model):
                         response_data = response.json()
                         print(response_data,'llllllllllllllllllllll')
                         if 'message' in response_data:
-                            view = self.env.ref('sh_message.sh_message_wizard')
-                            context = dict(self._context or {})
-                            dic_msg = (tax.name + ' ' + response_data['message'])
-                            context['message'] = dic_msg
-                            return{
-                                    'name': 'Success',
-                                    'type': 'ir.actions.act_window',
-                                    'view_mode': 'form',
-                                    'view_type': 'form',
-                                    'res_model': 'sh.message.wizard',
-                                    'views':[(view.id,'form')],
-                                    'view_id':view.id,
-                                    'target': 'new',
-                                    'context': context,
-                            }
+                            Error_Message.append('('+tax.name+')' + ' ' + response_data['message'])
+                            
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
                             tax.write({'food_king_id': food_king_id})
-                            synced_tax_ids.append(tax.id)
                      
                         
 
@@ -440,24 +410,22 @@ class food_king(models.Model):
                          print( str(e))
                          pass
         
-            if synced_tax_ids:
-                        view = self.env.ref('sh_message.sh_message_wizard')
-                        context = dict(self._context or {})
-                        dic_msg = response_data.get('message', "Taxes Synced Successfully")
-                        context['message'] = dic_msg
-                        return{
-                                'name': 'Success',
-                                'type': 'ir.actions.act_window',
-                                'view_mode': 'form',
-                                'view_type': 'form',
-                                'res_model': 'sh.message.wizard',
-                                'views':[(view.id,'form')],
-                                'view_id':view.id,
-                                'target': 'new',
-                                'context': context,
-                        }
-            else:
-                return {'message': 'No new Taxes to sync.'}
+            view = self.env.ref('sh_message.sh_message_wizard')
+            context = dict(self._context or {})
+            dic_msg = "Taxes Synced Successfully. \n The Following Taxes is not sync there are some issues" + os.linesep + '\n'.join(Error_Message)
+            context['message'] = dic_msg
+            return{
+                    'name': 'Success',
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_model': 'sh.message.wizard',
+                    'views':[(view.id,'form')],
+                    'view_id':view.id,
+                    'target': 'new',
+                    'context': context,
+            }
+          
     
    #  sync pos order
 
