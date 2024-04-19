@@ -696,7 +696,7 @@ class food_king(models.Model):
                                                 'note':'\n'.join(instruction),
                                                 'tracking_number':803,
                                                 'session_move_id':7,
-                                                'table_id':search_table,
+                                                'table_id':search_table[0],
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
