@@ -843,7 +843,7 @@ class food_king(models.Model):
                 'body': message_body,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
                 'record_name': "Food King Message",
-            })''
+            })
 
         
 
