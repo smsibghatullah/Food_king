@@ -6,6 +6,7 @@ from requests.exceptions import RequestException, HTTPError, Timeout, Connection
 import re
 import base64
 import tempfile
+import os
 
 class food_king(models.Model):
     _name = 'food_king.food_king'
@@ -114,6 +115,7 @@ class food_king(models.Model):
                             'context': context,
                     }
         synced_product_ids = []
+        Error_Message = []
         for product in synced_products:
                 food_king_id_categ = 0
                 food_king_id_tax = 0
@@ -151,21 +153,8 @@ class food_king(models.Model):
                         response = requests.request("POST", url, headers=headers, data=payload, files=files)
                         response_data = response.json()
                         if 'message' in response_data:
-                            view = self.env.ref('sh_message.sh_message_wizard')
-                            context = dict(self._context or {})
-                            dic_msg = (product.name + ' ' + response_data['message'])
-                            context['message'] = dic_msg
-                            return{
-                                    'name': 'Success',
-                                    'type': 'ir.actions.act_window',
-                                    'view_mode': 'form',
-                                    'view_type': 'form',
-                                    'res_model': 'sh.message.wizard',
-                                    'views':[(view.id,'form')],
-                                    'view_id':view.id,
-                                    'target': 'new',
-                                    'context': context,
-                            }
+                            Error_Message.append(product.name + ' ' + response_data['message'])
+                            
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
                             product.write({'food_king_id': food_king_id})
@@ -179,7 +168,7 @@ class food_king(models.Model):
       
         view = self.env.ref('sh_message.sh_message_wizard')
         context = dict(self._context or {})
-        dic_msg = "Product Synced Successfully"
+        dic_msg = "Product Synced Successfully" + os.linesep + '\n'.join(Error_Message)
         context['message'] = dic_msg
         return{
                 'name': 'Success',
@@ -394,7 +383,6 @@ class food_king(models.Model):
                 'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
                 'Content-Type': 'application/json',
             }
-            print(synced_taxes,"fffffffffffffffff")
             if not synced_taxes :
                         view = self.env.ref('sh_message.sh_message_wizard')
                         context = dict(self._context or {})
@@ -424,7 +412,6 @@ class food_king(models.Model):
                     try:
                         response = requests.post(url, headers=headers, data=payload)
                         response_data = response.json()
-                        print(response_data,'llllllllllllllllllllll')
                         print(response_data,'llllllllllllllllllllll')
                         if 'message' in response_data:
                             view = self.env.ref('sh_message.sh_message_wizard')
