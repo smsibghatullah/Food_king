@@ -673,7 +673,7 @@ class food_king(models.Model):
                                     ('company_id', '=', self.company_id.id),
                                     ('config_id', '=', self.point_of_sale.id)
                                 ])
-                               
+                                print(search_table,"kkklllllllllllllllllllllllllllllleeeeeeeeeeeeeeee")
                                 if config_id:
                                     if search_pos_session:
                                             session_name = search_pos_session[0].name
@@ -696,7 +696,7 @@ class food_king(models.Model):
                                                 'note':'\n'.join(instruction),
                                                 'tracking_number':803,
                                                 'session_move_id':7,
-                                                'table_id':search_table[0],
+                                                'table_id':search_table,
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
