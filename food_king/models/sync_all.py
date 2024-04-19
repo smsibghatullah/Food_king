@@ -652,7 +652,7 @@ class food_king(models.Model):
                                                 
                             if customer_ids:
                                 customer_id = customer_ids[0]
-                                search_table = self.env['restaurant.table'].search([('name', '=',' Delivery Table' )]).mapped('id')
+                                search_table = self.env['restaurant.table'].search([('name', '=','Delivery Table')]).mapped('id')
                                 config_id = self.point_of_sale.id
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
