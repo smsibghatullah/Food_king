@@ -153,7 +153,7 @@ class food_king(models.Model):
                         response = requests.request("POST", url, headers=headers, data=payload, files=files)
                         response_data = response.json()
                         if 'message' in response_data:
-                            Error_Message.append(product.name + ' ' + response_data['message'])
+                            Error_Message.append('('+product.name+')' + ' ' + response_data['message'])
                             
                         if 'data' in response_data:
                             food_king_id = response_data['data']['id']
@@ -168,7 +168,7 @@ class food_king(models.Model):
       
         view = self.env.ref('sh_message.sh_message_wizard')
         context = dict(self._context or {})
-        dic_msg = "Product Synced Successfully" + os.linesep + '\n'.join(Error_Message)
+        dic_msg = "Product Synced Successfully. \n The Following product is not sync there are some issues" + os.linesep + '\n'.join(Error_Message)
         context['message'] = dic_msg
         return{
                 'name': 'Success',
