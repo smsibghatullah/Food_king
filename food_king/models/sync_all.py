@@ -721,17 +721,20 @@ class food_king(models.Model):
             'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
         }
         existing_floor_ids = [floor.food_king_id for floor in self.env['restaurant.table'].search([])]
-        food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name)], limit=1)
-        if not food_king_floor:
-            food_king_floor = self.env['restaurant.floor'].create({
-                'name': self.point_of_sale.name,
-                'pos_config_ids': [(4, self.point_of_sale.id)]  
-            })
-        else:
-            food_king_floor.write({
-                'pos_config_ids': [(4, self.point_of_sale.id)]  
-            })
-        food_king_pos = self.env['pos.config'].search([('name', '=', self.point_of_sale.name)], limit=1)
+        if self.point_of_sale:
+            food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name)], limit=1)
+            if not food_king_floor:
+                food_king_floor = self.env['restaurant.floor'].create({
+                    'name': self.point_of_sale.name,
+                    'pos_config_ids': [(4, self.point_of_sale.id)]  
+                })
+            else:
+                food_king_floor.write({
+                    'pos_config_ids': [(4, self.point_of_sale.id)]  
+                })
+            food_king_pos = self.env['pos.config'].search([('name', '=', self.point_of_sale.name)], limit=1)
+        else :
+            raise UserError(('Please select point of sale'))
 
         try:
             response = requests.get(url, headers=headers)
