@@ -150,8 +150,3 @@ class ProductFoodKing(models.Model):
                 'context': context,
             }
 
-
-class Product_productFoodKing(models.Model):
-    _inherit = 'product.product'
-
-    food_king_id = fields.Integer(string="Food king id", default=False)
