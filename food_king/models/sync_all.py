@@ -652,7 +652,7 @@ class food_king(models.Model):
                                                 
                             if customer_ids:
                                 customer_id = customer_ids[0]
-                                table_id = 0
+                                search_table = self.env['restaurant.table'].search([('name', '=',' Delivery Table' )]).mapped('id')
                                 config_id = self.point_of_sale.id
                                 total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                 total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
@@ -689,14 +689,14 @@ class food_king(models.Model):
                                                 'amount_tax':  float(total_tax_currency_price),
                                                 'amount_paid': sum([line[2]['price_subtotal_incl'] for line in line_vals]) if pos_data['payment_status'] == 5 else 0,
                                                 'amount_return': 0.0,
-                                                'table_id':table_id,
                                                 'status':'Online Order',
                                                 'pos_reference' : result,
                                                 'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
                                                 'lines': line_vals,
                                                 'note':'\n'.join(instruction),
                                                 'tracking_number':803,
-                                                'session_move_id':7
+                                                'session_move_id':7,
+                                                'table_id':search_table[0],
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             self.env['pos.order'].sudo().create(vals)
