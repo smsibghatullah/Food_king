@@ -150,3 +150,50 @@ class ProductFoodKing(models.Model):
                 'context': context,
             }
 
+    # def Add_product_Artibute(self):
+    #         food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
+    #         if not food_king:
+    #             print('Food King settings not configured. Please configure Food King settings first.')
+    #             return
+
+    #         headers = {
+    #             'Authorization': f'Bearer {food_king.auth_token}',
+    #             'X-Api-Key': food_king.license_key or '',
+    #         }
+
+    #         for attribute_line in self.attribute_line_ids:
+    #             for value_id in attribute_line.value_ids:
+    #                     for line_ids_price in artibuteline:
+    #                         if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
+    #                             payload = {
+    #                                 "name": line_ids_price.name,
+    #                                 "price": line_ids_price.price_extra,
+    #                                 "item_attribute_id": attribute_line.attribute_id.food_king_id,
+    #                                 "caution": attribute_line.attribute_id.caution,
+    #                                 "status": 5 if attribute_line.attribute_id.food_king_active else 10
+    #                             }
+    #                             url_get_id = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}"
+    #                             response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload)
+    #                             response_data = response_get_id.json()
+    #                             if 'data' in response_data:
+    #                                 food_king_id = response_data['data']['id']
+    #                                 print(food_king_id,"kkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddd")
+    #                                 value_id.write({'food_king_id': food_king_id})
+    #                                 line_ids_price.write({'food_king_id': food_king_id})
+
+
+    #         view = self.env.ref('sh_message.sh_message_wizard')
+    #         context = dict(self._context or {})
+    #         dic_msg = "Attribute Update Successfully"
+    #         context['message'] = dic_msg
+    #         return {
+    #             'name': 'Success',
+    #             'type': 'ir.actions.act_window',
+    #             'view_mode': 'form',
+    #             'view_type': 'form',
+    #             'res_model': 'sh.message.wizard',
+    #             'views': [(view.id, 'form')],
+    #             'view_id': view.id,
+    #             'target': 'new',
+    #             'context': context,
+    #         }
