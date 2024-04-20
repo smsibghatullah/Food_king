@@ -611,6 +611,7 @@ class food_king(models.Model):
                                     instruction.append(full_product_name + ' : ' + posid['instruction'])
                                     uid_counter = 1
                                     variation_ids = [variation['id'] for variation in posid['item_variations']]
+                                    print(product_Variants_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                     if product_Variants_ids:
                                         for item_id in product_Variants_ids:
                                                 if posid['item_variations']:
@@ -693,7 +694,7 @@ class food_king(models.Model):
                                                 'table_id': search_table[0],
                                             }
                                             print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                                            self.env['pos.order'].sudo().create(vals)
+                                            # self.env['pos.order'].sudo().create(vals)
                                             self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                         
                                     else :
