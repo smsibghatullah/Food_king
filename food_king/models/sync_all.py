@@ -614,8 +614,8 @@ class food_king(models.Model):
                                     if product_Variants_ids:
                                         for item_id in product_Variants_ids:
                                                 if posid['item_variations']:
-                                                    for itemdata in item_id['product_template_variant_value_ids']:
-                                                        if itemdata.food_king_id in variation_ids:
+                                                    # for itemdata in item_id['product_template_variant_value_ids']:
+                                                    #     if itemdata.food_king_id in variation_ids:
                                                             
                                                                     line_vals.append((0, 0, {
                                                                         'uuid': uid_counter,
