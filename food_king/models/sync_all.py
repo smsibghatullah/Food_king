@@ -550,6 +550,7 @@ class food_king(models.Model):
                                         topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                         line_topping_ids = [data.id for data in topping_ids]
                                         print(line_topping_ids,"lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
+                                        line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total'])
                                         if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
@@ -566,7 +567,7 @@ class food_king(models.Model):
                                                                         'product_id': item_id.id,
                                                                         'full_product_name': full_product_name,
                                                                         'qty': posid['quantity'],
-                                                                        'price_unit': float(posid['total_convert_price']) if product_tax and product_tax.price_include else float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
+                                                                        'price_unit': price + line_topping_ids_price,
                                                                         'discount': float(discount),
                                                                         'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                         'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
@@ -696,6 +697,7 @@ class food_king(models.Model):
                                     print(extras_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                     topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                     line_topping_ids = [data.id for data in topping_ids]
+                                    line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total'])
                                     print(line_topping_ids,"lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                     if product_Variants_ids:
                                         printed_ids = set()
@@ -712,7 +714,7 @@ class food_king(models.Model):
                                                                 'product_id': item_id.id,
                                                                 'full_product_name': full_product_name,
                                                                 'qty': posid['quantity'],
-                                                                'price_unit': price ,
+                                                                'price_unit': price + line_topping_ids_price ,
                                                                 'discount': float(discount),
                                                                 'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                 'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
@@ -727,7 +729,7 @@ class food_king(models.Model):
                                                                                 'line_topping_ids':line_topping_ids,
                                                                                 'full_product_name': full_product_name,
                                                                                 'qty': posid['quantity'],
-                                                                                'price_unit': price,
+                                                                                'price_unit': price + line_topping_ids_price ,
                                                                                 'discount': float(discount),
                                                                                 'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
                                                                                 'price_subtotal':float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 1) / 100,
