@@ -546,13 +546,12 @@ class food_king(models.Model):
                                         product_product_ids = [item_id['product_template_variant_value_ids'] for item_id in product_Variants_ids]
                                         extras_ids = [variation['id'] for variation in posid['item_extras']]
                                         print(extras_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                                        topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
-                                        line_topping_ids = [data.id for data in topping_ids]
-                                        print(line_topping_ids,"lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                         if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
                                                     if posid['item_variations']:
+                                                            topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids),('id','=',item_id.id)]).mapped('topping_ids')
+                                                            line_topping_ids = [data.id for data in topping_ids]
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
                                                                 printed_ids.add(product_id)
@@ -574,6 +573,8 @@ class food_king(models.Model):
                                                                     uid_counter += 1
                                                                 
                                                     if posid['item_variations'] == []:
+                                                                    topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids),('id','=',item_id.id)]).mapped('topping_ids')
+                                                                    line_topping_ids = [data.id for data in topping_ids]
                                                                     line_vals.append((0, 0, {
                                                                                         'company_id': self.company_id.id,
                                                                                         'product_id': item_id.id,
