@@ -76,8 +76,8 @@ class ProductFoodKing(models.Model):
                     attribute_children_id = []
                     synced_artibutes =self.env['product.attribute'].search([('product_tmpl_ids', '=', self.id)])
                     for artibutes in synced_artibutes:
+                            print("sssssssssssssssssssssssssssssssss")
                             if artibutes.food_king_id in attribute_get_data:
-                                print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                                 url_atribute =f"{food_king.url}/api/admin/setting/item-attribute/{artibutes.food_king_id}"
                                 
                                 payload_atribute = json.dumps({
@@ -87,10 +87,10 @@ class ProductFoodKing(models.Model):
 
                                 response_atribute = requests.put(url_atribute, headers=headers_topping, data=payload_atribute)
                                 response_data_atribute = response_atribute.json()
-                                print(response_data_atribute,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+                                print(response_data_atribute)
 
                             else:
-                                print("ooooooooooooooooopppppppppppppppppppppppppp")
+                                print("pppppppppppppppppppppppppppppppppp")
                                 synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
                                 url_atribute =f"{food_king.url}/api/admin/setting/item-attribute"
                                 
@@ -100,11 +100,10 @@ class ProductFoodKing(models.Model):
                                             "name": artibutes.name,
                                             "status": 5 if artibutes.food_king_active else 10
                                         }
-                                        print(payload_atribute)
                                         try:
                                             response_atribute = requests.post(url_atribute, headers=headers, data=payload_atribute)
                                             response_data_atribute = response_atribute.json()
-                                            print(response_data_atribute,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                            print(response_data_atribute,"iiiiiiiiiiiiiiiiiiiiiiiiiii")
                                             if 'data' in response_data_atribute:
                                                 food_king_id_atribute = response_data_atribute['data']['id']
                                                 artibutes.write({'food_king_id': food_king_id_atribute})
