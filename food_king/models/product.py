@@ -2,6 +2,8 @@ from odoo import models, fields,api
 import requests
 import base64
 import tempfile
+import os
+import json
 
 class ProductFoodKing(models.Model):
     _inherit = 'product.template'
@@ -18,6 +20,8 @@ class ProductFoodKing(models.Model):
     caution = fields.Text(string="Caution")
     description = fields.Text(string="Description")
     food_king_active = fields.Boolean(string="Food King Active", default=True)
+    food_king_id_topping = fields.Integer(string="Food king Topping id", default=False)
+    food_king_id_variant = fields.Integer(string="Food king Variation id", default=False)
 
     def update_product(self):
         food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
@@ -56,7 +60,119 @@ class ProductFoodKing(models.Model):
             url_get_id = f"{food_king.url}/api/admin/item/{self.food_king_id}"
             response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload, files=files)
             pos_data = response_get_id.json()
-            print(response_get_id.text,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+            
+            synced_topping = self.product_variant_ids.topping_ids
+            if self.food_king_id_topping:
+                    for topping in synced_topping:
+                        payload_topping = json.dumps({
+                            "name": topping.name,
+                            "price": topping.list_price,
+                            "status": 5
+                        })
+                        headers_topping = {
+                            'Authorization': f'Bearer {food_king.auth_token}',
+                            'X-Api-Key': food_king.license_key or '',
+                            'Content-Type': 'application/json',
+                        }
+                        try:
+                            url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}/{self.food_king_id_topping}"
+                            response_topping = requests.put(url, headers=headers_topping, data=payload_topping)
+                            response_data_topping = response_topping.json()
+                                
+                        except requests.exceptions.RequestException as e:
+                            print( str(e))
+                            pass
+            else:
+                        for topping in synced_topping:
+                                payload_topping = {
+                                    "name": topping.name,
+                                    "price": topping.list_price,
+                                    "status": 5
+                                }
+                                try:
+                                    url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}"
+                                    response_topping = requests.post(url, headers=headers, data=payload_topping)
+                                    response_data_topping = response_topping.json()
+                                        
+                                    if 'data' in response_data_topping:
+                                        food_king_id_topping = response_data_topping['data']['id']
+                                        self.write({'food_king_id_topping': food_king_id_topping})
+                                except requests.exceptions.RequestException as e:
+                                    print( str(e))
+                                    pass
+            if self.attribute_line_ids:
+                    synced_artibutes =self.env['product.attribute'].search([('product_tmpl_ids', '=', self.id)])
+                    for artibutes in synced_artibutes:
+                            url_atribute =f"{food_king.url}/api/admin/setting/item-attribute/{artibutes.food_king_id}"
+                            
+                            payload_atribute = json.dumps({
+                                "name": artibutes.name,
+                                "status": 5 if artibutes.food_king_active else 10
+                            })
+
+                            response_atribute = requests.put(url_atribute, headers=headers_topping, data=payload_atribute)
+                            response_data_atribute = response_atribute.json()
+            if self.food_king_id_variant:
+                    artibuteline=self.env['product.template.attribute.value'].search([])
+                    for attribute_line in self.attribute_line_ids:
+                            for value_id in attribute_line.value_ids:
+                                    for line_ids_price in artibuteline:
+                                        print(line_ids_price.name , value_id.name,line_ids_price.attribute_id.id , attribute_line.attribute_id.id,"ttttttttttttttttttttttttttttttttttt")
+                                        if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
+                                            payload_atribute2  = json.dumps({
+                                                "name": line_ids_price.name,
+                                                "price": line_ids_price.price_extra,
+                                                "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                                                "caution":  attribute_line.attribute_id.caution if  attribute_line.attribute_id.caution else '',
+                                                "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                                            })
+                                            url_get_id_atribute2  = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}/{self.food_king_id_variant}"
+                                            response_get_id_atribute2  = requests.request("Put", url_get_id_atribute2 , headers=headers_topping , data=payload_atribute2 )
+                                            response_data_atribute2  = response_get_id_atribute2 .json()
+                                       
+            else:
+                        artibutes = self.env['product.attribute'].search([])
+                        artibuteline=self.env['product.template.attribute.value'].search([])
+                        synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
+                        url_atribute =f"{food_king.url}/api/admin/setting/item-attribute"
+                      
+                        synced_artibutes_ids = []
+                        for artibutes in synced_artibutes:
+                                payload_atribute = {
+                                    "name": artibutes.name,
+                                    "status": 5 if artibutes.food_king_active else 10
+                                }
+                                try:
+                                    response_atribute = requests.post(url_atribute, headers=headers, data=payload_atribute)
+                                    response_data_atribute = response_atribute.json()
+                                    if 'data' in response_data_atribute:
+                                        food_king_id_atribute = response_data_atribute['data']['id']
+                                        artibutes.write({'food_king_id': food_king_id_atribute})
+                                        synced_artibutes_ids.append(artibutes.id)
+
+                                except requests.exceptions.RequestException as e:
+                                    return {'error': str(e)}
+                                
+                        for attribute_line in self.attribute_line_ids:
+                            for value_id in attribute_line.value_ids:
+                                    for line_ids_price in artibuteline:
+                                        if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
+                                            payload_atribute2  = {
+                                                "name": line_ids_price.name,
+                                                "price": line_ids_price.price_extra,
+                                                "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                                                "caution": attribute_line.attribute_id.caution,
+                                                "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                                            }
+                                            url_get_id_atribute2  =f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
+                                            response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
+                                            response_data_atribute2  = response_get_id_atribute2 .json()
+                                            if 'data' in response_data_atribute2 :
+                                                food_king_id_atribute2  = response_data_atribute2 ['data']['id']
+                                                value_id.write({'food_king_id': food_king_id_atribute2 })
+                                                line_ids_price.write({'food_king_id': food_king_id_atribute2 })
+                                                self.write({'food_king_id_variant':food_king_id_atribute2})
+
             view = self.env.ref('sh_message.sh_message_wizard')
             context = dict(self._context or {})
             dic_msg = "Product Update Successfully"
@@ -74,126 +190,4 @@ class ProductFoodKing(models.Model):
             }
         
 
-    def Add_product_Artibute(self):
-            food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
-            artibutes = self.env['product.attribute'].search([])
-            artibuteline=self.env['product.template.attribute.value'].search([])
-            print(artibuteline,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-            synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
-            url = food_king.url   + "/api/admin/setting/item-attribute"
-            headers = {
-                'Authorization': f'Bearer {food_king.auth_token}',
-                'X-Api-Key':food_king.license_key or '' ,
-            }
-            synced_artibutes_ids = []
-            for artibutes in synced_artibutes:
-                    payload = {
-                        "name": artibutes.name,
-                        "status": 5 if artibutes.food_king_active else 10
-                    }
-                    try:
-                        response = requests.post(url, headers=headers, data=payload)
-                        response_data = response.json()
-                        print(response_data,"dddddddddddddkkkkkkkkkkkkklllllllllllllnnnnnnmmmmmmmmmmmmmm")
-                        if 'data' in response_data:
-                            food_king_id = response_data['data']['id']
-                            artibutes.write({'food_king_id': food_king_id})
-                            synced_artibutes_ids.append(artibutes.id)
-
-                    except requests.exceptions.RequestException as e:
-                        return {'error': str(e)}
-                    
-
-            if not food_king:
-                print('Food King settings not configured. Please configure Food King settings first.')
-                return
-
-            headers = {
-                'Authorization': f'Bearer {food_king.auth_token}',
-                'X-Api-Key': food_king.license_key or '',
-            }
-
-            for attribute_line in self.attribute_line_ids:
-                for value_id in attribute_line.value_ids:
-                        for line_ids_price in artibuteline:
-                            if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
-                                payload = {
-                                    "name": line_ids_price.name,
-                                    "price": line_ids_price.price_extra,
-                                    "item_attribute_id": attribute_line.attribute_id.food_king_id,
-                                    "caution": attribute_line.attribute_id.caution,
-                                    "status": 5 if attribute_line.attribute_id.food_king_active else 10
-                                }
-                                url_get_id = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
-                                response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload)
-                                response_data = response_get_id.json()
-                                if 'data' in response_data:
-                                    food_king_id = response_data['data']['id']
-                                    print(food_king_id,"kkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddd")
-                                    value_id.write({'food_king_id': food_king_id})
-                                    line_ids_price.write({'food_king_id': food_king_id})
-
-
-            view = self.env.ref('sh_message.sh_message_wizard')
-            context = dict(self._context or {})
-            dic_msg = "Attribute Update Successfully"
-            context['message'] = dic_msg
-            return {
-                'name': 'Success',
-                'type': 'ir.actions.act_window',
-                'view_mode': 'form',
-                'view_type': 'form',
-                'res_model': 'sh.message.wizard',
-                'views': [(view.id, 'form')],
-                'view_id': view.id,
-                'target': 'new',
-                'context': context,
-            }
-
-    # def Add_product_Artibute(self):
-    #         food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
-    #         if not food_king:
-    #             print('Food King settings not configured. Please configure Food King settings first.')
-    #             return
-
-    #         headers = {
-    #             'Authorization': f'Bearer {food_king.auth_token}',
-    #             'X-Api-Key': food_king.license_key or '',
-    #         }
-
-    #         for attribute_line in self.attribute_line_ids:
-    #             for value_id in attribute_line.value_ids:
-    #                     for line_ids_price in artibuteline:
-    #                         if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
-    #                             payload = {
-    #                                 "name": line_ids_price.name,
-    #                                 "price": line_ids_price.price_extra,
-    #                                 "item_attribute_id": attribute_line.attribute_id.food_king_id,
-    #                                 "caution": attribute_line.attribute_id.caution,
-    #                                 "status": 5 if attribute_line.attribute_id.food_king_active else 10
-    #                             }
-    #                             url_get_id = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}"
-    #                             response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload)
-    #                             response_data = response_get_id.json()
-    #                             if 'data' in response_data:
-    #                                 food_king_id = response_data['data']['id']
-    #                                 print(food_king_id,"kkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddd")
-    #                                 value_id.write({'food_king_id': food_king_id})
-    #                                 line_ids_price.write({'food_king_id': food_king_id})
-
-
-    #         view = self.env.ref('sh_message.sh_message_wizard')
-    #         context = dict(self._context or {})
-    #         dic_msg = "Attribute Update Successfully"
-    #         context['message'] = dic_msg
-    #         return {
-    #             'name': 'Success',
-    #             'type': 'ir.actions.act_window',
-    #             'view_mode': 'form',
-    #             'view_type': 'form',
-    #             'res_model': 'sh.message.wizard',
-    #             'views': [(view.id, 'form')],
-    #             'view_id': view.id,
-    #             'target': 'new',
-    #             'context': context,
-    #         }
+   

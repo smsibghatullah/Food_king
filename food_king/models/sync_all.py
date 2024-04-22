@@ -161,6 +161,74 @@ class food_king(models.Model):
                             product.write({'food_king_id': food_king_id})
                             synced_product_ids.append(product.id)
 
+                        artibutes = self.env['product.attribute'].search([])
+                        artibuteline=self.env['product.template.attribute.value'].search([])
+                        print(artibuteline,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                        synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
+                        url_atribute =(self.url or Foodking_Ids.url)   + "/api/admin/setting/item-attribute"
+                      
+                        synced_artibutes_ids = []
+                        for artibutes in synced_artibutes:
+                                payload_atribute = {
+                                    "name": artibutes.name,
+                                    "status": 5 if artibutes.food_king_active else 10
+                                }
+                                try:
+                                    response_atribute = requests.post(url_atribute, headers=headers, data=payload_atribute)
+                                    response_data_atribute = response_atribute.json()
+                                    print(response_data_atribute,"dddddddddddddkkkkkkkkkkkkklllllllllllllnnnnnnmmmmmmmmmmmmmm")
+                                    if 'data' in response_data_atribute:
+                                        food_king_id_atribute = response_data_atribute['data']['id']
+                                        artibutes.write({'food_king_id': food_king_id_atribute})
+                                        synced_artibutes_ids.append(artibutes.id)
+
+                                except requests.exceptions.RequestException as e:
+                                    return {'error': str(e)}
+                                
+                        for attribute_line in product.attribute_line_ids:
+                            for value_id in attribute_line.value_ids:
+                                    for line_ids_price in artibuteline:
+                                        if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
+                                            payload_atribute2  = {
+                                                "name": line_ids_price.name,
+                                                "price": line_ids_price.price_extra,
+                                                "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                                                "caution": attribute_line.attribute_id.caution,
+                                                "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                                            }
+                                            url_get_id_atribute2  = (self.url or Foodking_Ids.url)+f"/api/admin/item/variation/{product.food_king_id}"
+                                            response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
+                                            response_data_atribute2  = response_get_id_atribute2 .json()
+                                            if 'data' in response_data_atribute2 :
+                                                food_king_id_atribute2  = response_data_atribute2 ['data']['id']
+                                                print(food_king_id_atribute2 ,"kkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddd")
+                                                value_id.write({'food_king_id': food_king_id_atribute2 })
+                                                line_ids_price.write({'food_king_id': food_king_id_atribute2 })
+                                                product.write({'food_king_id_variant':food_king_id_atribute2})
+
+                        synced_topping = product.product_variant_ids.topping_ids
+                        for topping in synced_topping:
+                            payload_topping = {
+                                "name": topping.name,
+                                "price": topping.list_price,
+                                "status": 5
+                            }
+                            try:
+                                url = (self.url or Foodking_Ids.url)+f"/api/admin/item/extra/{food_king_id}"
+                                response_topping = requests.post(url, headers=headers, data=payload_topping)
+                                response_data_topping = response_topping.json()
+                                print(response_data_topping,payload,'llllllllddddddddddddddddddddddddddddllllllllllllll')
+                                    
+                                if 'data' in response_data_topping:
+                                    food_king_id_topping = response_data_topping['data']['id']
+                                    product.write({'food_king_id_topping': food_king_id_topping})
+                            
+                                
+
+                            except requests.exceptions.RequestException as e:
+                                print( str(e))
+                                pass
+
                             
                     except requests.exceptions.RequestException as e:
                         print( str(e))
@@ -481,8 +549,6 @@ class food_king(models.Model):
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
                                                                 printed_ids.add(product_id)
-                                                                print(product_id, "ooooooooooooooooo")
-                                                                print(posid['item_id'], "ssssssssssssssss")
                                                                 
                                                                 if product_id == posid['item_id']:
                                                                     line_vals.append((0, 0, {
@@ -616,7 +682,12 @@ class food_king(models.Model):
                                     instruction.append(full_product_name + ' : ' + posid['instruction'])
                                     uid_counter = 1
                                     variation_ids = [variation['id'] for variation in posid['item_variations']]
-                                    print(product_Variants_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                    extras_ids = [variation['id'] for variation in posid['item_extras']]
+                                    print(extras_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                    topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
+                                   
+                                    line_topping_ids = [(6, 0,[topping_ids.id])] if topping_ids else None
+                                    print(line_topping_ids,"lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                     if product_Variants_ids:
                                         printed_ids = set()
                                         for item_id in product_Variants_ids:
@@ -624,12 +695,10 @@ class food_king(models.Model):
                                                     product_id = item_id.food_king_id
                                                     if product_id not in printed_ids:
                                                         printed_ids.add(product_id)
-                                                        print(product_id, "ooooooooooooooooo")
-                                                        print(posid['item_id'], "ssssssssssssssss")
-                                                        
                                                         if product_id == posid['item_id']:
                                                             line_vals.append((0, 0, {
                                                                 'uuid': uid_counter,
+                                                                'line_topping_ids':line_topping_ids,
                                                                 'company_id': self.company_id.id,
                                                                 'product_id': item_id.id,
                                                                 'full_product_name': full_product_name,
@@ -646,6 +715,7 @@ class food_king(models.Model):
                                                             line_vals.append((0, 0, {
                                                                                 'company_id': self.company_id.id,
                                                                                 'product_id': item_id.id,
+                                                                                'line_topping_ids':line_topping_ids,
                                                                                 'full_product_name': full_product_name,
                                                                                 'qty': posid['quantity'],
                                                                                 'price_unit': float(posid['total_convert_price']) if product_tax and product_tax.price_include else float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 1) / 100,

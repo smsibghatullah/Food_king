@@ -1,7 +1,7 @@
 <odoo>
     <data>
-        <record id="view_product_form_inherited_food_king" model="ir.ui.view">
-            <field name="name">product.template.form.inherited.food.king</field>
+        <record id="view_product_form1212_inherited_food_king1" model="ir.ui.view">
+            <field name="name">product.template.form</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
@@ -12,13 +12,37 @@
                     <field name="caution"/>
                     <field name="description"/>
                     <field name="food_king_id"/>
+                    <field name="food_king_id_variant"/>
+                     <field name="food_king_id_topping"/>
                 </xpath>
-               <xpath expr="//form//header" position="inside">
-                <button name="update_product" string="Update Food King Product" type="object" class="oe_highlight btn-primary"  />
-                <button name="Add_product_Artibute" string="Add Product Artibute on Food King " type="object" class="oe_highlight btn-info"  />
+             
+            </field>
+        </record>
+
+          <record id="view_product_form_inherited_food_king" model="ir.ui.view">
+            <field name="name">product.template.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                   <xpath expr="//form//header" position="inside">
+                    <button name="update_product" string="Update Food King Product" type="object" class="oe_highlight btn-primary"  />
+                    </xpath>
+             
+            </field>
+        </record>
+
+        <record id="view_product_data_123145_form_inherited_food_king" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form//header" position="inside">
+                    <button name="update_product_product" string="Update Food King Product" type="object" class="oe_highlight btn-primary" />
                 </xpath>
             </field>
         </record>
+
+        
 
           <record id="pos_order_tree_inherit" model="ir.ui.view">
             <field name="name">pos.order.tree.inherit</field>
