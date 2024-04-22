@@ -45,6 +45,11 @@ class Product_product_FoodKing(models.Model):
             url_get_id = f"{food_king.url}/api/admin/item/{self.food_king_id}"
             response_get_id = requests.request("POST", url_get_id, headers=headers, data=payload, files=files)
             pos_data = response_get_id.json()
+            headers_topping = {
+                            'Authorization': f'Bearer {food_king.auth_token}',
+                            'X-Api-Key': food_king.license_key or '',
+                            'Content-Type': 'application/json',
+                        }
             
             synced_topping = self.topping_ids
             if self.food_king_id_topping:
@@ -54,11 +59,7 @@ class Product_product_FoodKing(models.Model):
                             "price": topping.list_price,
                             "status": 5
                         })
-                        headers_topping = {
-                            'Authorization': f'Bearer {food_king.auth_token}',
-                            'X-Api-Key': food_king.license_key or '',
-                            'Content-Type': 'application/json',
-                        }
+                       
                         try:
                             url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}/{self.food_king_id_topping}"
                             response_topping = requests.put(url, headers=headers_topping, data=payload_topping)
