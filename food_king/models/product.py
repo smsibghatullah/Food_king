@@ -117,7 +117,7 @@ class ProductFoodKing(models.Model):
                     for attribute_line in self.attribute_line_ids:
                             for value_id in attribute_line.value_ids:
                                     for line_ids_price in artibuteline:
-                                        print(line_ids_price.name , value_id.name,line_ids_price.attribute_id.id , attribute_line.attribute_id.id,"ttttttttttttttttttttttttttttttttttt")
+                                        print(line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name,"ttttttttttttttttttttttttttttttttttt")
                                         if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
                                             payload_atribute2  = json.dumps({
                                                 "name": line_ids_price.name,
