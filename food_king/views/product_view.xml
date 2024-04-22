@@ -25,7 +25,7 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                    <xpath expr="//form//header" position="inside">
-                    <button name="update_product" string="Update Food King Product"  type="object" class="oe_highlight btn-primary"  invisible="model == 'product.product'"/>
+                    <button name="update_product" string="Update Food King Product"  type="object" class="oe_highlight btn-primary"  />
                     </xpath>
              
             </field>
