@@ -565,7 +565,7 @@ class food_king(models.Model):
                                                                         'qty': posid['quantity'],
                                                                         'price_unit': float(posid['total_convert_price']) if product_tax and product_tax.price_include else float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
                                                                         'discount': float(discount),
-                                                                        'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax else None,
+                                                                        'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax else [],
                                                                         'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
                                                                         'price_subtotal_incl': float(posid['total_convert_price'])
                                                                     }))
@@ -580,7 +580,7 @@ class food_king(models.Model):
                                                                                         'qty': posid['quantity'],
                                                                                         'price_unit': float(posid['total_convert_price']) if product_tax and product_tax.price_include else float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 1) / 100,
                                                                                         'discount': float(discount),
-                                                                                        'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else None,
+                                                                                        'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else [],
                                                                                         'price_subtotal':float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 1) / 100,
                                                                                         'price_subtotal_incl': float(posid['total_convert_price'])
                                                                                     }))
@@ -711,7 +711,7 @@ class food_king(models.Model):
                                                                 'qty': posid['quantity'],
                                                                 'price_unit': float(posid['total_convert_price']) if product_tax and product_tax.price_include else float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
                                                                 'discount': float(discount),
-                                                                'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax else None,
+                                                                'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax else [],
                                                                 'price_subtotal': float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) / 100 if product_tax else 0),
                                                                 'price_subtotal_incl': float(posid['total_convert_price'])
                                                             }))
@@ -726,7 +726,7 @@ class food_king(models.Model):
                                                                                 'qty': posid['quantity'],
                                                                                 'price_unit': float(posid['total_convert_price']) if product_tax and product_tax.price_include else float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 1) / 100,
                                                                                 'discount': float(discount),
-                                                                                'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else None,
+                                                                                'tax_ids': [(6, 0, [int(product_tax)])] if product_tax else [],
                                                                                 'price_subtotal':float(posid['total_convert_price']) - (float(posid['total_convert_price']) * float(product_tax.amount) if product_tax else 1) / 100,
                                                                                 'price_subtotal_incl': float(posid['total_convert_price'])
                                                                             }))
@@ -746,7 +746,7 @@ class food_king(models.Model):
                                     'qty': 1,
                                     'company_id': self.company_id.id,
                                     'price_unit': float(delivery_charge_currency_price),
-                                    'tax_ids' : [(4, delivery_charges.taxes_id.id)] if delivery_charges != '' else None,
+                                    'tax_ids' : [(4, delivery_charges.taxes_id.id)] if delivery_charges != '' else [],
                                     'price_subtotal': float(delivery_charge_currency_price) - (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100 if delivery_charges.taxes_id.price_include else float(delivery_charge_currency_price) ,
                                     'price_subtotal_incl':float(delivery_charge_currency_price) if delivery_charges.taxes_id and delivery_charges.taxes_id.price_include else float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100
                                 }))
