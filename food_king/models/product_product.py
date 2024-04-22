@@ -8,6 +8,7 @@ import json
 class Product_product_FoodKing(models.Model):
     _inherit = 'product.product'
 
+
     def update_product_product(self):
             print("dddddddddddddddddddddddddddddddddddd")
             food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
@@ -54,10 +55,8 @@ class Product_product_FoodKing(models.Model):
             url =f"{food_king.url}/api/admin/item/extra/{self.food_king_id}?paginate=1&page=1&per_page=10&order_column=id&order_type=desc&id={self.food_king_id}"
             response_topping_get = requests.get(url, headers=headers,data={})
             response_data_topping_get = response_topping_get.json()
-            print(response_data_topping_get['data'],'food_king_id_topping======================================================>>>>>>') 
             synced_topping = self.topping_ids
             topping_get_data = [item['id'] for item in response_data_topping_get['data']]
-            print(self.food_king_id_topping,synced_topping,"llllllllllllllllllllllllllllllllllllllllllllll")
             for topping in synced_topping:
                         if topping.food_king_id_topping in topping_get_data:
                             payload_topping = json.dumps({
@@ -70,7 +69,6 @@ class Product_product_FoodKing(models.Model):
                                 url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}/{topping.food_king_id_topping}"
                                 response_topping = requests.put(url, headers=headers_topping, data=payload_topping)
                                 response_data_topping = response_topping.json()
-                                print(response_data_topping,payload_topping,url,'=============================================================llllllllllllllllllllllllllll=============================')
                                     
                             except requests.exceptions.RequestException as e:
                                 print( str(e))
@@ -86,7 +84,6 @@ class Product_product_FoodKing(models.Model):
                                                 url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}"
                                                 response_topping = requests.post(url, headers=headers, data=payload_topping)
                                                 response_data_topping = response_topping.json()
-                                                print(response_data_topping,payload,'llllllllddddddddddddddddddddddddddddllllllllllllll')
                                                     
                                                 if 'data' in response_data_topping:
                                                     food_king_id_topping = response_data_topping['data']['id']

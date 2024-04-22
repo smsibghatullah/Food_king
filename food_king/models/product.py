@@ -22,6 +22,7 @@ class ProductFoodKing(models.Model):
     food_king_active = fields.Boolean(string="Food King Active", default=True)
     food_king_id_topping = fields.Integer(string="Food king Topping id", default=False)
     food_king_id_variant = fields.Integer(string="Food king Variation id", default=False)
+    
 
     def update_product(self):
             food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
