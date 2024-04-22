@@ -8,6 +8,7 @@ import json
 class Product_product_FoodKing(models.Model):
     _inherit = 'product.product'
 
+    is_update = fields.Boolean(string="Is Update" , required=True)
 
     def update_product_product(self):
             print("dddddddddddddddddddddddddddddddddddd")
