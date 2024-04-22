@@ -206,6 +206,7 @@ class food_king(models.Model):
                                                     line_ids_price.write({'food_king_id': food_king_id_atribute2 })
                                                     product.write({'food_king_id_variant':food_king_id_atribute2})
 
+                            
                             synced_topping = product.product_variant_ids.topping_ids
                             for topping in synced_topping:
                                 payload_topping = {
@@ -217,11 +218,12 @@ class food_king(models.Model):
                                     url = (self.url or Foodking_Ids.url)+f"/api/admin/item/extra/{food_king_id}"
                                     response_topping = requests.post(url, headers=headers, data=payload_topping)
                                     response_data_topping = response_topping.json()
-                                    print(response_data_topping,payload,'llllllllddddddddddddddddddddddddddddllllllllllllll')
+                                    print(response_data_topping,payload,'food_king_id_topping======================================================>>>>>>')
                                         
                                     if 'data' in response_data_topping:
                                         food_king_id_topping = response_data_topping['data']['id']
                                         product.write({'food_king_id_topping': food_king_id_topping})
+                                        topping.write({'food_king_id_topping': food_king_id_topping})
                             
                                 
 

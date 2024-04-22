@@ -9,24 +9,25 @@ class Product_product_FoodKing(models.Model):
     _inherit = 'product.product'
 
     def update_product_product(self):
-        food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
-        if not food_king:
-            print('Food King settings not configured. Please configure Food King settings first.')
+            print("dddddddddddddddddddddddddddddddddddd")
+            food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
+            if not food_king:
+                print('Food King settings not configured. Please configure Food King settings first.')
 
-        headers = {
-            'Authorization': f'Bearer {food_king.auth_token}',
-            'X-Api-Key': food_king.license_key or '',
-        }
+            headers = {
+                'Authorization': f'Bearer {food_king.auth_token}',
+                'X-Api-Key': food_king.license_key or '',
+            }
 
-        image_base64 = ""
-        if self.image_1920:
-            image_data = base64.b64decode(self.image_1920)
+            image_base64 = ""
+            image_data = base64.b64decode(self.image_1920) if self.image_1920 else ''
+            files=[]
+            if self.image_1920:
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                    temp_file.write(image_data)
+                    temp_file_path = temp_file.name
 
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
-                temp_file.write(image_data)
-                temp_file_path = temp_file.name
-
-            files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
+                files = [('image', ('Foodking.png', open(temp_file_path, 'rb'), 'image/png'))]
 
             payload = {
                 "id":self.food_king_id,
@@ -50,44 +51,50 @@ class Product_product_FoodKing(models.Model):
                             'X-Api-Key': food_king.license_key or '',
                             'Content-Type': 'application/json',
                         }
-            
+            url =f"{food_king.url}/api/admin/item/extra/{self.food_king_id}?paginate=1&page=1&per_page=10&order_column=id&order_type=desc&id={self.food_king_id}"
+            response_topping_get = requests.get(url, headers=headers,data={})
+            response_data_topping_get = response_topping_get.json()
+            print(response_data_topping_get['data'],'food_king_id_topping======================================================>>>>>>') 
             synced_topping = self.topping_ids
-            if self.food_king_id_topping:
-                    for topping in synced_topping:
-                        payload_topping = json.dumps({
-                            "name": topping.name,
-                            "price": topping.list_price,
-                            "status": 5
-                        })
-                       
-                        try:
-                            url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}/{self.food_king_id_topping}"
-                            response_topping = requests.put(url, headers=headers_topping, data=payload_topping)
-                            response_data_topping = response_topping.json()
-                            print(response_data_topping,payload_topping,url,'ccccccccccccccccccccccccccccc')
-                                
-                        except requests.exceptions.RequestException as e:
-                            print( str(e))
-                            pass
-            else:
-                        for topping in synced_topping:
-                                payload_topping = {
-                                    "name": topping.name,
-                                    "price": topping.list_price,
-                                    "status": 5
-                                }
-                                try:
-                                    url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}"
-                                    response_topping = requests.post(url, headers=headers, data=payload_topping)
-                                    response_data_topping = response_topping.json()
-                                    print(response_data_topping,payload,'llllllllddddddddddddddddddddddddddddllllllllllllll')
-                                        
-                                    if 'data' in response_data_topping:
-                                        food_king_id_topping = response_data_topping['data']['id']
-                                        self.write({'food_king_id_topping': food_king_id_topping})
-                                except requests.exceptions.RequestException as e:
-                                    print( str(e))
-                                    pass
+            topping_get_data = [item['id'] for item in response_data_topping_get['data']]
+            print(self.food_king_id_topping,synced_topping,"llllllllllllllllllllllllllllllllllllllllllllll")
+            for topping in synced_topping:
+                        if topping.food_king_id_topping in topping_get_data:
+                            payload_topping = json.dumps({
+                                "name": topping.name,
+                                "price": topping.list_price,
+                                "status": 5
+                            })
+                        
+                            try:
+                                url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}/{topping.food_king_id_topping}"
+                                response_topping = requests.put(url, headers=headers_topping, data=payload_topping)
+                                response_data_topping = response_topping.json()
+                                print(response_data_topping,payload_topping,url,'=============================================================llllllllllllllllllllllllllll=============================')
+                                    
+                            except requests.exceptions.RequestException as e:
+                                print( str(e))
+                                pass
+                        else:
+                                    for topping in synced_topping:
+                                            payload_topping = {
+                                                "name": topping.name,
+                                                "price": topping.list_price,
+                                                "status": 5
+                                            }
+                                            try:
+                                                url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}"
+                                                response_topping = requests.post(url, headers=headers, data=payload_topping)
+                                                response_data_topping = response_topping.json()
+                                                print(response_data_topping,payload,'llllllllddddddddddddddddddddddddddddllllllllllllll')
+                                                    
+                                                if 'data' in response_data_topping:
+                                                    food_king_id_topping = response_data_topping['data']['id']
+                                                    self.write({'food_king_id_topping': food_king_id_topping})
+                                                    topping.write({'food_king_id_topping': food_king_id_topping})
+                                            except requests.exceptions.RequestException as e:
+                                                print( str(e))
+                                                pass
 
             if self.attribute_line_ids:
                     synced_artibutes =self.env['product.attribute'].search([('product_tmpl_ids', '=', self.id)])
@@ -140,7 +147,8 @@ class Product_product_FoodKing(models.Model):
                                         synced_artibutes_ids.append(artibutes.id)
 
                                 except requests.exceptions.RequestException as e:
-                                    return {'error': str(e)}
+                                    print( str(e))
+                                    pass
                                 
                         for attribute_line in self.attribute_line_ids:
                             for value_id in attribute_line.value_ids:
@@ -162,7 +170,6 @@ class Product_product_FoodKing(models.Model):
                                                 line_ids_price.write({'food_king_id': food_king_id_atribute2 })
                                                 self.write({'food_king_id_variant':food_king_id_atribute2})
                    
-            print(response_get_id.text,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             view = self.env.ref('sh_message.sh_message_wizard')
             context = dict(self._context or {})
             dic_msg = "Product Update Successfully"
