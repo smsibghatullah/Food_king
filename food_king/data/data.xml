@@ -68,7 +68,7 @@
         </record>
         <record id="ir_category_cron" model="ir.cron">
             <field name="name">Sync Category</field>
-            <field name="interval_number">5</field>
+            <field name="interval_number">3</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
@@ -85,7 +85,7 @@
         </record>
         <record id="ir_tax_cron" model="ir.cron">
             <field name="name">Sync Tax</field>
-            <field name="interval_number">5</field>
+            <field name="interval_number">3</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
@@ -102,7 +102,7 @@
         </record>
         <record id="ir_customer_cron" model="ir.cron">
             <field name="name">Sync Customer</field>
-            <field name="interval_number">5</field>
+            <field name="interval_number">3</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
@@ -119,7 +119,7 @@
         </record>
         <record id="ir_table_cron" model="ir.cron">
             <field name="name">Sync Table</field>
-            <field name="interval_number">5</field>
+            <field name="interval_number">3</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
@@ -136,13 +136,30 @@
         </record>
         <record id="ir_product_cron" model="ir.cron">
             <field name="name">Sync Product</field>
-            <field name="interval_number">5</field>
+            <field name="interval_number">4</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
             <field name="model_id" ref="model_food_king_food_king"/>
             <field name="state">code</field>
             <field name="code">model.sync_all_products()</field>
+        </record>
+
+         <record id="ir_customer_cron_action" model="ir.actions.server">
+            <field name="name">Sync Branches</field>
+            <field name="model_id" ref="model_food_king_food_king"/>
+            <field name="state">code</field>
+            <field name="code">model.get_branch_from_api()</field>
+        </record>
+        <record id="ir_customer_cron" model="ir.cron">
+            <field name="name">Sync Branches</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model_id" ref="model_food_king_food_king"/>
+            <field name="state">code</field>
+            <field name="code">model.get_branch_from_api()</field>
         </record>
 
         
