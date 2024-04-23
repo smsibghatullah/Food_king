@@ -704,7 +704,7 @@ class food_king(models.Model):
                                             'company_id': self.company_id.id or Foodking_Ids.company_id.id,
                                             'price_unit': float(delivery_charge_currency_price),
                                             'tax_ids' : [(4, delivery_charges.taxes_id.id)] if delivery_charges != '' and delivery_charges.taxes_id.id else [],
-                                            'price_subtotal': float(delivery_charge_currency_price)/((100/delivery_charges.taxes_id.amount)/100),
+                                            'price_subtotal': float(delivery_charge_currency_price)/((100/delivery_charges.taxes_id.amount or 0)/100),
                                             'price_subtotal_incl':float(delivery_charge_currency_price) if delivery_charges.taxes_id and delivery_charges.taxes_id.price_include else float(delivery_charge_currency_price) + (float(delivery_charge_currency_price) * delivery_charges.taxes_id.amount) / 100
                                         }))
                                         search_pos_session = self.env['pos.session'].sudo().search([
