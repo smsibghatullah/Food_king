@@ -491,7 +491,7 @@ class food_king(models.Model):
                                         topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                         line_topping_ids = [data.id for data in topping_ids]
                                         print(product_tax.price_include,"lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
-                                        line_topping_ids_price = re.sub(r'[^\d.]+', '', pos_data['item_extra_currency_total'])
+                                        line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total'])
                                         item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total'])
                                         if product_Variants_ids:
                                                 printed_ids = set()
