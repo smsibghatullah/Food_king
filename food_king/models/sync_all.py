@@ -286,7 +286,6 @@ class food_king(models.Model):
             'context': context,
         }
 
-  
    #  sync customer   
 
     def get_admin_customer_from_api(self, cron_mode=True):
@@ -384,7 +383,7 @@ class food_king(models.Model):
             'context': context,
             }
 
-   #  sync all taxes          # \
+   #  sync all taxes          
      
     def sync_all_tax(self, cron_mode=True):
             Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
@@ -594,10 +593,6 @@ class food_king(models.Model):
                             'context': context,
                     }
                
-            
-
-            
-  
    #  sync online order
 
     def get_online_order_from_api(self, cron_mode=True):
@@ -638,8 +633,8 @@ class food_king(models.Model):
                                             product_tax = products_tax[0] if products_tax else ''
                                             price = re.sub(r'[^\d.]+', '', posid['price'])
                                             discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                            line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total'])
-                                            item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total'])
+                                            line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total']) if posid['item_extra_currency_total'] else 0
+                                            item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total']) if posid['item_variation_currency_total'] else 0
                                             variation_names = [variation['name'] for variation in posid['item_variations']]
                                             full_product_name = product_name+' (' +','.join(variation_names)+')' if variation_names else product_name
                                             instruction.append(full_product_name + ' : ' + posid['instruction'])
@@ -867,10 +862,9 @@ class food_king(models.Model):
                     'target': 'new',
                     'context': context,
             }
-
-     
    
    # Sync Message
+
     def send_message_to_food_king_users(self, message_body):
         group = self.env.ref('food_king.group_food_king_user')
         users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
@@ -890,4 +884,5 @@ class food_king(models.Model):
 
         
 
+            
             
