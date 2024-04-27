@@ -513,7 +513,8 @@ class food_king(models.Model):
                                                                         'discount': float(discount),
                                                                         'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
-                                                                        'price_subtotal_incl': float(posid['total_convert_price'])
+                                                                        'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                        'customer_note':posid['instruction']
                                                                     }))
                                                                     uid_counter += 1
                                                                 
@@ -528,7 +529,8 @@ class food_king(models.Model):
                                                                                         'discount': float(discount),
                                                                                         'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
                                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
-                                                                                        'price_subtotal_incl': float(posid['total_convert_price'])
+                                                                                        'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                                        'customer_note':posid['instruction']
                                                                                     }))
                                 if customer_ids:
                                     food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name)], limit=1)
@@ -563,8 +565,9 @@ class food_king(models.Model):
                                                 'table_id':table_id,
                                                 'status':'Table Order',
                                                 'pos_reference' : result,
-                                                'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                                'state': 'draft'  ,
                                                 'lines': line_vals,
+                                                'is_accepted':True if pos_data['payment_status'] == 5 else False,
                                                 'note':'\n'.join(instruction)
                                             }
                                             self.env['pos.order'].sudo().create(vals)
@@ -665,7 +668,8 @@ class food_king(models.Model):
                                                                         'discount': float(discount),
                                                                         'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                         'price_subtotal': float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
-                                                                        'price_subtotal_incl': float(posid['total_convert_price'])
+                                                                        'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                        'customer_note':posid['instruction']
                                                                     }))
                                                                     uid_counter += 1
                                                                 
@@ -680,7 +684,8 @@ class food_king(models.Model):
                                                                                         'discount': float(discount),
                                                                                         'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
                                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
-                                                                                        'price_subtotal_incl': float(posid['total_convert_price'])
+                                                                                        'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                                        'customer_note':posid['instruction']
                                                                                     }))
                                                         
                                     if customer_ids:
@@ -725,11 +730,12 @@ class food_king(models.Model):
                                                         'amount_return': 0.0,
                                                         'status':'Online Order',
                                                         'pos_reference' : result,
-                                                        'state': 'done' if pos_data['status_name'] == 'Delivered'  else 'paid' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                                        'state': 'draft'  ,
                                                         'lines': line_vals,
                                                         'note':'\n'.join(instruction),
                                                         'tracking_number':803,
                                                         'session_move_id':7,
+                                                        'is_accepted':True if pos_data['payment_status'] == 5 else False,
                                                         'table_id': search_table[0],
                                                     }
                                                     print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
@@ -866,6 +872,7 @@ class food_king(models.Model):
    # Sync Message
 
     def send_message_to_food_king_users(self, message_body):
+        
         group = self.env.ref('food_king.group_food_king_user')
         users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
 

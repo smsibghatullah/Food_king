@@ -33,11 +33,17 @@ Long description of module's purpose
     ],
     'qweb': [
     'static/src/xml/*.xml',
+     
      ],
     'web.assets_backend': [
         'food_king/static/src/**/*.js',
     ],
-
+'assets': {
+        'point_of_sale.assets': [
+            'static/src/js/custom_js.js',
+           
+        ],
+    },
     'installable': True,
     'auto_install': False,
     'application': False,

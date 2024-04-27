@@ -70,6 +70,7 @@
 <menuitem id="menu_food_king12" name="Food King" action="action_food_king" sequence="450"/>
 <menuitem id="menu_food_king123" name="Food King" parent="food_king.menu_food_king12" action="action_food_king" />
 
+
     </data>
 </odoo>
 

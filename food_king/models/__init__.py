@@ -16,3 +16,4 @@ from . import product_artibute
 from . import product_artibute_value
 from . import topping_group
 from . import product_product
+from . import pos_config
