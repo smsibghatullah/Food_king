@@ -682,7 +682,7 @@ class food_king(models.Model):
                                             uid_counter = 1
                                             variation_ids = [variation['id'] for variation in posid['item_variations']]
                                             extras_ids = [variation['id'] for variation in posid['item_extras']]
-                                            print(extras_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                            print(product_id,product_name,product_tax,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                             line_topping_ids = [data.id for data in topping_ids]
                                         
