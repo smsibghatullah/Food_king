@@ -9,7 +9,7 @@ import tempfile
 import os
 import pygame
 
-os.environ["SDL_AUDIODRIVER"] = "dummy"
+# os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
 pygame.init()
