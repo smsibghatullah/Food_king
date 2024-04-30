@@ -7,12 +7,12 @@ import re
 import base64
 import tempfile
 import os
-import pygame
+from pydub import AudioSegment
+from pydub.playback import play
 
 # os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
-pygame.init()
 
 
 class food_king(models.Model):
@@ -593,8 +593,8 @@ class food_king(models.Model):
                                                     'record_name': "Food King Message",
                                                 })
                                             sound_file = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
-                                            pygame.mixer.music.load(sound_file)
-                                            pygame.mixer.music.play()
+                                            sound = AudioSegment.from_file("/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav")
+                                            play(sound)
                                             
                                             
                     
@@ -794,9 +794,9 @@ class food_king(models.Model):
                                                             'subtype_id': self.env.ref('mail.mt_comment').id,
                                                             'record_name': "Food King Message",
                                                         })
-                                                    sound_file = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
-                                                    pygame.mixer.music.load(sound_file)
-                                                    pygame.mixer.music.play()
+                                                    sound = AudioSegment.from_file("/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav")
+                                                    play(sound)
+                                                    
                                                 
                                             else :
                                                 raise UserError(('Please open the session'))
