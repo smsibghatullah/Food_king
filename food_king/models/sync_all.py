@@ -8,11 +8,11 @@ import base64
 import tempfile
 import os
 import pygame
-from pygame import mixer
+
+os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
 pygame.init()
-mixer.init()
 
 
 class food_king(models.Model):
@@ -593,8 +593,8 @@ class food_king(models.Model):
                                                     'record_name': "Food King Message",
                                                 })
                                             sound_file = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
-                                            mixer.music.load(sound_file)
-                                            mixer.music.play()
+                                            pygame.mixer.music.load(sound_file)
+                                            pygame.mixer.music.play()
                                             
                                             
                     
@@ -795,8 +795,8 @@ class food_king(models.Model):
                                                             'record_name': "Food King Message",
                                                         })
                                                     sound_file = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
-                                                    mixer.music.load(sound_file)
-                                                    mixer.music.play()
+                                                    pygame.mixer.music.load(sound_file)
+                                                    pygame.mixer.music.play()
                                                 
                                             else :
                                                 raise UserError(('Please open the session'))
