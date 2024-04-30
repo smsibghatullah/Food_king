@@ -725,7 +725,7 @@ class food_king(models.Model):
                                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
                                                                                         'customer_note':posid['instruction']
                                                                                     }))
-                                                        
+                                    print(customer_ids,line_vals,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")                   
                                     if customer_ids:
                                         customer_id = customer_ids[0]
                                         food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name)], limit=1)
