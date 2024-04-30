@@ -686,7 +686,7 @@ class food_king(models.Model):
                                             topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                             line_topping_ids = [data.id for data in topping_ids]
                                         
-                                            print(line_topping_ids_price,item_variation_currency_total, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
+                                            print(line_topping_ids_price,item_variation_currency_total,product_Variants_ids, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                             if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
