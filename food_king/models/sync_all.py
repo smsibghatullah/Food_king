@@ -589,7 +589,7 @@ class food_king(models.Model):
                                                     'subtype_id': self.env.ref('mail.mt_comment').id,
                                                     'record_name': "Food King Message",
                                                 })
-                                            sound_file = "/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav"
+                                            sound_file = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
                                             pygame.mixer.music.load(sound_file)
                                             pygame.mixer.music.play()
                                             
@@ -791,7 +791,7 @@ class food_king(models.Model):
                                                             'subtype_id': self.env.ref('mail.mt_comment').id,
                                                             'record_name': "Food King Message",
                                                         })
-                                                    sound_file = "/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav"
+                                                    sound_file = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
                                                     pygame.mixer.music.load(sound_file)
                                                     pygame.mixer.music.play()
                                                 
