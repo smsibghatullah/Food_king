@@ -1,5 +1,5 @@
 import requests
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 import json
 from odoo.exceptions import AccessError,UserError
 from requests.exceptions import RequestException, HTTPError, Timeout, ConnectionError
@@ -7,6 +7,10 @@ import re
 import base64
 import tempfile
 import os
+import pygame
+
+pygame.init()
+
 
 class food_king(models.Model):
     _name = 'food_king.food_king'
@@ -571,14 +575,47 @@ class food_king(models.Model):
                                                 'note':'\n'.join(instruction)
                                             }
                                             self.env['pos.order'].sudo().create(vals)
-                                            self.send_message_to_food_king_users(f"New order. Order ID: {result}")
                                             success_true = True
+                                            group = self.env.ref('food_king.group_food_king_user')
+                                            users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
+
+                                            for user in users:
+                                                message = self.env['mail.message'].create({
+                                                    'author_id': 1,
+                                                    'model': 'discuss.channel',
+                                                    'res_id': 1,
+                                                    'message_type': 'comment',
+                                                    'body': f"New order. Order ID: {result}",
+                                                    'subtype_id': self.env.ref('mail.mt_comment').id,
+                                                    'record_name': "Food King Message",
+                                                })
+                                            sound_file = "/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav"
+                                            pygame.mixer.music.load(sound_file)
+                                            pygame.mixer.music.play()
+                                            
+                                            
                     
                                         else :
                                             raise UserError(('Please open the session'))
                                         
                                     else :
                                         raise UserError(('Please select point of sale'))
+                                else:
+                                    view = self.env.ref('sh_message.sh_message_wizard')
+                                    context = dict(self._context or {})
+                                    dic_msg =  "Customer Not Synced"
+                                    context['message'] = dic_msg
+                                    return{
+                                            'name': 'Success',
+                                            'type': 'ir.actions.act_window',
+                                            'view_mode': 'form',
+                                            'view_type': 'form',
+                                            'res_model': 'sh.message.wizard',
+                                            'views':[(view.id,'form')],
+                                            'view_id':view.id,
+                                            'target': 'new',
+                                            'context': context,
+                                    }
                    
                     view = self.env.ref('sh_message.sh_message_wizard')
                     context = dict(self._context or {})
@@ -624,12 +661,13 @@ class food_king(models.Model):
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
+                                    print(pos_data['order_items'],"swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                         product_Variants_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('product_variant_ids')
                                         products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                                         products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
-                                        
+                                        print(product_ids,products_name,products_tax,"dddddddddddd")
                                         if product_ids or products_name or products_tax:
                                             product_id = product_ids[0]
                                             product_name = products_name[0]
@@ -738,15 +776,46 @@ class food_king(models.Model):
                                                         'is_accepted':True if pos_data['payment_status'] == 5 else False,
                                                         'table_id': search_table[0],
                                                     }
-                                                    print(instruction,vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                                    print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                                     self.env['pos.order'].sudo().create(vals)
-                                                    self.send_message_to_food_king_users(f"New order. Order ID: {result}")
+                                                    group = self.env.ref('food_king.group_food_king_user')
+                                                    users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
+
+                                                    for user in users:
+                                                        message = self.env['mail.message'].create({
+                                                            'author_id': 1,
+                                                            'model': 'discuss.channel',
+                                                            'res_id': 1,
+                                                            'message_type': 'comment',
+                                                            'body':f"New order. Order ID: {result}",
+                                                            'subtype_id': self.env.ref('mail.mt_comment').id,
+                                                            'record_name': "Food King Message",
+                                                        })
+                                                    sound_file = "/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav"
+                                                    pygame.mixer.music.load(sound_file)
+                                                    pygame.mixer.music.play()
                                                 
                                             else :
                                                 raise UserError(('Please open the session'))
                                                 
                                         else :
                                             raise UserError(('Please select point of sale'))
+                                    else:
+                                        view = self.env.ref('sh_message.sh_message_wizard')
+                                        context = dict(self._context or {})
+                                        dic_msg =  "Customer Not Synced"
+                                        context['message'] = dic_msg
+                                        return{
+                                                'name': 'Success',
+                                                'type': 'ir.actions.act_window',
+                                                'view_mode': 'form',
+                                                'view_type': 'form',
+                                                'res_model': 'sh.message.wizard',
+                                                'views':[(view.id,'form')],
+                                                'view_id':view.id,
+                                                'target': 'new',
+                                                'context': context,
+                                        }
 
                     except requests.exceptions.RequestException as e:
                         return {'error': str(e)}
@@ -869,25 +938,8 @@ class food_king(models.Model):
                     'context': context,
             }
    
-   # Sync Message
 
-    def send_message_to_food_king_users(self, message_body):
-        
-        group = self.env.ref('food_king.group_food_king_user')
-        users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
-
-        administrator = self.env.user.partner_id
-
-        for user in users:
-            message = self.env['mail.message'].create({
-                'author_id': administrator.id,
-                'model': 'discuss.channel',
-                'res_id': 1,
-                'message_type': 'comment',
-                'body': message_body,
-                'subtype_id': self.env.ref('mail.mt_comment').id,
-                'record_name': "Food King Message",
-            })
+    
 
         
 

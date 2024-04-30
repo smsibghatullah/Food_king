@@ -1,11 +1,19 @@
-odoo.define('food_king.custom_js', function (require) {
-    var core = require('web.core');
-    var WebClient = require('web.WebClient');
-    var _t = core._t;
+// odoo.define('food_king.display_notification', ['web.core'], function (require) {
+//     "use strict";
 
-    WebClient.include({
-        onclick_sticky_notification: function(){ 
-            this.do_notify("Error", "Please Check the values before save");
-        }
-    });
-});
+//     var core = require('web.core');
+//     var _t = core._t;
+
+//     var displayNotification = function (type, title, message, sticky, className) {
+//         // Your code to display the notification
+//     };
+
+//     // Example function to trigger the notification
+//     function triggerNotification() {
+//         displayNotification('warning', _t('Quiz validation error'), 'Your message here', true);
+//     }
+
+//     return {
+//         triggerNotification: triggerNotification,
+//     };
+// });

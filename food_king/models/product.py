@@ -89,7 +89,6 @@ class ProductFoodKing(models.Model):
                                 print(response_data_atribute)
 
                             else:
-                                print("pppppppppppppppppppppppppppppppppp")
                                 synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
                                 url_atribute =f"{food_king.url}/api/admin/setting/item-attribute"
                                 
@@ -114,50 +113,48 @@ class ProductFoodKing(models.Model):
 
 
 
-                                for item_data in response_data_attribute_get['data']:
-                                        attribute_children_id = [item['id'] for item in item_data['children']]
-                                        print(self.valid_product_template_attribute_line_ids,"================================================================>")
-                                        artibuteline=self.env['product.template.attribute.value'].search([])
-                                        for attribute_line in self.attribute_line_ids:
-                                                for value_id in attribute_line.value_ids:
-                                                        for line_ids_price in artibuteline:
-                                                            if line_ids_price.food_king_id in attribute_children_id:
-                                                                print(line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name,"ttttttttttttttttttttttttttttttttttt")
-                                                                if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
-                                                                    print(line_ids_price.price_extra,line_ids_price.name,"kkkkkkkkkkkllllllllllllllllllvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-                                                                    payload_atribute2  = json.dumps({
-                                                                        "name": line_ids_price.name,
-                                                                        "price": line_ids_price.price_extra,
-                                                                        "item_attribute_id": attribute_line.attribute_id.food_king_id,
-                                                                        "caution":  attribute_line.attribute_id.caution if  attribute_line.attribute_id.caution else '',
-                                                                        "status": 5 if attribute_line.attribute_id.food_king_active else 10
-                                                                    })
-                                                                    url_get_id_atribute2  = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}/{line_ids_price.food_king_id}"
-                                                                    response_get_id_atribute2  = requests.request("Put", url_get_id_atribute2 , headers=headers_topping , data=payload_atribute2 )
-                                                                    response_data_atribute2  = response_get_id_atribute2 .json()
-                                                        
-                                                            else:   
-                                                                        artibutes = self.env['product.attribute'].search([])
-                                                                        artibuteline=self.env['product.template.attribute.value'].search([])
-                                                                        for attribute_line in self.attribute_line_ids:
-                                                                            for value_id in attribute_line.value_ids:
-                                                                                    for line_ids_price in artibuteline:
-                                                                                        if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
-                                                                                            payload_atribute2  = {
-                                                                                                "name": line_ids_price.name,
-                                                                                                "price": line_ids_price.price_extra,
-                                                                                                "item_attribute_id": attribute_line.attribute_id.food_king_id,
-                                                                                                "caution": attribute_line.attribute_id.caution,
-                                                                                                "status": 5 if attribute_line.attribute_id.food_king_active else 10
-                                                                                            }
-                                                                                            url_get_id_atribute2  =f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
-                                                                                            response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
-                                                                                            response_data_atribute2  = response_get_id_atribute2 .json()
-                                                                                            if 'data' in response_data_atribute2 :
-                                                                                                food_king_id_atribute2  = response_data_atribute2 ['data']['id']
-                                                                                                value_id.write({'food_king_id': food_king_id_atribute2 })
-                                                                                                line_ids_price.write({'food_king_id': food_king_id_atribute2 })
-                                                                                                self.write({'food_king_id_variant':food_king_id_atribute2})
+                            artibuteline=self.env['product.template.attribute.value'].search([])
+                            for attribute_line in self.attribute_line_ids:
+                                    print(attribute_line.value_ids,"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
+                                    for value_id in attribute_line.value_ids:
+                                            for line_ids_price in artibuteline:
+                                                if line_ids_price.food_king_id != 0:
+                                                    print(line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name,"ttttttttttttttttttttttttttttttttttt")
+                                                    if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
+                                                        print(line_ids_price.price_extra,line_ids_price.name,"kkkkkkkkkkkllllllllllllllllllvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+                                                        payload_atribute2  = json.dumps({
+                                                            "name": line_ids_price.name,
+                                                            "price": line_ids_price.price_extra,
+                                                            "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                                                            "caution":  attribute_line.attribute_id.caution if  attribute_line.attribute_id.caution else '',
+                                                            "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                                                        })
+                                                        url_get_id_atribute2  = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}/{line_ids_price.food_king_id}"
+                                                        response_get_id_atribute2  = requests.request("Put", url_get_id_atribute2 , headers=headers_topping , data=payload_atribute2 )
+                                                        response_data_atribute2  = response_get_id_atribute2 .json()
+                                            
+                                                else:   
+                                                            artibutes = self.env['product.attribute'].search([])
+                                                            artibuteline=self.env['product.template.attribute.value'].search([])
+                                                            for attribute_line in self.attribute_line_ids:
+                                                                for value_id in attribute_line.value_ids:
+                                                                        for line_ids_price in artibuteline:
+                                                                            if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
+                                                                                payload_atribute2  = {
+                                                                                    "name": line_ids_price.name,
+                                                                                    "price": line_ids_price.price_extra,
+                                                                                    "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                                                                                    "caution": attribute_line.attribute_id.caution,
+                                                                                    "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                                                                                }
+                                                                                url_get_id_atribute2  =f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
+                                                                                response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
+                                                                                response_data_atribute2  = response_get_id_atribute2 .json()
+                                                                                if 'data' in response_data_atribute2 :
+                                                                                    food_king_id_atribute2  = response_data_atribute2 ['data']['id']
+                                                                                    value_id.write({'food_king_id': food_king_id_atribute2 })
+                                                                                    line_ids_price.write({'food_king_id': food_king_id_atribute2 })
+                                                                                    self.write({'food_king_id_variant':food_king_id_atribute2})
 
             view = self.env.ref('sh_message.sh_message_wizard')
             context = dict(self._context or {})
