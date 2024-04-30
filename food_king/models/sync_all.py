@@ -9,7 +9,7 @@ import tempfile
 import os
 import pygame
 
-pygame.init()
+pygame.mixer.init()
 
 
 class food_king(models.Model):
