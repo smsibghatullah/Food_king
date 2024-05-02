@@ -7,7 +7,7 @@ import re
 import base64
 import tempfile
 import os
-import simpleaudio as sa
+from playsound import playsound
 
 
 class food_king(models.Model):
@@ -587,10 +587,6 @@ class food_king(models.Model):
                                                     'subtype_id': self.env.ref('mail.mt_comment').id,
                                                     'record_name': "Food King Message",
                                                 })
-                                            # playsound('/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav')
-                                            # wave_obj = sa.WaveObject.from_wave_file('/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav')
-                                            # play_obj = wave_obj.play()
-                                            # play_obj.wait_done()
                                             
                                             
                     
@@ -783,9 +779,7 @@ class food_king(models.Model):
                                                             'subtype_id': self.env.ref('mail.mt_comment').id,
                                                             'record_name': "Food King Message",
                                                         })
-                                                    # wave_obj = sa.WaveObject.from_wave_file('/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav')
-                                                    # play_obj = wave_obj.play()
-                                                    # play_obj.wait_done()
+                                                    
                                                 
                                             else :
                                                 raise UserError(('Please open the session'))
