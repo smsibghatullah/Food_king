@@ -7,12 +7,7 @@ import re
 import base64
 import tempfile
 import os
-from pydub import AudioSegment
-from pydub.playback import play
-
-# os.environ["SDL_AUDIODRIVER"] = "dummy"
-
-
+from playsound import playsound
 
 
 class food_king(models.Model):
@@ -592,8 +587,7 @@ class food_king(models.Model):
                                                     'subtype_id': self.env.ref('mail.mt_comment').id,
                                                     'record_name': "Food King Message",
                                                 })
-                                            sound = AudioSegment.from_file("/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav")
-                                            play(sound)
+                                            playsound('/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav')
                                             
                                             
                     
@@ -638,7 +632,6 @@ class food_king(models.Model):
    #  sync online order
 
     def get_online_order_from_api(self, cron_mode=True):
-            print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")  
             # for compnay_id  in companies :
             Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
             for Foodking_Ids  in Foodking_Ids_data :
@@ -654,7 +647,6 @@ class food_king(models.Model):
                         for pos_data1 in pos_orders:
                             if pos_data1['id'] not in  existing_pos_order_ids:
                                 data_filter_by_branch = self.company_id.branch_id.food_king_id or Foodking_Ids.company_id.branch_id.food_king_id
-                                print(data_filter_by_branch,pos_data1['branch_id'],"ssssssssssssssssssssssssssssssss")
                                 if data_filter_by_branch == pos_data1['branch_id']:
                                     print('mubeen 1')
                                     url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
@@ -663,13 +655,11 @@ class food_king(models.Model):
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
-                                    print(pos_data['order_items'],"swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                         product_Variants_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('product_variant_ids')
                                         products_name = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('name')
                                         products_tax = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('taxes_id')
-                                        print(product_ids,products_name,products_tax,"dddddddddddd")
                                         if product_ids or products_name or products_tax:
                                             product_id = product_ids[0]
                                             product_name = products_name[0]
@@ -684,7 +674,6 @@ class food_king(models.Model):
                                             uid_counter = 1
                                             variation_ids = [variation['id'] for variation in posid['item_variations']]
                                             extras_ids = [variation['id'] for variation in posid['item_extras']]
-                                            print(product_id,product_name,product_tax,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                             topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                             line_topping_ids = [data.id for data in topping_ids]
                                         
@@ -727,7 +716,6 @@ class food_king(models.Model):
                                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
                                                                                         'customer_note':posid['instruction']
                                                                                     }))
-                                    print(customer_ids,line_vals,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")                   
                                     if customer_ids:
                                         customer_id = customer_ids[0]
                                         food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name)], limit=1)
@@ -752,7 +740,6 @@ class food_king(models.Model):
                                             ('company_id', '=', self.company_id.id or Foodking_Ids.company_id.id),
                                             ('config_id', '=', self.point_of_sale.id or Foodking_Ids.point_of_sale.id)
                                         ])
-                                        print(float(total_tax_currency_price),"========================================================================123333333333333333333333333>>>>>>>>>>>>>>>>>>>>>")
                                         if config_id:
                                             if search_pos_session:
                                                     session_name = search_pos_session[0].name
@@ -793,8 +780,7 @@ class food_king(models.Model):
                                                             'subtype_id': self.env.ref('mail.mt_comment').id,
                                                             'record_name': "Food King Message",
                                                         })
-                                                    sound = AudioSegment.from_file("/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav")
-                                                    play(sound)
+                                                    playsound('/home/muhammad/project/odoo17/custom_addons_food_king/food_king/static/src/sounds/bell.wav')
                                                     
                                                 
                                             else :
@@ -840,13 +826,13 @@ class food_king(models.Model):
                 if not food_king_floor:
                     food_king_floor = self.env['restaurant.floor'].create({
                         'name': self.point_of_sale.name,
-                        'pos_config_ids': [(4, self.point_of_sale.id)]  
+                        'pos_config_ids': [(4, self.point_of_sale.id or Foodking_Ids.point_of_sale.id )]  
                     })
                 else:
                     food_king_floor.write({
-                        'pos_config_ids': [(4, self.point_of_sale.id)]  
+                        'pos_config_ids': [(4, self.point_of_sale.id or Foodking_Ids.point_of_sale.id )]  
                     })
-                food_king_pos = self.env['pos.config'].search([('name', '=', self.point_of_sale.name)], limit=1)
+                food_king_pos = self.env['pos.config'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name )], limit=1)
             else :
                 raise UserError(('Please select point of sale'))
             delivery_table = self.env['restaurant.table'].search([('name', '=', 'Delivery Table'), ('floor_id', '=', food_king_floor.id)], limit=1)

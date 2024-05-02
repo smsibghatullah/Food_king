@@ -27,7 +27,8 @@ Long description of the module's purpose
     ],
     'assets': {
         'web.assets_backend': [
-            'food_king/static/src/js/custom_js.js',
+            'static/src/xml/pos.xml',  
+            'food_king/static/src/js/custom_js.js', 
         ],
     },
     'installable': True,

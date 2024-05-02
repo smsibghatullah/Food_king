@@ -3,9 +3,7 @@
 
     <t t-name="NotificationWowl" t-inherit="web.NotificationWowl" t-inherit-mode="extension" owl="1">
         <xpath expr="." position="inside">
-            <t t-if="props.res_id == 1">
-                <audio id="audio" t-att-src="'/path/to/sound/bell.wav'" preload="auto" autoplay="true" />
-            </t>
+
 
             <t t-if="props.type == 'success'">
                     <t t-set="sound" t-value="'/deltatech_notification_sound/static/src/sounds/notify.wav'" />
