@@ -610,21 +610,21 @@ class food_king(models.Model):
                                             'context': context,
                                     }
                    
-                    view = self.env.ref('sh_message.sh_message_wizard')
-                    context = dict(self._context or {})
-                    dic_msg =  "Order Synced Successfully"
-                    context['message'] = dic_msg
-                    return{
-                            'name': 'Success',
-                            'type': 'ir.actions.act_window',
-                            'view_mode': 'form',
-                            'view_type': 'form',
-                            'res_model': 'sh.message.wizard',
-                            'views':[(view.id,'form')],
-                            'view_id':view.id,
-                            'target': 'new',
-                            'context': context,
-                    }
+                view = self.env.ref('sh_message.sh_message_wizard')
+                context = dict(self._context or {})
+                dic_msg =  "Order Synced Successfully"
+                context['message'] = dic_msg
+                return{
+                        'name': 'Success',
+                        'type': 'ir.actions.act_window',
+                        'view_mode': 'form',
+                        'view_type': 'form',
+                        'res_model': 'sh.message.wizard',
+                        'views':[(view.id,'form')],
+                        'view_id':view.id,
+                        'target': 'new',
+                        'context': context,
+                }
                
    #  sync online order
 
