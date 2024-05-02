@@ -587,8 +587,6 @@ class food_king(models.Model):
                                                     'subtype_id': self.env.ref('mail.mt_comment').id,
                                                     'record_name': "Food King Message",
                                                 })
-                                            
-                                            
                     
                                         else :
                                             raise UserError(('Please open the session'))
