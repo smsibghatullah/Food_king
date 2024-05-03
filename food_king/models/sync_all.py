@@ -567,7 +567,7 @@ class food_king(models.Model):
                                                 'table_id':table_id,
                                                 'status':'Table Order',
                                                 'pos_reference' : result,
-                                                'state': 'done' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                                'state': 'draft'  ,
                                                 'lines': line_vals,
                                                 'is_accepted':True if pos_data['payment_status'] == 5 else False,
                                                 'note':'\n'.join(instruction)
@@ -754,7 +754,7 @@ class food_king(models.Model):
                                                         'amount_return': 0.0,
                                                         'status':'Online Order',
                                                         'pos_reference' : result,
-                                                        'state':'done' if pos_data['payment_status'] == 5 else 'draft'  ,
+                                                        'state':  'draft'  ,
                                                         'lines': line_vals,
                                                         'note':'\n'.join(instruction),
                                                         'tracking_number':803,
