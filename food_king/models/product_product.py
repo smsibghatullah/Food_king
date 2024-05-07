@@ -55,6 +55,7 @@ class Product_product_FoodKing(models.Model):
                         }
             print(self.topping_ids,"aaaaaaaaaaaaaaaaaaaaaaaaaa")
             synced_topping = self.topping_ids
+            Error_Message = []
             for topping in synced_topping:
                         if topping.food_king_id_topping != 0:
                             payload_topping = json.dumps({
@@ -62,17 +63,18 @@ class Product_product_FoodKing(models.Model):
                                 "price": topping.list_price,
                                 "status": 5
                             })
-                        
+                            print(payload_topping,"qqqqqqqqqqqqqqqqqqqqqqq")
                             try:
                                 url = f"{food_king.url}/api/admin/item/extra/{self.food_king_id}/{topping.food_king_id_topping}"
                                 response_topping = requests.put(url, headers=headers_topping, data=payload_topping)
                                 response_data_topping = response_topping.json()
+                                print(response_data_topping,"pppppppppppppppppppp")
                                     
                             except requests.exceptions.RequestException as e:
                                 print( str(e))
                                 pass
                         else:
-                                    Error_Message = []
+                                    
                                     for topping in synced_topping:
                                             payload_topping = {
                                                 "name": topping.name,
