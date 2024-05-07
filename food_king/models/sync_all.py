@@ -638,9 +638,10 @@ class food_king(models.Model):
                         'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
                         'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
                     }
+                    payload = {}
                     existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
                     try:
-                        response = requests.get(url, headers=headers)
+                        response = requests.request("GET", url, headers=headers, data=payload)
                         pos_orders = response.json().get('data', [])
                         for pos_data1 in pos_orders:
                             if pos_data1['id'] not in  existing_pos_order_ids:
@@ -649,13 +650,13 @@ class food_king(models.Model):
                                 if data_filter_by_branch == pos_data1['branch_id']:
                                     print('mubeen 1')
                                     url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
-                                    response_get_id = requests.get(url_get_id, headers=headers)
+                                    response_get_id =requests.request("GET", url_get_id, headers=headers, data=payload)
                                     pos_data = response_get_id.json().get('data', {})
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
                                     print(url_get_id,"jjjj",url)
-                                    print(pos_data,"kkkkkkkkkkkkkkkkkkkkkkkkkkk",pos_data1,"===================>>>>>>>>Mubeen<<<<<<<<=====================")
+                                    print(pos_data,"kkkkkkkkkkkkkkkkkkkkkkkkkkk",pos_orders,"===================>>>>>>>>Mubeen<<<<<<<<=====================")
                                     is_accepted =  True if pos_data['payment_status'] == 5 else False
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
