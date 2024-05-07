@@ -682,6 +682,7 @@ class food_king(models.Model):
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
                                                                 printed_ids.add(product_id)
+                                                                print(item_id.id,"qqqqqqqqqqqqqqqqqqqqqqqqqq",item_id.name,"eeeeeeeeeeeeeeeeeeeeeeeee")
                                                                 if product_id == posid['item_id']:
                                                                     line_vals.append((0, 0, {
                                                                         'uuid': uid_counter,
