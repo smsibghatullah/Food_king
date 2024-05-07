@@ -631,7 +631,7 @@ class food_king(models.Model):
     def get_online_order_from_api(self, cron_mode=True):
             # for compnay_id  in companies :
             Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
-            delivery_charges =  self.env['product.product'].sudo().search([('name', '=', 'Delivery_Charges')])
+            delivery_charges =  self.env['product.product'].sudo().search([('name', '=', 'Delivery Charges')])
             for Foodking_Ids  in Foodking_Ids_data :
                     url = f"{self.url or Foodking_Ids.url}/api/admin/online-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&excepts=15|20"
                     headers = {
