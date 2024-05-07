@@ -765,7 +765,7 @@ class food_king(models.Model):
                                                         'is_accepted':True if pos_data['payment_status'] == 5 else False,
                                                         'table_id': search_table[0],
                                                     }
-                                                    print(vals,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                                    print(vals,pos_data['payment_status'],"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                                     self.env['pos.order'].sudo().create(vals)
                                                     group = self.env.ref('food_king.group_food_king_user')
                                                     users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
