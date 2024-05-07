@@ -723,6 +723,7 @@ class food_king(models.Model):
                                         total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
                                         delivery_charges =  self.env['product.product'].search([('name', '=', 'Delivery Charge')])
                                         delivery_charge_currency_price = re.sub(r'[^\d.]+', '', pos_data['delivery_charge_currency_price'])
+                                        print(delivery_charges.id,delivery_charges.name,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
                                         line_vals.append((0, 0, {
                                             'product_id': delivery_charges.id,
                                             'full_product_name': delivery_charges.name,
