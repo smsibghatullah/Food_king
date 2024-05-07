@@ -653,6 +653,7 @@ class food_king(models.Model):
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
+                                    is_accepted = True if pos_data['payment_status'] == 5 else False
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                         product_Variants_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('product_variant_ids')
@@ -762,10 +763,10 @@ class food_king(models.Model):
                                                         'note':'\n'.join(instruction),
                                                         'tracking_number':803,
                                                         'session_move_id':7,
-                                                        'is_accepted':True if pos_data['payment_status'] == 5 else False,
+                                                        'is_accepted':is_accepted,
                                                         'table_id': search_table[0],
                                                     }
-                                                    print(vals,pos_data['payment_status'],"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                                                    print(vals,is_accepted,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                                     self.env['pos.order'].sudo().create(vals)
                                                     group = self.env.ref('food_king.group_food_king_user')
                                                     users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
