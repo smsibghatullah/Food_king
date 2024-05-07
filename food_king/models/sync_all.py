@@ -721,9 +721,9 @@ class food_king(models.Model):
                                         config_id = self.point_of_sale.id or Foodking_Ids.point_of_sale.id 
                                         total_tax_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_tax_currency_price'])
                                         total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
-                                        delivery_charges =  self.env['product.product'].search([('name', '=', 'Delivery Charge')])
+                                        delivery_charges =  self.env['product.product'].search([('name', '=', 'Delivery Charges')])
                                         delivery_charge_currency_price = re.sub(r'[^\d.]+', '', pos_data['delivery_charge_currency_price'])
-                                        print(delivery_charges.id,delivery_charges.name,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
+                                        print(delivery_charges,delivery_charges.id,delivery_charges.name,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
                                         line_vals.append((0, 0, {
                                             'product_id': delivery_charges.id,
                                             'full_product_name': delivery_charges.name,

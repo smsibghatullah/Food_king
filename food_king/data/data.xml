@@ -32,7 +32,7 @@
         </record> -->
 
         <record model="product.template" id="product_new_data" forcecreate="0">
-            <field name="name">Delivery Charge</field>
+            <field name="name">Delivery Charges</field>
         </record>
 
         <record model="food_king.food_king" id="foodking_new_data" forcecreate="0">

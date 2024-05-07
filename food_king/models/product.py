@@ -132,6 +132,7 @@ class ProductFoodKing(models.Model):
                                                         url_get_id_atribute2  = f"{food_king.url}/api/admin/item/variation/{self.food_king_id}/{line_ids_price.food_king_id}"
                                                         response_get_id_atribute2  = requests.request("Put", url_get_id_atribute2 , headers=headers_topping , data=payload_atribute2 )
                                                         response_data_atribute2  = response_get_id_atribute2 .json()
+                                                        print(response_data_atribute2,"23333333333333333333333333333333333333333")
                                             
                                                 else:   
                                                             artibutes = self.env['product.attribute'].search([])
@@ -150,6 +151,7 @@ class ProductFoodKing(models.Model):
                                                                                 url_get_id_atribute2  =f"{food_king.url}/api/admin/item/variation/{self.food_king_id}"
                                                                                 response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
                                                                                 response_data_atribute2  = response_get_id_atribute2 .json()
+                                                                                print(response_data_atribute2,"qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                                                                                 if 'data' in response_data_atribute2 :
                                                                                     food_king_id_atribute2  = response_data_atribute2 ['data']['id']
                                                                                     value_id.write({'food_king_id': food_king_id_atribute2 })
