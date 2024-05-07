@@ -653,7 +653,7 @@ class food_king(models.Model):
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
-                                    print(pos_data,"===================>>>>>>>>Mubeen<<<<<<<<=====================")
+                                    print(pos_data,"kkkkkkkkkkkkkkkkkkkkkkkkkkk",pos_data1,"===================>>>>>>>>Mubeen<<<<<<<<=====================")
                                     is_accepted =  True if pos_data['payment_status'] == 5 else False
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
