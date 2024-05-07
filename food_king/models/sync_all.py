@@ -644,6 +644,7 @@ class food_king(models.Model):
                         pos_orders = response.json().get('data', [])
                         for pos_data1 in pos_orders:
                             if pos_data1['id'] not in  existing_pos_order_ids:
+                                
                                 data_filter_by_branch = self.company_id.branch_id.food_king_id or Foodking_Ids.company_id.branch_id.food_king_id
                                 if data_filter_by_branch == pos_data1['branch_id']:
                                     print('mubeen 1')
@@ -653,6 +654,7 @@ class food_king(models.Model):
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
+                                    print(url_get_id,"jjjj",url)
                                     print(pos_data,"kkkkkkkkkkkkkkkkkkkkkkkkkkk",pos_data1,"===================>>>>>>>>Mubeen<<<<<<<<=====================")
                                     is_accepted =  True if pos_data['payment_status'] == 5 else False
                                     for posid in pos_data['order_items']:
