@@ -628,7 +628,7 @@ class food_king(models.Model):
                
    #  sync online order
 
-    def get_online_order_from_api(self, cron_mode=True):
+    async def get_online_order_from_api(self, cron_mode=True):
             # for compnay_id  in companies :
             Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
             delivery_charges =  self.env['product.product'].sudo().search([('name', '=', 'Delivery Charges')])
@@ -653,7 +653,7 @@ class food_king(models.Model):
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
-                                    is_accepted = True if pos_data['payment_status'] == 5 else False
+                                    is_accepted = await True if pos_data['payment_status'] == 5 else False
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
                                         product_Variants_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('product_variant_ids')
@@ -763,7 +763,7 @@ class food_king(models.Model):
                                                         'note':'\n'.join(instruction),
                                                         'tracking_number':803,
                                                         'session_move_id':7,
-                                                        'is_accepted':is_accepted,
+                                                        'is_accepted':await is_accepted,
                                                         'table_id': search_table[0],
                                                     }
                                                     print(vals,is_accepted,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
