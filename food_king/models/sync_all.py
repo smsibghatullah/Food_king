@@ -931,6 +931,46 @@ class food_king(models.Model):
             }
    
 
+   #  update order
+    def update_all_orders(self, cron_mode=True):  
+            Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
+            pos_order = self.env['pos.order'].sudo().search([('food_king_id','!=',0),('is_accepted','=',False)])
+            print(pos_order,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            for Foodking_Ids  in Foodking_Ids_data :
+                    url = f"{self.url or Foodking_Ids.url}/api/admin/online-order?paginate=1&page=1&per_page=10&order_column=id&order_by=desc&excepts=15|20"
+                    headers = {
+                        'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+                        'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
+                    }
+                    payload = {}
+                    existing_pos_order_ids = [pos.food_king_id for pos in self.env['pos.order'].search([])]
+                    try:
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        pos_orders = response.json().get('data', [])
+                        for pos_data1 in pos_orders:
+                            for posdata in pos_order:
+                                if pos_data1['id'] ==  posdata.food_king_id:
+                                    print(posdata,"pppppppppppppp")
+                                    is_accepted =  True if pos_data1['payment_status'] == 5 else False
+                                    posdata.write({'is_accepted':is_accepted})
+           
+                        view = self.env.ref('sh_message.sh_message_wizard')
+                        context = dict(self._context or {})
+                        dic_msg =  "Order Update Successfully"
+                        context['message'] = dic_msg
+                        return{
+                                'name': 'Success',
+                                'type': 'ir.actions.act_window',
+                                'view_mode': 'form',
+                                'view_type': 'form',
+                                'res_model': 'sh.message.wizard',
+                                'views':[(view.id,'form')],
+                                'view_id':view.id,
+                                'target': 'new',
+                                'context': context,
+                        }
+                    except requests.exceptions.RequestException as e:
+                        return {'error': str(e)}
     
 
         

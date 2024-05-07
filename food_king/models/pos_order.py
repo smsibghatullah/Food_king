@@ -31,6 +31,17 @@ class pos_order_food_king(models.Model):
         self.is_accepted = True
 
 
+from odoo.exceptions import UserError
+
+class CustomPosMakePayment(models.TransientModel):
+    _inherit = "pos.make.payment"
+    def check(self):
+        res = super(CustomPosMakePayment, self).check()
+        if res:
+            order = self.env["pos.order"].browse(self.env.context.get("active_id"))
+            order.accept_order()
+
+        return res
 
 
         
