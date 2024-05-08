@@ -10,7 +10,6 @@ class pos_order_food_king(models.Model):
     is_accepted = fields.Boolean("Is Accepted",default=False)
 
     def accept_order(self):
-        
         search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
         
         food_king = self.env['food_king.food_king'].sudo().search([], limit=1)
@@ -32,6 +31,7 @@ class pos_order_food_king(models.Model):
         pos_data = response_get_id.json()
         self.is_accepted = True
 
+    
     def accept_online_order(self):
         search_pos = self.env['pos.config'].search([('name', '=', 'Food King Pos')]).mapped('id')
         
@@ -53,6 +53,15 @@ class pos_order_food_king(models.Model):
         response_get_id = requests.post(url_get_id, headers=headers, data=payload)
         pos_data = response_get_id.json()
         self.is_accepted = True
+
+    def _process_saved_order(self, draft):
+        res = super(pos_order_food_king, self)._process_saved_order(draft)
+        if res:
+            self.accept_order()
+            self.accept_online_order()
+        return res
+
+
 
 class CustomPosMakePayment(models.TransientModel):
     _inherit = "pos.make.payment"

@@ -25,10 +25,10 @@ Long description of the module's purpose
     'qweb': [
         'static/src/xml/*.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'static/src/xml/pos.xml',  
-            'food_king/static/src/js/custom_js.js', 
+  'assets': {
+        'point_of_sale.assets': [
+            'food_king/static/src/js/custom_js.js',
+            'food_king/static/src/xml/pos.xml',
         ],
     },
     'installable': True,
