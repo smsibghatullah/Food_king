@@ -498,6 +498,8 @@ class food_king(models.Model):
                                         if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
+                                                    extra_names12 = [variation['name'] for variation in posid['item_extras'] if variation['item_id'] == item_id.food_king_id]
+                                                    print(extra_names12, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                                     if posid['item_variations']:
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
@@ -516,7 +518,7 @@ class food_king(models.Model):
                                                                         'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                        'customer_note':posid['instruction']
+                                                                        'customer_note':posid['instruction']+ os.linesep + os.linesep.join(extra_names12)
                                                                     }))
                                                                     uid_counter += 1
                                                                 
@@ -532,7 +534,7 @@ class food_king(models.Model):
                                                                                         'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
                                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
                                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                                        'customer_note':posid['instruction']
+                                                                                        'customer_note':posid['instruction']+ os.linesep + os.linesep.join(extra_names12)
                                                                                     }))
                                 if customer_ids:
                                     food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name)], limit=1)
