@@ -23,14 +23,6 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <!-- <record model="pos.config" id="pos_config_new_data" forcecreate="0">
-            <field name="name">Food King Pos</field>
-        </record> -->
-
-        <!-- <record model="restaurant.floor" id="pos_table_new_data" forcecreate="0">
-            <field name="name">Food King Floor</field>
-        </record> -->
-
         <record model="product.template" id="product_new_data" forcecreate="0">
             <field name="name">Delivery Charges</field>
             <field name="default_code">delivery_charge_code</field>
@@ -39,8 +31,8 @@
         <record model="food_king.food_king" id="foodking_new_data" forcecreate="0">
             <field name="username">admin@example.com</field>
             <field name="password">123456</field>
-            <field name="url">http://localhost:8001</field>
-            <field name="license_key">b6d68vy2-m7g5-20r0-5275-h103w73453q120</field>
+            <field name="url">https://wrdrestu.com</field>
+            <field name="license_key">z6m74ch3-c9o8-61x8-8437-p625q35566f139720</field>
             <field name="company_id">1</field>
         </record>
 
@@ -163,13 +155,13 @@
             <field name="code">model.get_branch_from_api()</field>
         </record>
 
-          <record id="ir_customer_cron_action" model="ir.actions.server">
+          <record id="ir_order_update_cron_action" model="ir.actions.server">
             <field name="name">Update Order</field>
             <field name="model_id" ref="model_food_king_food_king"/>
             <field name="state">code</field>
             <field name="code">model.update_all_orders()</field>
         </record>
-        <record id="ir_customer_cron" model="ir.cron">
+        <record id="ir_order_update__cron" model="ir.cron">
             <field name="name">Update Order</field>
             <field name="interval_number">3</field>
             <field name="interval_type">minutes</field>

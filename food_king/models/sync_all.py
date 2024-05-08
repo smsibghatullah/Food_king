@@ -826,7 +826,7 @@ class food_king(models.Model):
             
         
             if self.point_of_sale:
-                food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name)], limit=1)
+                food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name)], limit=1)
                 if not food_king_floor:
                     food_king_floor = self.env['restaurant.floor'].create({
                         'name': self.point_of_sale.name,
