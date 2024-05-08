@@ -787,15 +787,6 @@ class food_king(models.Model):
                                                             'subtype_id': self.env.ref('mail.mt_comment').id,
                                                             'record_name': "Food King Message",
                                                         })
-                                                    return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-    'type': 'warning',
-                
-    'sticky': True,
-                 },
-             }
                                                     file_path = "/food_king/static/src/sounds/bell.wav"
                                                     os.system('aplay ' + file_path)
                                                     
