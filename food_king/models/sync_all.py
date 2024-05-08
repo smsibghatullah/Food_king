@@ -787,7 +787,7 @@ class food_king(models.Model):
                                                             'subtype_id': self.env.ref('mail.mt_comment').id,
                                                             'record_name': "Food King Message",
                                                         })
-                                                    file_path = "/root/Odoo17/custom_addons/Food_king/food_king/static/src/sounds/bell.wav"
+                                                    file_path = "/food_king/static/src/sounds/bell.wav"
                                                     os.system('aplay ' + file_path)
                                                     
                                                 
