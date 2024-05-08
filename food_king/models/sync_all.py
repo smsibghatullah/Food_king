@@ -684,8 +684,8 @@ class food_king(models.Model):
                                             if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
-                                                    variation_names12 = [variation['name'] for variation in posid['item_variations'] if variation['item_id'] == item_id.food_king_id]
-                                                    print(variation_names12, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
+                                                    extra_names12 = [variation['name'] for variation in posid['item_extras'] if variation['item_id'] == item_id.food_king_id]
+                                                    print(extra_names12, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                                     if posid['item_variations']:
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
@@ -704,7 +704,7 @@ class food_king(models.Model):
                                                                         'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                         'price_subtotal': float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                        'customer_note':posid['instruction'] + os.linesep + os.linesep.join(variation_names12)
+                                                                        'customer_note':posid['instruction'] + os.linesep + os.linesep.join(extra_names12)
                                                                     }))
                                                                     uid_counter += 1
                                                                 
