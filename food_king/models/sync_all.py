@@ -482,24 +482,22 @@ class food_king(models.Model):
                                         product_tax = products_tax[0] if products_tax else ''
                                         price = re.sub(r'[^\d.]+', '', posid['price'])
                                         discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                        variation_names = [variation['name'] for variation in posid['item_variations']]
-                                        full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
-                                        instruction.append(full_product_name + ' : ' + posid['instruction'])
+                                       
                                         uid_counter = 1
                                         variation_ids = [variation['id'] for variation in posid['item_variations']]
                                         product_product_ids = [item_id['product_template_variant_value_ids'] for item_id in product_Variants_ids]
                                         extras_ids = [variation['id'] for variation in posid['item_extras']]
-                                        print(extras_ids,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                         topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                         line_topping_ids = [data.id for data in topping_ids]
-                                        print(product_tax.price_include,"lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                         line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total'])
                                         item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total'])
                                         if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
-                                                    extra_names12 = [variation['name'] for variation in posid['item_extras'] if variation['item_id'] == item_id.food_king_id]
-                                                    print(extra_names12, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
+                                                    extra_names12 = [extra['name'] for extra in posid['item_extras'] if extra['item_id'] == item_id.food_king_id]
+                                                    variation_names = [variation['name'] for variation in posid['item_variations'] if variation['item_id'] == item_id.food_king_id]
+                                                    full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                                    instruction.append(full_product_name + ' : ' + posid['instruction'])
                                                     if posid['item_variations']:
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
@@ -508,7 +506,7 @@ class food_king(models.Model):
                                                                 if product_id == posid['item_id']:
                                                                     line_vals.append((0, 0, {
                                                                         'uuid': uid_counter,
-                                                                        'line_topping_ids':line_topping_ids,
+                                                                        # 'line_topping_ids':line_topping_ids,
                                                                         'company_id': self.company_id.id or Foodking_Ids.company_id.id,
                                                                         'product_id': item_id.id,
                                                                         'full_product_name': full_product_name,
@@ -526,7 +524,7 @@ class food_king(models.Model):
                                                                     line_vals.append((0, 0, {
                                                                                         'company_id': self.company_id.id or Foodking_Ids.company_id.id,
                                                                                         'product_id': item_id.id,
-                                                                                        'line_topping_ids':line_topping_ids,
+                                                                                        # 'line_topping_ids':line_topping_ids,
                                                                                         'full_product_name': full_product_name,
                                                                                         'qty': posid['quantity'],
                                                                                         'price_unit': float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) ,
@@ -645,15 +643,12 @@ class food_king(models.Model):
                                 
                                 data_filter_by_branch = self.company_id.branch_id.food_king_id or Foodking_Ids.company_id.branch_id.food_king_id
                                 if data_filter_by_branch == pos_data1['branch_id']:
-                                    print('mubeen 1')
                                     url_get_id = f"{self.url or Foodking_Ids.url}/api/admin/online-order/show/{pos_data1['id']}"
                                     response_get_id =requests.request("GET", url_get_id, headers=headers, data=payload)
                                     pos_data = response_get_id.json().get('data', {})
                                     customer_ids = self.env['res.partner'].sudo().search([('food_king_id_res', '=', pos_data1['customer']['id'])]).mapped('id')
                                     line_vals = []
                                     instruction= []
-                                    print(url_get_id,"jjjj",url)
-                                    print(pos_data,"kkkkkkkkkkkkkkkkkkkkkkkkkkk",pos_orders,"===================>>>>>>>>Mubeen<<<<<<<<=====================")
                                     is_accepted =  True if pos_data['payment_status'] == 5 else False
                                     for posid in pos_data['order_items']:
                                         product_ids = self.env['product.template'].search([('food_king_id', '=', posid['item_id'])]).mapped('id')
@@ -668,30 +663,28 @@ class food_king(models.Model):
                                             discount = re.sub(r'[^\d.]+', '', posid['discount'])
                                             line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total']) if posid['item_extra_currency_total'] else 0
                                             item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total']) if posid['item_variation_currency_total'] else 0
-                                            variation_names = [variation['name'] for variation in posid['item_variations']]
-                                            full_product_name = product_name+' (' +','.join(variation_names)+')' if variation_names else product_name
-                                            instruction.append(full_product_name + ' : ' + posid['instruction'])
+                                            
                                             uid_counter = 1
                                             variation_ids = [variation['id'] for variation in posid['item_variations']]
                                             extras_ids = [variation['id'] for variation in posid['item_extras']]
                                             topping_ids = self.env['product.product'].search([('food_king_id_topping', 'in', extras_ids)]).mapped('topping_ids')
                                             line_topping_ids = [data.id for data in topping_ids]
-                                        
-                                            print(line_topping_ids_price,item_variation_currency_total,product_Variants_ids, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
                                             if product_Variants_ids:
                                                 printed_ids = set()
                                                 for item_id in product_Variants_ids:
-                                                    extra_names12 = [variation['name'] for variation in posid['item_extras'] if variation['item_id'] == item_id.food_king_id]
-                                                    print(extra_names12, "lllllllllllljjjjjjjjjjjjjjjjjjjjjjjjjlllllllllllll")
+                                                    extra_names12 = '\n'.join([extra['name'] for extra in posid['item_extras'] if extra['item_id'] == item_id.food_king_id])
+                                                    variation_names = [variation['name'] for variation in posid['item_variations'] if variation['item_id'] == item_id.food_king_id]
+                                                    full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                                    instruction.append(full_product_name + ' : ' + posid['instruction'])
+                                                    print(full_product_name,extra_names12,"oooooooooooooooooooooooooooooooooooooooooooooo")
                                                     if posid['item_variations']:
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
                                                                 printed_ids.add(product_id)
-                                                                print(item_id.id,"qqqqqqqqqqqqqqqqqqqqqqqqqq",item_id.name,"eeeeeeeeeeeeeeeeeeeeeeeee")
                                                                 if product_id == posid['item_id']:
                                                                     line_vals.append((0, 0, {
                                                                         'uuid': uid_counter,
-                                                                        'line_topping_ids':line_topping_ids,
+                                                                        # 'line_topping_ids':line_topping_ids,
                                                                         'company_id': self.company_id.id or Foodking_Ids.company_id.id,
                                                                         'product_id': item_id.id,
                                                                         'full_product_name': full_product_name,
@@ -701,7 +694,7 @@ class food_king(models.Model):
                                                                         'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
                                                                         'price_subtotal': float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                        'customer_note':posid['instruction'] + os.linesep + os.linesep.join(extra_names12)
+                                                                        'customer_note':posid['instruction'] + os.linesep + extra_names12
                                                                     }))
                                                                     uid_counter += 1
                                                                 
@@ -709,7 +702,7 @@ class food_king(models.Model):
                                                                     line_vals.append((0, 0, {
                                                                                         'company_id': self.company_id.id or Foodking_Ids.company_id.id,
                                                                                         'product_id': item_id.id,
-                                                                                        'line_topping_ids':line_topping_ids,
+                                                                                        # 'line_topping_ids':line_topping_ids,
                                                                                         'full_product_name': full_product_name,
                                                                                         'qty': posid['quantity'],
                                                                                         'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total),
@@ -717,7 +710,7 @@ class food_king(models.Model):
                                                                                         'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
                                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
                                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                                        'customer_note':posid['instruction'] + os.linesep + os.linesep.join(extra_names12)
+                                                                                        'customer_note':posid['instruction'] + os.linesep + extra_names12
                                                                                     }))
                                     if customer_ids:
                                         customer_id = customer_ids[0]
