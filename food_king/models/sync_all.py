@@ -717,7 +717,7 @@ class food_king(models.Model):
                                                                                         'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
                                                                                         'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
                                                                                         'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                                        'customer_note':posid['instruction'] + os.linesep + os.linesep.join(variation_names12)
+                                                                                        'customer_note':posid['instruction'] + os.linesep + os.linesep.join(extra_names12)
                                                                                     }))
                                     if customer_ids:
                                         customer_id = customer_ids[0]
