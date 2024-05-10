@@ -480,7 +480,8 @@ class food_king(models.Model):
                                         product_tax = products_tax[0] if products_tax else ''
                                         price = re.sub(r'[^\d.]+', '', posid['price'])
                                         discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                       
+                                        full_product_name_note = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                        instruction.append(full_product_name_note + ' : ' + posid['instruction'])   
                                         uid_counter = 1
                                         variation_ids = [variation['id'] for variation in posid['item_variations']]
                                         product_product_ids = [item_id['product_template_variant_value_ids'] for item_id in product_Variants_ids]
@@ -495,7 +496,6 @@ class food_king(models.Model):
                                                     extra_names12 = [extra['name'] for extra in posid['item_extras'] if extra['item_id'] == item_id.food_king_id]
                                                     variation_names = [variation['name'] for variation in posid['item_variations'] if variation['item_id'] == item_id.food_king_id]
                                                     full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
-                                                    instruction.append(full_product_name + ' : ' + posid['instruction'])
                                                     if posid['item_variations']:
                                                             product_id = item_id.food_king_id
                                                             if product_id not in printed_ids:
@@ -661,7 +661,8 @@ class food_king(models.Model):
                                             discount = re.sub(r'[^\d.]+', '', posid['discount'])
                                             line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total']) if posid['item_extra_currency_total'] else 0
                                             item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total']) if posid['item_variation_currency_total'] else 0
-                                            
+                                            full_product_name_note = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                            instruction.append(full_product_name_note + ' : ' + posid['instruction'])
                                             uid_counter = 1
                                             variation_ids = [variation['id'] for variation in posid['item_variations']]
                                             extras_ids = [variation['id'] for variation in posid['item_extras']]
@@ -673,7 +674,6 @@ class food_king(models.Model):
                                                     extra_names12 = '\n'.join([extra['name'] for extra in posid['item_extras'] if extra['item_id'] == item_id.food_king_id])
                                                     variation_names = [variation['name'] for variation in posid['item_variations'] if variation['item_id'] == item_id.food_king_id]
                                                     full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
-                                                    instruction.append(full_product_name + ' : ' + posid['instruction'])
                                                     print(full_product_name,extra_names12,"oooooooooooooooooooooooooooooooooooooooooooooo")
                                                     if posid['item_variations']:
                                                             product_id = item_id.food_king_id
