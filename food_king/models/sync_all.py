@@ -480,7 +480,8 @@ class food_king(models.Model):
                                         product_tax = products_tax[0] if products_tax else ''
                                         price = re.sub(r'[^\d.]+', '', posid['price'])
                                         discount = re.sub(r'[^\d.]+', '', posid['discount'])
-                                        full_product_name_note = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                        variation_names_note = [variation['name'] for variation in posid['item_variations']]
+                                        full_product_name_note = product_name+' (' +''.join(variation_names_note)+')' if variation_names_note else product_name
                                         instruction.append(full_product_name_note + ' : ' + posid['instruction'])   
                                         uid_counter = 1
                                         variation_ids = [variation['id'] for variation in posid['item_variations']]
@@ -659,9 +660,10 @@ class food_king(models.Model):
                                             product_tax = products_tax[0] if products_tax else ''
                                             price = re.sub(r'[^\d.]+', '', posid['price'])
                                             discount = re.sub(r'[^\d.]+', '', posid['discount'])
+                                            variation_names_note = [variation['name'] for variation in posid['item_variations']]
                                             line_topping_ids_price = re.sub(r'[^\d.]+', '', posid['item_extra_currency_total']) if posid['item_extra_currency_total'] else 0
                                             item_variation_currency_total = re.sub(r'[^\d.]+', '', posid['item_variation_currency_total']) if posid['item_variation_currency_total'] else 0
-                                            full_product_name_note = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
+                                            full_product_name_note = product_name+' (' +''.join(variation_names_note)+')' if variation_names_note else product_name
                                             instruction.append(full_product_name_note + ' : ' + posid['instruction'])
                                             uid_counter = 1
                                             variation_ids = [variation['id'] for variation in posid['item_variations']]
