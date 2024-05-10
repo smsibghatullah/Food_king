@@ -780,7 +780,7 @@ class food_king(models.Model):
                                                     users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
 
                                                     for user in users:
-                                                        channel = self.env['discuss.channel'].search([('id', '=', 1)], limit=1)
+                                                        channel = self.env['discuss.channel'].search([('id', '=', 4)], limit=1)
 
                                                         if channel:
                                                             channel.message_post(body=f"New order. Order ID: {result}", subtype_id=self.env.ref('mail.mt_comment').id)
