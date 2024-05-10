@@ -135,7 +135,6 @@ class food_king(models.Model):
                             "order": product.sequence,
                             "status": 5 if product.food_king_active else 10 ,
                         }
-                        print(payload,"sssssssssssss")
                         try:
                             response = requests.request("POST", url, headers=headers, data=payload, files=files)
                             response_data = response.json()
@@ -150,12 +149,12 @@ class food_king(models.Model):
 
                                 artibutes = self.env['product.attribute'].search([])
                                 artibuteline=self.env['product.template.attribute.value'].search([])
-                                print(artibuteline,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                 synced_artibutes = self.env['product.attribute'].search([('food_king_id', '=', 0)])
                                 url_atribute =(self.url or Foodking_Ids.url)   + "/api/admin/setting/item-attribute"
                             
                                 synced_artibutes_ids = []
                                 for artibutes in synced_artibutes:
+                                    if artibutes.food_king_id == 0:
                                         payload_atribute = {
                                             "name": artibutes.name,
                                             "status": 5 if artibutes.food_king_active else 10
@@ -163,7 +162,6 @@ class food_king(models.Model):
                                         try:
                                             response_atribute = requests.post(url_atribute, headers=headers, data=payload_atribute)
                                             response_data_atribute = response_atribute.json()
-                                            print(response_data_atribute,"dddddddddddddkkkkkkkkkkkkklllllllllllllnnnnnnmmmmmmmmmmmmmm")
                                             if 'data' in response_data_atribute:
                                                 food_king_id_atribute = response_data_atribute['data']['id']
                                                 artibutes.write({'food_king_id': food_king_id_atribute})
@@ -174,24 +172,24 @@ class food_king(models.Model):
                                         
                                 for attribute_line in product.attribute_line_ids:
                                     for value_id in attribute_line.value_ids:
-                                            for line_ids_price in artibuteline:
-                                                if line_ids_price.attribute_id.id == attribute_line.attribute_id.id and line_ids_price.name == value_id.name:
-                                                    payload_atribute2  = {
-                                                        "name": line_ids_price.name,
-                                                        "price": line_ids_price.price_extra,
-                                                        "item_attribute_id": attribute_line.attribute_id.food_king_id,
-                                                        "caution": attribute_line.attribute_id.caution,
-                                                        "status": 5 if attribute_line.attribute_id.food_king_active else 10
-                                                    }
-                                                    url_get_id_atribute2  = (self.url or Foodking_Ids.url)+f"/api/admin/item/variation/{product.food_king_id}"
-                                                    response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
-                                                    response_data_atribute2  = response_get_id_atribute2 .json()
-                                                    if 'data' in response_data_atribute2 :
-                                                        food_king_id_atribute2  = response_data_atribute2 ['data']['id']
-                                                        print(food_king_id_atribute2 ,"kkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddd")
-                                                        value_id.write({'food_king_id': food_king_id_atribute2 })
-                                                        line_ids_price.write({'food_king_id': food_king_id_atribute2 })
-                                                        product.write({'food_king_id_variant':food_king_id_atribute2})
+                                            if value_id.food_king_id == 0:
+                                                    artibuteline=self.env['product.template.attribute.value'].search([('name','=',value_id.name),('product_tmpl_id','=',product.id)])
+                                                    for value_data in artibuteline:
+                                                        payload_atribute2  = {
+                                                            "name": value_data.name,
+                                                            "price": value_data.price_extra,
+                                                            "item_attribute_id": attribute_line.attribute_id.food_king_id,
+                                                            "caution":  attribute_line.attribute_id.caution if  attribute_line.attribute_id.caution else '',
+                                                            "status": 5 if attribute_line.attribute_id.food_king_active else 10
+                                                        }
+                                                        url_get_id_atribute2  = (self.url or Foodking_Ids.url)+f"/api/admin/item/variation/{product.food_king_id}"
+                                                        response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
+                                                        response_data_atribute2  = response_get_id_atribute2 .json()
+                                                        if 'data' in response_data_atribute2 :
+                                                            food_king_id_atribute2  = response_data_atribute2 ['data']['id']
+                                                            
+                                                            value_id.write({'food_king_id': food_king_id_atribute2 })
+                                                            product.write({'food_king_id_variant':food_king_id_atribute2})
 
                                 
                                 
