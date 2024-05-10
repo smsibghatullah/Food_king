@@ -579,16 +579,11 @@ class food_king(models.Model):
                                             group = self.env.ref('food_king.group_food_king_user')
                                             users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
 
-                                            for user in users:
-                                                message = self.env['mail.message'].create({
-                                                    'author_id': 1,
-                                                    'model': 'discuss.channel',
-                                                    'res_id': 1,
-                                                    'message_type': 'comment',
-                                                    'body': f"New order. Order ID: {result}",
-                                                    'subtype_id': self.env.ref('mail.mt_comment').id,
-                                                    'record_name': "Food King Message",
-                                                })
+                                            channel = self.env['discuss.channel'].search([('id', '=', 4)], limit=1)
+
+                                            if channel:
+                                                channel.message_post(body=f"New order. Order ID: {result}", subtype_id=self.env.ref('mail.mt_comment').id)
+                                                print("Message sent successfully!")
                     
                                         else :
                                             raise UserError(('Please open the session'))
@@ -779,12 +774,11 @@ class food_king(models.Model):
                                                     group = self.env.ref('food_king.group_food_king_user')
                                                     users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
 
-                                                    for user in users:
-                                                        channel = self.env['discuss.channel'].search([('id', '=', 4)], limit=1)
+                                                    channel = self.env['discuss.channel'].search([('id', '=', 4)], limit=1)
 
-                                                        if channel:
-                                                            channel.message_post(body=f"New order. Order ID: {result}", subtype_id=self.env.ref('mail.mt_comment').id)
-                                                            print("Message sent successfully!")
+                                                    if channel:
+                                                        channel.message_post(body=f"New order. Order ID: {result}", subtype_id=self.env.ref('mail.mt_comment').id)
+                                                        print("Message sent successfully!")
                                             else :
                                                 raise UserError(('Please open the session'))
                                                 
