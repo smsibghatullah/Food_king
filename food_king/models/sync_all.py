@@ -675,43 +675,81 @@ class food_king(models.Model):
                                                 for item_id in product_Variants_ids:
                                                     extra_names12 = '\n'.join([extra['name'] for extra in posid['item_extras'] if extra['item_id'] == item_id.food_king_id])
                                                     variation_names = [variation['name'] for variation in posid['item_variations'] if variation['item_id'] == item_id.food_king_id]
-                                                    full_product_name = product_name+' (' +''.join(variation_names)+')' if variation_names else product_name
-                                                    print(full_product_name,extra_names12,"oooooooooooooooooooooooooooooooooooooooooooooo")
+                                                    full_product_name =product_name+' ('+''.join(variation_names)+')' if variation_names else product_name
+                                                    product_name_with_extra = self.env['product.product'].search([]).mapped('product_template_attribute_value_ids')
+                                                    product_variationfiltered =[value.ptav_product_variant_ids for value in product_name_with_extra if value.name in variation_names]
+                                                    print(product_variationfiltered,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+                                                    if product_variationfiltered:
+                                                        for productitemids in product_variationfiltered:
+                                                            for product_ids in productitemids:
+                                                                print(productitemids,"mmmmmmmmmmmmmmm")
+                                                                if posid['item_variations']:
+                                                                        product_id = item_id.food_king_id
+                                                                        if product_id not in printed_ids:
+                                                                            printed_ids.add(product_id)
+                                                                            if product_id == posid['item_id']:
+                                                                                line_vals.append((0, 0, {
+                                                                                    'uuid': uid_counter,
+                                                                                    'company_id': self.company_id.id or Foodking_Ids.company_id.id,
+                                                                                    'product_id': product_ids.id,
+                                                                                    'full_product_name': full_product_name,
+                                                                                    'qty': posid['quantity'],
+                                                                                    'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) ,
+                                                                                    'discount': float(discount),
+                                                                                    'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
+                                                                                    'price_subtotal': float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
+                                                                                    'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                                    'customer_note':posid['instruction'] + os.linesep + extra_names12
+                                                                                }))
+                                                                                uid_counter += 1
+                                                                            
+                                                                if posid['item_variations'] == []:
+                                                                                line_vals.append((0, 0, {
+                                                                                                    'company_id': self.company_id.id or Foodking_Ids.company_id.id,
+                                                                                                    'product_id': productitemids,
+                                                                                                    'full_product_name': full_product_name,
+                                                                                                    'qty': posid['quantity'],
+                                                                                                    'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total),
+                                                                                                    'discount': float(discount),
+                                                                                                    'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
+                                                                                                    'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
+                                                                                                    'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                                                    'customer_note':posid['instruction'] + os.linesep + extra_names12
+                                                                                                }))
+                                                else :
                                                     if posid['item_variations']:
-                                                            product_id = item_id.food_king_id
-                                                            if product_id not in printed_ids:
-                                                                printed_ids.add(product_id)
-                                                                if product_id == posid['item_id']:
-                                                                    line_vals.append((0, 0, {
-                                                                        'uuid': uid_counter,
-                                                                        # 'line_topping_ids':line_topping_ids,
-                                                                        'company_id': self.company_id.id or Foodking_Ids.company_id.id,
-                                                                        'product_id': item_id.id,
-                                                                        'full_product_name': full_product_name,
-                                                                        'qty': posid['quantity'],
-                                                                        'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) ,
-                                                                        'discount': float(discount),
-                                                                        'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
-                                                                        'price_subtotal': float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
-                                                                        'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                        'customer_note':posid['instruction'] + os.linesep + extra_names12
-                                                                    }))
-                                                                    uid_counter += 1
-                                                                
+                                                                product_id = item_id.food_king_id
+                                                                if product_id not in printed_ids:
+                                                                    printed_ids.add(product_id)
+                                                                    if product_id == posid['item_id']:
+                                                                        line_vals.append((0, 0, {
+                                                                            'uuid': uid_counter,
+                                                                            'company_id': self.company_id.id or Foodking_Ids.company_id.id,
+                                                                            'product_id': item_id.id,
+                                                                            'full_product_name': full_product_name,
+                                                                            'qty': posid['quantity'],
+                                                                            'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) ,
+                                                                            'discount': float(discount),
+                                                                            'tax_ids': [(6, 0, [int(product_tax.id)])] if product_tax and product_tax.id else [],
+                                                                            'price_subtotal': float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
+                                                                            'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                            'customer_note':posid['instruction'] + os.linesep + extra_names12
+                                                                        }))
+                                                                        uid_counter += 1
+                                                                    
                                                     if posid['item_variations'] == []:
-                                                                    line_vals.append((0, 0, {
-                                                                                        'company_id': self.company_id.id or Foodking_Ids.company_id.id,
-                                                                                        'product_id': item_id.id,
-                                                                                        # 'line_topping_ids':line_topping_ids,
-                                                                                        'full_product_name': full_product_name,
-                                                                                        'qty': posid['quantity'],
-                                                                                        'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total),
-                                                                                        'discount': float(discount),
-                                                                                        'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
-                                                                                        'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
-                                                                                        'price_subtotal_incl': float(posid['total_convert_price']),
-                                                                                        'customer_note':posid['instruction'] + os.linesep + extra_names12
-                                                                                    }))
+                                                                        line_vals.append((0, 0, {
+                                                                                            'company_id': self.company_id.id or Foodking_Ids.company_id.id,
+                                                                                            'product_id': item_id.id,
+                                                                                            'full_product_name': full_product_name,
+                                                                                            'qty': posid['quantity'],
+                                                                                            'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total),
+                                                                                            'discount': float(discount),
+                                                                                            'tax_ids': [(6, 0, [int(product_tax)])] if product_tax and product_tax.id else [],
+                                                                                            'price_subtotal':float(posid['total_convert_price'])/((100+float(product_tax.amount))/100) if product_tax else 0,
+                                                                                            'price_subtotal_incl': float(posid['total_convert_price']),
+                                                                                            'customer_note':posid['instruction'] + os.linesep + extra_names12
+                                                                                        }))
                                     if customer_ids:
                                         customer_id = customer_ids[0]
                                         food_king_floor = self.env['restaurant.floor'].search([('name', '=', self.point_of_sale.name or Foodking_Ids.point_of_sale.name)], limit=1)
@@ -721,7 +759,6 @@ class food_king(models.Model):
                                         total_currency_price = re.sub(r'[^\d.]+', '', pos_data['total_currency_price'])
 
                                         delivery_charge_currency_price = re.sub(r'[^\d.]+', '', pos_data['delivery_charge_currency_price'])
-                                        print(delivery_charges,delivery_charges.id,delivery_charges.name,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
                                         line_vals.append((0, 0, {
                                             'product_id': delivery_charges.id,
                                             'full_product_name': delivery_charges.name,
@@ -768,7 +805,6 @@ class food_king(models.Model):
                                                     users = self.env['res.users'].search([('groups_id', 'in', [group.id])])
 
                                                     channel = self.env['discuss.channel'].search([('id', '=', 4)], limit=1)
-
                                                     if channel:
                                                         channel.message_post(body=f"New order. Order ID: {result}", subtype_id=self.env.ref('mail.mt_comment').id)
                                                         print("Message sent successfully!")
