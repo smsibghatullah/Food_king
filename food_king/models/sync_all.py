@@ -172,7 +172,7 @@ class food_king(models.Model):
                                         
                                 for attribute_line in product.attribute_line_ids:
                                     for value_id in attribute_line.value_ids:
-                                            if value_id.food_king_id == 0:
+                                            # if value_id.food_king_id == 0:
                                                     artibuteline=self.env['product.template.attribute.value'].search([('name','=',value_id.name),('product_tmpl_id','=',product.id)])
                                                     for value_data in artibuteline:
                                                         payload_atribute2  = {
@@ -185,6 +185,7 @@ class food_king(models.Model):
                                                         url_get_id_atribute2  = (self.url or Foodking_Ids.url)+f"/api/admin/item/variation/{product.food_king_id}"
                                                         response_get_id_atribute2  = requests.request("POST", url_get_id_atribute2 , headers=headers , data=payload_atribute2 )
                                                         response_data_atribute2  = response_get_id_atribute2 .json()
+                                                        print(response_data_atribute2,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                                                         if 'data' in response_data_atribute2 :
                                                             food_king_id_atribute2  = response_data_atribute2 ['data']['id']
                                                             
