@@ -58,11 +58,12 @@ class pos_order_food_king(models.Model):
 
     def _process_order(self, order, draft, existing_draft_order):
         res = super(pos_order_food_king, self)._process_order(order, draft, existing_draft_order)
-        print(existing_draft_order,"ooooooooooo",draft,"dddddddddddddd",order,"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
-        if res:
+        print(existing_draft_order, "ooooooooooo", draft, "dddddddddddddd", order, "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+        if res and isinstance(existing_draft_order, pos_order_food_king):
             existing_draft_order.accept_order()
             existing_draft_order.accept_online_order()
         return res
+
 
 class CustomPosMakePayment(models.TransientModel):
     _inherit = "pos.make.payment"
