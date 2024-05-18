@@ -1078,9 +1078,11 @@ class food_king(models.Model):
                 try:
                     product_response = requests.request("GET", product_url, headers=headers, data=payload)
                     product_data = product_response.json().get('data', [])
+                    print(product_data,"ccccccccccccccccccccccccccccccccccccccccccccccc")
                     for product_item in product_data:
                          for odoo_product in search_all_product:
                              if odoo_product.name == product_item['name']:
+                                 print(odoo_product.name,"ppppppppppppppppppppppppppppppp",product_item['name'])
                                  odoo_product.write({'food_king_id': product_item['id']})
                 
                 except requests.exceptions.RequestException as e:
