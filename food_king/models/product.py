@@ -77,7 +77,7 @@ class ProductFoodKing(models.Model):
                     synced_artibutes =self.env['product.attribute'].search([('product_tmpl_ids', '=', self.id)])
                     for artibutes in synced_artibutes:
                             print("sssssssssssssssssssssssssssssssss")
-                            if artibutes.food_king_id in attribute_get_data:
+                            if artibutes.food_king_id != 0:
                                 url_atribute =f"{food_king.url}/api/admin/setting/item-attribute/{artibutes.food_king_id}"
                                 
                                 payload_atribute = json.dumps({

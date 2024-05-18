@@ -172,7 +172,6 @@ class food_king(models.Model):
                                         
                                 for attribute_line in product.attribute_line_ids:
                                     for value_id in attribute_line.value_ids:
-                                            # if value_id.food_king_id == 0:
                                                     artibuteline=self.env['product.template.attribute.value'].search([('name','=',value_id.name),('product_tmpl_id','=',product.id)])
                                                     for value_data in artibuteline:
                                                         payload_atribute2  = {
@@ -1039,6 +1038,7 @@ class food_king(models.Model):
         Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
         search_all_category =self.env['pos.category'].search([])
         search_all_tax =self.env['account.tax'].search([])
+        search_all_attribute =self.env['product.attribute'].search([])
         search_all_product=self.env['product.template'].search([])
         for Foodking_Ids  in Foodking_Ids_data :
                 url = f"{self.url or Foodking_Ids.url}/api/admin/setting/item-category?paginate=1&page=1&per_page=100&order_column=id&order_type=desc"
@@ -1069,6 +1069,20 @@ class food_king(models.Model):
                          for odoo_tax in search_all_tax:
                              if odoo_tax.name == tax_item['name']:
                                  odoo_tax.write({'food_king_id': tax_item['id']})
+                
+                except requests.exceptions.RequestException as e:
+                    return {'error': str(e)}
+                
+                # update attribute foodkingid
+                attribute_url = f"{self.url or Foodking_Ids.url}/api/admin/setting/item-attribute?paginate=1&page=1&per_page=100&order_column=id&order_type=desc"
+                try:
+                    attribute_response = requests.request("GET", attribute_url, headers=headers, data=payload)
+                    attribute_data = attribute_response.json().get('data', [])
+                    print(attribute_data,"ooooooooooooooooooooooooooooooooooo")
+                    for attribute_item in attribute_data:
+                         for odoo_attribute in search_all_attribute:
+                             if odoo_attribute.name == attribute_item['name']:
+                                 odoo_attribute.write({'food_king_id': attribute_item['id']})
                 
                 except requests.exceptions.RequestException as e:
                     return {'error': str(e)}
