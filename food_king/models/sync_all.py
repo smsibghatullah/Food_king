@@ -1041,7 +1041,7 @@ class food_king(models.Model):
         search_all_tax =self.env['account.tax'].search([])
         search_all_product=self.env['product.template'].search([])
         for Foodking_Ids  in Foodking_Ids_data :
-                url = f"{self.url or Foodking_Ids.url}/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+                url = f"{self.url or Foodking_Ids.url}/api/admin/setting/item-category?paginate=1&page=1&per_page=100&order_column=id&order_type=desc"
                 headers = {
                     'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
                     'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
@@ -1060,7 +1060,7 @@ class food_king(models.Model):
                 
                 
                 # update tax food_king_id
-                tax_url = f"{self.url or Foodking_Ids.url}/api/admin/setting/tax?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+                tax_url = f"{self.url or Foodking_Ids.url}/api/admin/setting/tax?paginate=1&page=1&per_page=100&order_column=id&order_type=desc"
                 try:
                     tax_response = requests.request("GET", tax_url, headers=headers, data=payload)
                     tax_data = tax_response.json().get('data', [])
@@ -1074,7 +1074,7 @@ class food_king(models.Model):
                     return {'error': str(e)}
         
                 # update product food_king_id
-                product_url = f"{self.url or Foodking_Ids.url}/api/admin/item?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+                product_url = f"{self.url or Foodking_Ids.url}/api/admin/item?paginate=1&page=1&per_page=100&order_column=id&order_type=desc"
                 try:
                     product_response = requests.request("GET", product_url, headers=headers, data=payload)
                     product_data = product_response.json().get('data', [])
