@@ -19,7 +19,7 @@
             </field>
         </record>
 
-          <record id="view_product_form_update123BB4567_food_king" model="ir.ui.view">
+          <record id="view_product_form_update123BB34567_food_king" model="ir.ui.view">
             <field name="name">product.template.form</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
@@ -31,7 +31,7 @@
             </field>
         </record>
 
-        <record id="view_product_data_update12378567_form_inherited_food_king" model="ir.ui.view">
+        <record id="view_product_data_update1233378567_form_inherited_food_king" model="ir.ui.view">
             <field name="name">product.product.form</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>

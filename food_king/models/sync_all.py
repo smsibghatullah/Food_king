@@ -1035,6 +1035,54 @@ class food_king(models.Model):
     
 
         
-
-            
-            
+    def update_foodking_id_category(self, cron_mode=True):
+        Foodking_Ids_data = self.env['food_king.food_king'].sudo().search([])
+        search_all_category =self.env['pos.category'].search([])
+        search_all_tax =self.env['account.tax'].search([])
+        search_all_product=self.env['product.template'].search([])
+        for Foodking_Ids  in Foodking_Ids_data :
+                url = f"{self.url or Foodking_Ids.url}/api/admin/setting/item-category?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+                headers = {
+                    'Authorization': f'Bearer {self.auth_token or Foodking_Ids.auth_token}',
+                    'X-Api-Key':self.license_key or '' or Foodking_Ids.license_key,
+                }
+                payload = {}
+                try:
+                    response = requests.request("GET", url, headers=headers, data=payload)
+                    pos_orders = response.json().get('data', [])
+                    for pos_data1 in pos_orders:
+                         for odoo_category in search_all_category:
+                             if odoo_category.name == pos_data1['name']:
+                                 odoo_category.write({'food_king_id': pos_data1['id']})
+                
+                except requests.exceptions.RequestException as e:
+                    return {'error': str(e)}
+                
+                
+                # update tax food_king_id
+                tax_url = f"{self.url or Foodking_Ids.url}/api/admin/setting/tax?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+                try:
+                    tax_response = requests.request("GET", tax_url, headers=headers, data=payload)
+                    tax_data = tax_response.json().get('data', [])
+                    print(tax_data,"ooooooooooooooooooooooooooooooooooo")
+                    for tax_item in tax_data:
+                         for odoo_tax in search_all_tax:
+                             if odoo_tax.name == tax_item['name']:
+                                 odoo_tax.write({'food_king_id': tax_item['id']})
+                
+                except requests.exceptions.RequestException as e:
+                    return {'error': str(e)}
+        
+                # update product food_king_id
+                product_url = f"{self.url or Foodking_Ids.url}/api/admin/item?paginate=1&page=1&per_page=10&order_column=id&order_type=desc"
+                try:
+                    product_response = requests.request("GET", product_url, headers=headers, data=payload)
+                    product_data = product_response.json().get('data', [])
+                    for product_item in product_data:
+                         for odoo_product in search_all_product:
+                             if odoo_product.name == product_item['name']:
+                                 odoo_product.write({'food_king_id': product_item['id']})
+                
+                except requests.exceptions.RequestException as e:
+                    return {'error': str(e)}
+        
