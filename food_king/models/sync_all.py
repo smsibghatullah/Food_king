@@ -527,7 +527,7 @@ class food_king(models.Model):
                                                                 if posid['item_variations'] == []:
                                                                                 line_vals.append((0, 0, {
                                                                                                     'company_id': self.company_id.id or Foodking_Ids.company_id.id,
-                                                                                                    'product_id': productitemids,
+                                                                                                    'product_id': productitemids.id,
                                                                                                     'full_product_name': full_product_name,
                                                                                                     'qty': posid['quantity'],
                                                                                                     'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total),
@@ -745,7 +745,7 @@ class food_king(models.Model):
                                                                 if posid['item_variations'] == []:
                                                                                 line_vals.append((0, 0, {
                                                                                                     'company_id': self.company_id.id or Foodking_Ids.company_id.id,
-                                                                                                    'product_id': productitemids,
+                                                                                                    'product_id': productitemids.id,
                                                                                                     'full_product_name': full_product_name,
                                                                                                     'qty': posid['quantity'],
                                                                                                     'price_unit':float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total) if product_tax.price_include and product_tax else (float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total))/((100+float(product_tax.amount))/100) if product_tax else float(price)  + float(line_topping_ids_price) + float(item_variation_currency_total),
