@@ -9,7 +9,7 @@ Long description of the module's purpose
     'website': "https://www.yourcompany.com",
     'category': 'Uncategorized',
     'version': '0.1',
-    'depends': ['base', 'product', 'om_account_asset', 'pos_restaurant', 'point_of_sale'],
+    'depends': ['base', 'product', 'om_account_asset', 'pos_restaurant', 'point_of_sale','bi_pos_product_toppings'],
     'data': [
         'views/sync_all_views.xml',
         'views/templates.xml',
